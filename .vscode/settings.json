@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "enc_sos.h": "c",
+        "md1database.h": "c",
+        "md1global.h": "c"
+    }
+}
