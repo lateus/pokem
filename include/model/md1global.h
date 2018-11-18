@@ -113,7 +113,7 @@ struct SOS_INFO {
     char difficulty;
     char reward[4];
     char id[16];
-    char chancesLeft[3];
+    char chancesLeft[4];
     char SOSMail[100];
 };
 
