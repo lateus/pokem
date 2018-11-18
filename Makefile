@@ -3,7 +3,6 @@ C_WFLAGS		:= -W -Wall -Wextra
 C_OFLAGS		:= -O2 -funroll-loops
 C_LFLAGS		:= -Wl,-s
 
-BIN			:= bin
 SRC			:= src/*.* src/decode_encode/*.* src/decode_encode/encode/*.* src/decode_encode/decode/*.* src/decode_encode/convert/*.* src/model/*.* src/view/*.*
 RES			:= res/*.*
 
@@ -11,14 +10,12 @@ RES			:= res/*.*
 # Platform-specific switches
 ifeq ($(OS),Windows_NT)
 	WINRES		:= windres
-	EXECUTABLE	:= bin/app.exe
-	EXECUTABLE_NAME	:= app.exe
-	RES_OBJ		:= bin/res.o
+	EXECUTABLE	:= app.exe
+	RES_OBJ		:= res.o
 	RM_RES_OBJ	:= $(RM) RES_OBJ
 else
 	WINRES		:= windres
-	EXECUTABLE	:= bin/app
-	EXECUTABLE_NAME	:= app
+	EXECUTABLE	:= app
 	RES_OBJ		:=
 	RM_RES_OBJ	:=
 endif
@@ -27,7 +24,8 @@ endif
 all: $(RES_OBJ) $(EXECUTABLE)
 
 clean:
-	$(RM) ./$(BIN)/*
+	$(RM) $(BIN)/$(EXECUTABLE)
+	$(RM) $(BIN)/$(RES_OBJ)
 
 run: all
 	./$(EXECUTABLE)
