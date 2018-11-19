@@ -56,3 +56,5 @@ This is a command-line tool, also not easy to use. I'm currently developing a GU
 * Calling performance is not everything. You must focus on maintenance, re-usability and portability.
 
 -----------------------------------------------------------------------------------------------------------------------------------
+
+***Contact info:*** `thecrowporation@gmail.com`
