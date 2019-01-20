@@ -1,21 +1,25 @@
 # Pokémon Mystery Dungeon Mail Generator
 
-*Copyright (C) 2018 - Carlos Enrique Pérez Sánchez*
+*Copyright 2018-2019 Carlos Enrique Pérez Sánchez*
 
-**Pokémon Mystery Dungeon Mail Generator (*MailGen* for short) is a tool to make your own Wonder Mail and SOS Mail, allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
+**Pokémon Mystery Dungeon Mail Generator (*PokéMail* for short) is a tool to make your own Wonder Mail and SOS Mail, allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-## Build instructions
-The only requirement is a C Compiler. You can use the makefile that comes along with this project.  
-Most Linux distros already comes with a basic equipment for developers that includes at least a C and a C++ compiler set, and also a `make` tool. If not, to install `make` and a C compiler, use the package manager of your distribution. For example, on Debian:  
+## Build
+The only build requirement is a C Compiler. You can use the makefile that comes along with this project.  
+Most **Linux** distros already comes with a basic equipment for developers that includes GCC, or at least a C and a C++ compiler set, and also a `make` tool. If not, to install `make` and a C compiler, use the package manager of your distribution.  
+For example, on **Debian** (*apt*):  
 `sudo apt install build-essential`  
+On **Fedora**/**RHEL**/**CentOS** (*yum*):  
+`sudo yum groupinstall "C Development Tools and Libraries"`
+On **openSUSE** (*zypper*)
 will install a C and a C++ compiler, and also the tool `make`.  
 Then you can run `make` on the directory where the project resides to build the application.  
 
-On Mac, if you don't have GCC installed, you can install it through X-Code, it's free on the Apple Store.
+On **MacOS**, if you don't have GCC installed, you can install it through X-Code, it's free on the Apple Store.
 
-On Windows, you can install GCC and use `mingw32-make` to build the project.
+On **Windows**, you can install GCC and use `mingw32-make` to build the project.
 
 ### More build methods
 #### Qt
