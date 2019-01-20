@@ -56,7 +56,7 @@ int autodetect(int argc, const char *argv[])
         return decodeWonderMail(argc, argv);
     } else if (argc == 2 && lenghtArg1 >= 48 && lenghtArg1 <= 56) {
         return -1; /* what do you want? decode or convert? */
-    } else if (argc == 9) {
+    } else if (argc == 10) {
         return encodeWonderMail(argc, argv);
     } else if (argc == 7) {
         return encodeSOSMail(argc, argv);
