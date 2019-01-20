@@ -1341,7 +1341,7 @@ const char* itemsStr[] = {
 };
 
 /* Dungeons */
-/* Note: Some of this dungeons are useless in mails because you can't accept such mail, but are still provided as database, they are others unknown dungeons (also invalid values) */
+/* Note: Some of this dungeons are useless in mails because you can't accept such mail, but are still provided as database, there are others unknown dungeons (also invalid values) */
 const char* dungeonsStr[] = {
     "Tiny Woods", /* 0 */
     "Thunderwave Cave",
