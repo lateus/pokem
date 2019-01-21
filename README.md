@@ -1,4 +1,5 @@
-<div style="text-align:center"><img src ="res/images/png/pokeMail_128.png" /></div>
+<p align="center"><img src=res/images/png/pokeMail_128.png></p>  
+
 # PokéMail - Pokémon Mystery Dungeon Mail Generator
 
 *Copyright 2018-2019 Carlos Enrique Pérez Sánchez*
