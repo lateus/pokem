@@ -54,7 +54,7 @@ ifeq ($(OS),Windows_NT)
 	CC			:=	gcc
 	RMDIR		:=	rd
 	WINRES		:=	windres
-	EXECUTABLE	:=	$(BINDIR)/pokem.exe
+	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
 	RES_OBJS	:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=
@@ -63,7 +63,7 @@ ifeq ($(OS),Windows_NT)
 else
 	RMDIR		:=  $(RM)
 	WINRES		:=
-	EXECUTABLE	:=	$(BINDIR)/pokem
+	EXECUTABLE	:=	$(BINDIR)/pokeM
 	RES_OBJS	:=
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=	-frd

@@ -8,7 +8,7 @@ int autodetect(int argc, const char *argv[]);
 int main(int argc, const char *argv[])
 {
     /* Copyright notice */
-    fputs("Pokem v0.1   Copyright 2018-2019 Carlos Enrique Perez Sanchez.\n"
+    fputs("PokeM v0.1   Copyright 2018-2019 Carlos Enrique Perez Sanchez.\n"
           "Based on the tools written by Peter O."
           ".................................................................\n", stdout);
 
