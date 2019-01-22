@@ -49,14 +49,18 @@ WHITE		:=	\033[1;37m
 
 # Platform-specific switches
 ifeq ($(OS),Windows_NT)
+	RM			:=	del
+	CC			:=	gcc
+	RMDIR		:=	rd
 	WINRES		:=	windres
 	EXECUTABLE	:=	$(BINDIR)/pokeMail.exe
 	RES_OBJS	:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=
-	MKDIR		:=	md
+	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=
 else
+	RMDIR		:=  $(RM)
 	WINRES		:=
 	EXECUTABLE	:=	$(BINDIR)/pokeMail
 	RES_OBJS	:=
@@ -104,9 +108,10 @@ $(BUILDDIR)/view.o:				src/view/view.c
 .PHONY: clean
 clean:
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
-	@$(RM) $(RM_FLAGS) $(OBJS)
+	$(RM) $(RM_FLAGS) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing executable...$(NOCOLOR)\n"
-	@$(RM) $(RM_FLAGS) $(EXECUTABLE)
+	$(RM) $(RM_FLAGS) $(EXECUTABLE)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
-	@$(RM) $(RMDIR_FLAGS) $(BUILDDIR) $(BINDIR)
+	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)	
+	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
 	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
