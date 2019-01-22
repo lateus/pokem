@@ -221,7 +221,7 @@ void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* 
 
     packed14BytesPassword[11]  = ((mail->floor >> 2) & 0x3F);   /* get the last 5 bits and... finish! */
 
-    /* The elements beyong index 11 were filled with 0 during array initialization, so there is no need to do it now */
+    /* The elements beyond index 11 were filled with 0 during array initialization, so there is no need to do it now */
 }
 
 
