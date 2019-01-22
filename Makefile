@@ -49,11 +49,12 @@ WHITE		:=	\033[1;37m
 
 # Platform-specific switches
 ifeq ($(OS),Windows_NT)
+	SHELL		:=	cmd
 	RM			:=	del
 	CC			:=	gcc
 	RMDIR		:=	rd
 	WINRES		:=	windres
-	EXECUTABLE	:=	$(BINDIR)/pokeMail.exe
+	EXECUTABLE	:=	$(BINDIR)/pokem.exe
 	RES_OBJS	:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=
@@ -62,7 +63,7 @@ ifeq ($(OS),Windows_NT)
 else
 	RMDIR		:=  $(RM)
 	WINRES		:=
-	EXECUTABLE	:=	$(BINDIR)/pokeMail
+	EXECUTABLE	:=	$(BINDIR)/pokem
 	RES_OBJS	:=
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=	-frd
