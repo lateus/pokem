@@ -1,10 +1,10 @@
 <p align="center"><img src=res/images/png/pokeMail_128.png></p>  
 
-# PokéDungeon - Pokémon Mystery Dungeon Mail Generator
+# Pokém - Pokémon Mystery Dungeon Mail Generator
 
 *Copyright 2018-2019 Carlos Enrique Pérez Sánchez*
 
-**Pokémon Mystery Dungeon Mail Generator (*PokéDungeon* for short) is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
+**Pokémon Mystery Dungeon Mail Generator (*Pokém* for short) is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -28,7 +28,8 @@ Most **Linux** distros already comes with a basic equipment for developers that 
 `sudo zypper install -t pattern devel_basis`  
 
 That will install a C and a C++ compiler, and also the tool `make`.  
-Then you can run `make` on the directory where the project resides to build the application.  
+Then you can run `make` on the directory where the project resides to build the application:  
+`$ make`  
 
 These are just examples. If you use a different package manager, you must search for the corresponding package in your distribution.
 
@@ -38,7 +39,7 @@ On **Windows**, you can install GCC and use `mingw32-make` to build the project.
 
 ### More build methods
 #### Qt
-The project comes with a project file for Qt5, based on the `qmake` build system. Open it in Qt Creator and click the *Build* button, or pass the project to the `qmake` tool. CMake is currently not supported, but since Qt6's build system will be based on CMake, it's support is a priority and will be here soon.  
+The project comes with a project file for Qt5, based on the `qmake` build system. Open it in Qt Creator and click the *Build* button, or pass the project to the `qmake` tool. CMake is currently not supported, but since Qt6's build system will be based on CMake, it's support is a priority.  
 
 #### Manual
 You can manually build it by passing to a C compiler all source files. For example:
