@@ -1,4 +1,4 @@
-<p align="center"><img src=res/images/png/pokeMail_128.png></p>  
+<p align="center"><img src=res/images/png/pokem_128.png></p>  
 
 # Pokém - Pokémon Mystery Dungeon Mail Generator
 
@@ -45,6 +45,11 @@ The project comes with a project file for Qt5, based on the `qmake` build system
 You can manually build it by passing to a C compiler all source files. For example:
 `cc -o app source1.c source2.c...`
 will build an application named `app` by compiling the source files passed.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+## Known bugs
+* Currently, the Makefile is only fully supported on Linux. On Windows, you will be able to build the application, but you must manually erase all leftovers prior to rebuild, since `clean` is not available, as it fails due to the Windows's paths conventions.
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
