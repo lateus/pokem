@@ -249,8 +249,8 @@ int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 24) {
-        fprintf(stderr, "ERROR: You password lenght is %ld characters, and it must have exactly 24 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", pswLenght);
+        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
         return INPUT_ERROR;
     }
 
@@ -282,8 +282,8 @@ int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
 
     size_t pswLenght = strlen(password);
     if (pswLenght != 54) {
-        fprintf(stderr, "ERROR: You password lenght is %ld characters, and it must have exactly 54 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", pswLenght);
+        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
         return INPUT_ERROR;
     }
 
@@ -315,8 +315,8 @@ int SOSMailIsInvalidForConverting(const char *password, char password54Integers[
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 54) {
-        fprintf(stderr, "ERROR: You password lenght is %ld characters, and it must have exactly 54 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", pswLenght);
+        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
         return INPUT_ERROR;
     }
 
