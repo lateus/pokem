@@ -1,8 +1,5 @@
 #include "../include/application.h"
 
-
-#include "../include/model/md1debugger.h"
-
 int decodeWonderMail(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
     if (argc == 1) {
