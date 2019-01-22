@@ -3,7 +3,7 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-TARGET = pokeMail
+TARGET = pokem
 
 SOURCES += \
     src/decode_encode/decode/dec_sos.c \
