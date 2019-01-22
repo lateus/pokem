@@ -8,7 +8,7 @@ int autodetect(int argc, const char *argv[]);
 int main(int argc, const char *argv[])
 {
     /* Copyright notice */
-    fputs("PokeMail v0.1   Copyright 2018-2019 Carlos Enrique Perez Sanchez\n"
+    fputs("PokeDungeon v0.1   Copyright 2018-2019 Carlos Enrique Perez Sanchez\n"
           ".................................................................\n", stdout);
 
     if (argc == 1) { /* no input */

@@ -1,10 +1,10 @@
 <p align="center"><img src=res/images/png/pokeMail_128.png></p>  
 
-# PokéMail - Pokémon Mystery Dungeon Mail Generator
+# PokéDungeon - Pokémon Mystery Dungeon Mail Generator
 
 *Copyright 2018-2019 Carlos Enrique Pérez Sánchez*
 
-**Pokémon Mystery Dungeon Mail Generator (*PokéMail* for short) is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
+**Pokémon Mystery Dungeon Mail Generator (*PokéDungeon* for short) is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
 
 -----------------------------------------------------------------------------------------------------------------------------------
 

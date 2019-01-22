@@ -23,7 +23,7 @@ VS_VERSION_INFO VERSIONINFO
                 VALUE "FileDescription", "Mail Generator for Pokémon Mystery Dungeon Red and Blue Rescue Team\0"
 				VALUE "FileVersion", "0.1.0.0\0"
 				VALUE "LegalCopyright", "(C) 2018-2019 Carlos Enrique Pérez Sánchez\0"
-				VALUE "OriginalFilename", "pokemail.exe\0"
+				VALUE "OriginalFilename", "pokedungeon.exe\0"
 				VALUE "ProductName", "Pokémon Free Tools\0"
 				VALUE "ProductVersion", "0.1.0.0\0"
 			END
