@@ -5,12 +5,6 @@
 #include <string.h>
 #include "md1global.h"
 
-/**
- **     C Header developed by Carlos Enrique Pérez Sánchez.
- **     Student of Automatic Engineering (2nd year), Havana, Cuba.
- **     Date: SAT, Juny 18th, 2017. 20:37 UTC.
- **/
-
 
 #define DEBUG(X, Y) fputs("["#X"] " Y "\n", stderr);
 

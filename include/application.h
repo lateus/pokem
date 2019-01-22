@@ -1,13 +1,13 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include "../include/decode_encode/dec_enc_common.h"
-#include "../include/decode_encode/decode/decode.h"
-#include "../include/decode_encode/encode/encode.h"
-#include "../include/decode_encode/convert/convert.h"
-#include "../include/view/view.h"
-#include "../include/model/md1global.h"
-#include "../include/model/md1database.h"
+#include "decode_encode/dec_enc_common.h"
+#include "decode_encode/decode/decode.h"
+#include "decode_encode/encode/encode.h"
+#include "decode_encode/convert/convert.h"
+#include "view/view.h"
+#include "model/md1global.h"
+#include "model/md1database.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -1,40 +1,6 @@
 #ifndef MD1GLOBAL_H
 #define MD1GLOBAL_H
 
-/**
- **     C Header developed by Carlos Enrique Pérez Sánchez.
- **     Student of Automatic Engineering (2nd year), Havana, Cuba.
- **     Date: SAT, Juny 18th, 2017. 02:43 UTC.
- **/
-
-/**
- **
- **     This file is part of the source of the programs:
- **         DecodeWonderMail - Decode a Wonder Mail of Mystery Dungeon Red/Blue Rescue Team -
- **
- **     So, this file is under the terms of the GNU General Public License v3. See bellow.
- **/
-
-/*
-    Copyright (C) 2017  Carlos Enrique Pérez Sánchez
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    CONTACT:
-        carlosps@gmail.com
-*/
-
 #define INPUT_ERROR  1          /* Value returned when an input error ocurr */
 #define CHECKSUM_ERROR 2        /* Value returnes when the checksum fails */
 #define HELP 3                  /* Value returned when the help is requested (no arguments are received) */

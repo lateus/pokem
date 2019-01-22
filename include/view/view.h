@@ -1,7 +1,7 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include "../../include/model/md1global.h"
+#include "../model/md1global.h"
 
 int showSelectionScreen(void);
 
