@@ -175,7 +175,7 @@ int convertSOSMail(int argc, const char *argv[])
         return INPUT_ERROR;
     }
 
-    // TODO: RANDOMIZE
+    /* TODO: RANDOMIZE */
 
     /* FIRST: A-OK MAIL */
     convertSOSToAOKMail(password54Integers);
@@ -225,7 +225,7 @@ int convertSOSMail(int argc, const char *argv[])
 
     packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
 
-    // back again
+    /* back again */
     for (i = 0; i < 54; ++i) {
         password54Integers[i] = 0;
         passwordAllocated[i] = 0;
