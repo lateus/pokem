@@ -23,7 +23,8 @@ OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o \
 				$(BUILDDIR)/convert.o \
 				$(BUILDDIR)/view.o
 
-STATIC_LIB	:=	$(BUILDDIR)/libpokeM.a
+STATIC_LIB	:=	$(BUILDDIR)/libpokem.a
+STATIC_HDR	:=	$(BUILDDIR)/pokem.h
 
 # MESSAGES
 MSG			:=	printf
@@ -50,10 +51,11 @@ WHITE		:=	\033[1;37m
 ifeq ($(OS),Windows_NT)
 	SHELL		:=	cmd
 	RM			:=	del
+	CP			:=	cp
 	CC			:=	gcc
 	RMDIR		:=	rd
 	WINRES		:=	windres
-	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
+	EXECUTABLE	:=	$(BINDIR)/pokem.exe
 	RC_FILE		:=	res/manifest.rc
 	RES_OBJS	:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
@@ -63,8 +65,9 @@ ifeq ($(OS),Windows_NT)
 	AR_FLAGS	:=
 else
 	RMDIR		:=	$(RM)
+	CP			:=	cp
 	WINRES		:=
-	EXECUTABLE	:=	$(BINDIR)/pokeM
+	EXECUTABLE	:=	$(BINDIR)/pokem
 	RC_FILE		:=
 	RES_OBJS	:=
 	RM_FLAGS	:=
@@ -101,6 +104,8 @@ $(EXECUTABLE): $(BUILDDIR) $(OBJS) $(BINDIR)
 $(STATIC_LIB): $(OBJS)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJS)
+	@$(MSG) "$(YELLOW)Copying the static library header file...$(NOCOLOR)\n"
+	$(CP) include/staticlib.h $(STATIC_HDR)
 	@$(MSG) "$(GREEN)Done. The static library was build in the $(YELLOW)build$(GREEN) directory.$(NOCOLOR)\n"
 
 $(OBJS):
