@@ -28,11 +28,14 @@ Most **Linux** distros already comes with a basic equipment for developers that 
 * **openSUSE** (*zypper*):  
 `sudo zypper install -t pattern devel_basis`  
 
+These are just examples. If you use a different package manager, you must search for the corresponding package in your distribution.
+
 That will install a C and a C++ compiler, and also the tool `make`.  
-Then you can run `make` on the directory where the project resides to build the application:  
+Then you can run `make` by opening the terminal on the project's directory to build the application:  
 `$ make`  
 
-These are just examples. If you use a different package manager, you must search for the corresponding package in your distribution.
+You can build a static library to use elsewhere:  
+`$ make static`  
 
 On **MacOS**, if you don't have GCC installed, you can install it through X-Code, it's free on the Apple Store.
 
@@ -50,7 +53,7 @@ will build an application named `app` by compiling the source files passed.
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Known bugs
-* Currently, the `Makefile` is only fully supported on UNIX. On Windows, you will be able to build the application, but you must manually erase all leftovers prior to rebuild, since `clean` is not available, as it fails due to the Windows's paths conventions.  
+* Currently, the `Makefile` is only fully supported on **UNIX**. On **Windows**, you will be able to build the application, but you must manually erase all leftovers prior to rebuild, since `clean` is not available, as it fails due to the **Windows**'s paths conventions.  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -62,7 +65,7 @@ This program is under the *General Public License* (version 2).
 ## For developers and contributors
 The author uses Linux for development. You should do as well.  
 
-This is a command-line tool, also not easy to use. I'm currently developing a GUI for it. The purpose of maintain this console application is to have the main algorithm separated from any other module. GUI applications are, from their very nature, bigs and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here.
+This is a command-line tool, also not easy to use. I'm currently developing a GUI for it. The purpose of maintain this console application is to have the main algorithm separated from any other module. GUI applications are, from their very nature, bigs and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here. GUI applications should use a library of ***PokéM*** (available through `$ make static`), instead of using the source code directly because then will be easier to update the related algorithms when a new version of ***PokéM*** is released.
 
 ### Portability tips
 * Avoid using fast assembler instructions, compiler's built-in functions and others things that can reduce portability.
