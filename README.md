@@ -86,4 +86,4 @@ This is a command-line tool, also not easy to use. I'm currently developing a GU
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-***Contact info:*** `thecrowporation@gmail.com`
+***Contact info:*** [*thecrowporation@gmail.com*](mailto:thecrowporation@gmail.com)
