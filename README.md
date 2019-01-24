@@ -5,7 +5,7 @@
 *Copyright 2018-2019 Carlos Enrique Pérez Sánchez.*  
 *Based on the tools written by Peter O.*
 
-**Pokémon Mystery Dungeon Mail Generator, *PokéM* for short (pronounced *Poké-M*) is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
+**Pokémon Mystery Dungeon Mail Generator, *PokéM* for short is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
