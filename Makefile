@@ -23,8 +23,7 @@ OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o \
 				$(BUILDDIR)/convert.o \
 				$(BUILDDIR)/view.o
 
-RC_FILE		:=	res/manifest.rc
-STATIC_LIB	:=	libpokeMail.a
+STATIC_LIB	:=	$(BUILDDIR)/libpokeM.a
 
 # MESSAGES
 MSG			:=	printf
@@ -55,30 +54,54 @@ ifeq ($(OS),Windows_NT)
 	RMDIR		:=	rd
 	WINRES		:=	windres
 	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
+	RC_FILE		:=	res/manifest.rc
 	RES_OBJS	:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=
 	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=
+	AR_FLAGS	:=
 else
-	RMDIR		:=  $(RM)
+	RMDIR		:=	$(RM)
 	WINRES		:=
 	EXECUTABLE	:=	$(BINDIR)/pokeM
+	RC_FILE		:=
 	RES_OBJS	:=
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=	-frd
 	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=	-p
+	AR_FLAGS	:=	rcs
 endif
 
 .PHONY: all
-all: $(BUILDDIR) $(EXECUTABLE)
+all: $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJS) $(BINDIR)
+.PHONY: static
+static: $(BUILDDIR) $(STATIC_LIB)
+
+.PHONY: clean
+clean:
+	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
+	$(RM) $(RM_FLAGS) $(OBJS)
+	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
+	$(RM) $(RM_FLAGS) $(EXECUTABLE)
+	$(RM) $(RM_FLAGS) $(STATIC_LIB)
+	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
+	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)	
+	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
+	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
+
+$(EXECUTABLE): $(BUILDDIR) $(OBJS) $(BINDIR)
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
 	$(CC) $(CFLAGS) $(CC_LFLAGS) $(OBJS) -o $@
 	@$(MSG) "$(GREEN)Done. The program was build in the $(YELLOW)bin$(GREEN) directory.$(NOCOLOR)\n"
-	@$(MSG) "$(GREEN)You can run it by typing: $(YELLOW)cd bin && ./pokeMail$(GREEN). Enjoy.$(NOCOLOR)\n"
+	@$(MSG) "$(GREEN)You can run it by typing: $(YELLOW)./$(EXECUTABLE)$(GREEN). Enjoy.$(NOCOLOR)\n"
+
+$(STATIC_LIB): $(OBJS)
+	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
+	$(AR) $(AR_FLAGS) $@ $(OBJS)
+	@$(MSG) "$(GREEN)Done. The static library was build in the $(YELLOW)build$(GREEN) directory.$(NOCOLOR)\n"
 
 $(OBJS):
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -105,14 +128,3 @@ $(BUILDDIR)/dec_sos.o:			src/decode_encode/decode/dec_sos.c
 $(BUILDDIR)/decode.o:			src/decode_encode/decode/decode.c
 $(BUILDDIR)/convert.o:			src/decode_encode/convert/convert.c
 $(BUILDDIR)/view.o:				src/view/view.c
-
-.PHONY: clean
-clean:
-	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(OBJS)
-	@$(MSG) "$(ORANGE)Removing executable...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(EXECUTABLE)
-	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
-	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)	
-	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
-	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
