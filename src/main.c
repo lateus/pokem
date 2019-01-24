@@ -9,7 +9,7 @@ int main(int argc, const char *argv[])
 {
     /* Copyright notice */
     fputs("PokeM v0.1   Copyright 2018-2019 Carlos Enrique Perez Sanchez.\n"
-          "Based on the tools written by Peter O."
+          "Based on the tools written by Peter O.\n"
           ".................................................................\n", stdout);
 
     if (argc == 1) { /* no input */
