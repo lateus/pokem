@@ -6,6 +6,7 @@ CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
 # DIRECTORIES
 BUILDDIR	:=	build
 BINDIR		:=	bin
+BINLIBDIR	:=	binlib
 
 SRCS		:=	src/main.c src/application.c \
 				src/model/md1database.c \
@@ -15,16 +16,16 @@ SRCS		:=	src/main.c src/application.c \
 				src/decode_encode/convert/convert.c \
 				src/view/view.c
 
-OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o \
-				$(BUILDDIR)/md1database.o \
+OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o $(BUILDDIR)/view.o
+
+OBJS_SLIB	:=	$(BUILDDIR)/md1database.o \
 				$(BUILDDIR)/dec_enc_common.o \
 				$(BUILDDIR)/enc_wm.o $(BUILDDIR)/enc_sos.o $(BUILDDIR)/encode.o \
 				$(BUILDDIR)/dec_wm.o $(BUILDDIR)/dec_sos.o $(BUILDDIR)/decode.o \
-				$(BUILDDIR)/convert.o \
-				$(BUILDDIR)/view.o
+				$(BUILDDIR)/convert.o
 
-STATIC_LIB	:=	$(BUILDDIR)/libpokem.a
-STATIC_HDR	:=	$(BUILDDIR)/pokem.h
+STATIC_LIB	:=	$(BINLIBDIR)/libpokem.a
+STATIC_HDR	:=	$(BINLIBDIR)/pokem.h
 
 # MESSAGES
 MSG			:=	printf
@@ -55,7 +56,7 @@ ifeq ($(OS),Windows_NT)
 	CC			:=	gcc
 	RMDIR		:=	rd
 	WINRES		:=	windres
-	EXECUTABLE	:=	$(BINDIR)/pokem.exe
+	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
 	RC_FILE		:=	res/manifest.rc
 	RES_OBJS	:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
@@ -67,7 +68,7 @@ else
 	RMDIR		:=	$(RM)
 	CP			:=	cp
 	WINRES		:=
-	EXECUTABLE	:=	$(BINDIR)/pokem
+	EXECUTABLE	:=	$(BINDIR)/pokeM
 	RC_FILE		:=
 	RES_OBJS	:=
 	RM_FLAGS	:=
@@ -80,8 +81,8 @@ endif
 .PHONY: all
 all: $(EXECUTABLE)
 
-.PHONY: static
-static: $(BUILDDIR) $(STATIC_LIB)
+.PHONY: staticlib
+staticlib: $(BUILDDIR) $(STATIC_LIB)
 
 .PHONY: clean
 clean:
@@ -90,35 +91,45 @@ clean:
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(EXECUTABLE)
 	$(RM) $(RM_FLAGS) $(STATIC_LIB)
+	@$(MSG) "$(ORANGE)Removing headers...$(NOCOLOR)\n"
+	$(RM) $(RM_FLAGS) $(STATIC_HDR)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
-	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)	
+	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
 	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
+	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
 	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
 
-$(EXECUTABLE): $(BUILDDIR) $(OBJS) $(BINDIR)
+$(EXECUTABLE): $(BUILDDIR) $(OBJS_SLIB) $(OBJS) $(BINDIR)
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
-	$(CC) $(CFLAGS) $(CC_LFLAGS) $(OBJS) -o $@
-	@$(MSG) "$(GREEN)Done. The program was build in the $(YELLOW)bin$(GREEN) directory.$(NOCOLOR)\n"
-	@$(MSG) "$(GREEN)You can run it by typing: $(YELLOW)./$(EXECUTABLE)$(GREEN). Enjoy.$(NOCOLOR)\n"
+	$(CC) $(CFLAGS) $(CC_LFLAGS) $(OBJS_SLIB) $(OBJS) -o $@
+	@$(MSG) "$(GREEN)Done. The program was build in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory.$(NOCOLOR)\n"
+	@$(MSG) "$(GREEN)You can run it by typing: $(WHITE)./$(EXECUTABLE)$(GREEN). Enjoy.$(NOCOLOR)\n"
 
-$(STATIC_LIB): $(OBJS)
+$(STATIC_LIB): $(BINLIBDIR) $(OBJS_SLIB)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
-	$(AR) $(AR_FLAGS) $@ $(OBJS)
+	$(AR) $(AR_FLAGS) $@ $(OBJS_SLIB)
 	@$(MSG) "$(YELLOW)Copying the static library header file...$(NOCOLOR)\n"
 	$(CP) include/staticlib.h $(STATIC_HDR)
-	@$(MSG) "$(GREEN)Done. The static library was build in the $(YELLOW)build$(GREEN) directory.$(NOCOLOR)\n"
+	@$(MSG) "$(GREEN)Done. The static library was build in the $(LIGHTBLUE)$(BINLIBDIR)$(GREEN) directory.$(NOCOLOR)\n"
 
 $(OBJS):
 	$(CC) -c $(CFLAGS) $< -o $@
 
+$(OBJS_SLIB):
+	$(CC) -c $(CFLAGS) $< -o $@
+
 $(BUILDDIR):
-	@$(MSG) "$(YELLOW)Creating build directory...$(NOCOLOR)\n"
+	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BUILDDIR)
 	@$(MSG) "$(YELLOW)Building intermediate objects files...$(NOCOLOR)\n"
 
 $(BINDIR):
-	@$(MSG) "$(YELLOW)Creating bin directory...$(NOCOLOR)\n"
+	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BINDIR)
+
+$(BINLIBDIR):
+	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
+	$(MKDIR) $(MKDIR_FLAGS) $(BINLIBDIR)
 
 # INTERMEDIATE OBJECTS BUILD RULES
 $(BUILDDIR)/main.o:				src/main.c
