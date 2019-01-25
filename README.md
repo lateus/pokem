@@ -53,7 +53,7 @@ will build an application named `app` by compiling the source files passed.
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Known bugs
-* Currently, the `Makefile` is only fully supported on **UNIX**. On **Windows**, you will be able to build the application and ths static library, but you must manually erase all leftovers prior to rebuild, since `clean` is not available, as it fails due to the **Windows**'s paths conventions. Also, some text outputs are buggy.
+* Currently, the `Makefile` is only fully supported on **UNIX**. On **Windows**, you will be able to build the application and the static library, but you must manually erase all leftovers prior to rebuild, since `clean` is not available, as it fails due to the **Windows**'s paths conventions. Also, some text outputs are buggy.
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
