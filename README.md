@@ -63,7 +63,7 @@ This program is under the *General Public License* (version 2).
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## For developers and contributors
-The author uses Linux for development. You should do as well.  
+The author uses **Linux** for development. You should do as well.  
 
 This is a command-line tool, also not easy to use. I'm currently developing a GUI for it. The purpose of maintain this console application is to have the main algorithm separated from any other module. GUI applications are, from their very nature, bigs and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here. GUI applications should use a library of ***PokéM*** (available through `$ make staticlib`), instead of using the source code directly because then will be easier to update the related algorithms when a new version of ***PokéM*** is released.
 
