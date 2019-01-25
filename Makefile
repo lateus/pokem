@@ -27,6 +27,8 @@ OBJS_SLIB	:=	$(BUILDDIR)/md1database.o \
 STATIC_LIB	:=	$(BINLIBDIR)/libpokem.a
 STATIC_HDR	:=	$(BINLIBDIR)/pokem.h
 
+AR_FLAGS	:=	rcs
+
 # MESSAGES
 MSG			:=	printf
 # COLORS
@@ -58,24 +60,22 @@ ifeq ($(OS),Windows_NT)
 	WINRES		:=	windres
 	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
 	RC_FILE		:=	res/manifest.rc
-	RES_OBJS	:=	$(BUILDDIR)/res.o
+	RC_OBJ		:=	$(BUILDDIR)/res.o
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=
 	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=
-	AR_FLAGS	:=
 else
 	RMDIR		:=	$(RM)
 	CP			:=	cp
 	WINRES		:=
 	EXECUTABLE	:=	$(BINDIR)/pokeM
 	RC_FILE		:=
-	RES_OBJS	:=
+	RC_OBJ		:=
 	RM_FLAGS	:=
 	RMDIR_FLAGS	:=	-frd
 	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=	-p
-	AR_FLAGS	:=	rcs
 endif
 
 .PHONY: all
@@ -87,7 +87,7 @@ staticlib: $(BUILDDIR) $(STATIC_LIB)
 .PHONY: clean
 clean:
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(OBJS)
+	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(EXECUTABLE)
 	$(RM) $(RM_FLAGS) $(STATIC_LIB)
@@ -99,9 +99,9 @@ clean:
 	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
 	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
 
-$(EXECUTABLE): $(BUILDDIR) $(OBJS_SLIB) $(OBJS) $(BINDIR)
+$(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS_SLIB) $(OBJS) $(BINDIR)
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
-	$(CC) $(CFLAGS) $(CC_LFLAGS) $(OBJS_SLIB) $(OBJS) -o $@
+	$(CC) $(CFLAGS) $(CC_LFLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS) -o $@
 	@$(MSG) "$(GREEN)Done. The program was build in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory.$(NOCOLOR)\n"
 	@$(MSG) "$(GREEN)You can run it by typing: $(WHITE)./$(EXECUTABLE)$(GREEN). Enjoy.$(NOCOLOR)\n"
 
@@ -118,10 +118,14 @@ $(OBJS):
 $(OBJS_SLIB):
 	$(CC) -c $(CFLAGS) $< -o $@
 
+$(RC_OBJ):
+	@$(MSG) "$(YELLOW)Building MS Windows's RC file...$(NOCOLOR)\n"
+	$(WINRES) -i $(RC_FILE) -o $@
+	@$(MSG) "$(YELLOW)Building intermediate objects files...$(NOCOLOR)\n"
+
 $(BUILDDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BUILDDIR)
-	@$(MSG) "$(YELLOW)Building intermediate objects files...$(NOCOLOR)\n"
 
 $(BINDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
