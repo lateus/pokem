@@ -8,19 +8,13 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
 
     struct WM_INFO mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
     /* This loop will allow to decode all entered wonder mails one by one. */
-    int argcCount, errorCode;
-    for (argcCount = 1; argcCount < argc; ++argcCount) { /* Almost all is contained inside this loop */
-        errorCode = decodeWonderMail(argv[argcCount], &mailInfo);
-        if (errorCode) {
-            continue;
-        }
-
-        if (argc > 1) {
-            fprintf(stdout, "\n. . . . . . . . . . . . . . . . . . . . . . .\n             Wonder Mail No. %d:", argcCount);
-        }
-
-        printWMData(&mailInfo);   /* Finally, print the wonder mail info */
+    int errorCode;
+    errorCode = decodeWonderMail(argv[1], &mailInfo);
+    if (errorCode) {
+        return errorCode;
     }
+
+    printWMData(&mailInfo);   /* Finally, print the wonder mail info */
     fflush(stdout);
 
     return 0;
