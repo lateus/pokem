@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int decodeWonderMail(int argc, const char *argv[]);
+int decodeWM(int argc, const char *argv[]);
 int encodeWonderMail(int argc, const char *argv[]);
 int decodeSOSMail(int argc, const char *argv[]);
 int encodeSOSMail(int argc, const char *argv[]);

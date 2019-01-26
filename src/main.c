@@ -24,7 +24,7 @@ int main(int argc, const char *argv[])
         selection = showSelectionScreen();
         switch (selection) {
         case 1:
-            return decodeWonderMail(argc, argv);
+            return decodeWM(argc, argv);
         case 2:
             return encodeWonderMail(argc, argv);
         case 3:
@@ -54,7 +54,7 @@ int autodetect(int argc, const char *argv[])
 
     size_t lenghtArg1 = strlen(argv[1]);
     if (argc == 2 && lenghtArg1 >= 20 && lenghtArg1 <= 28) {
-        return decodeWonderMail(argc, argv);
+        return decodeWM(argc, argv);
     } else if (argc == 2 && lenghtArg1 >= 48 && lenghtArg1 <= 56) {
         return -1; /* what do you want? decode or convert? */
     } else if (argc == 10) {

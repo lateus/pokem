@@ -1,40 +1,16 @@
 #include "../include/application.h"
 
-int decodeWonderMail(int argc, const char *argv[]) /* The passwords are received here: in argv */
+int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
     if (argc == 1) {
         return showHelpDecodingWM(argv[0]); /* No arguments specified. */
     }
 
+    struct WM_INFO mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
     /* This loop will allow to decode all entered wonder mails one by one. */
     int argcCount;
     for (argcCount = 1; argcCount < argc; ++argcCount) { /* Almost all is contained inside this loop */
-
-        char packed15Bytes[15] = {0};
-        if (WonderMailIsInvalid(argv[argcCount], packed15Bytes)) {
-            continue;
-        }
-
-        /* The first byte in the 15 byte packed password was merely a checksum, so it's useless and I'll remove it */
-        char* psw14Bytes = packed15Bytes + 1; /* You must be firm in pointer's arithmetic to handle this effectively, so take care doing this things */
-
-        /* Bit unpacking */
-        struct WONDERMAIL wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
-        bitUnpackingDecodingWM(psw14Bytes, &wm);
-
-        /* Flavor Texts */
-        struct WM_INFO mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
-        int pairsIndex   = arePairs(wm.pkmnClient, wm.pkmnTarget);
-        int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
-        int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
-        int *textIndicator = flavorText(&wm, pairsIndex, loversIndex, parentsIndex);
-        flavorTextHead(&wm, textIndicator[HEAD], pairsIndex, loversIndex, parentsIndex, &mailInfo);
-        flavorTextBody(&wm, textIndicator[BODY], pairsIndex, loversIndex, parentsIndex, &mailInfo);
-
-        /* Preparing to print the mail... */
-        setWMInfo(&mailInfo, &wm);
-        sprintf(mailInfo.WMail, "%s\n          %s", strncat(mailInfo.WMail, argv[argcCount], 12), argv[argcCount] + 12);
-
+        decodeWonderMail(argv[argcCount], &mailInfo);
         if (argc > 1) {
             fprintf(stdout, "\n. . . . . . . . . . . . . . . . . . . . . . .\n             Wonder Mail No. %d:", argcCount);
         }
@@ -239,38 +215,6 @@ int convertSOSMail(int argc, const char *argv[])
     fprintf(stdout, "Thank-You Password: %27s\n                    %s\n", strncat(finalThankYouPassword, ThankYouPassword, 27), ThankYouPassword + 27);
 
     fflush(stdout);
-    return 0;
-}
-
-int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* is up to you to avoid a segmentation fault (receiving a 15 bytes array) */
-{
-    size_t pswLenght = strlen(password);
-    if (pswLenght != 24) {
-        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
-    }
-
-    char pswAllocated[24] = {0}; /* Please, initialize all data. This is done at compile time, so there isn't runtime overload */
-    reallocateBytesDecodingWM(pswAllocated, password);
-
-    /* This password will be 'integerized' using the lookup table bellow */
-    char passIntegers[24] = {0};
-    if (lookupTableDecodingWM(passIntegers, pswAllocated) == INPUT_ERROR) {
-        return INPUT_ERROR;
-    }
-
-    /* Bit packing */
-    bitPackingDecoding(packed15BytesPassword, passIntegers, sizeof(passIntegers)); /* Pack the password */
-
-    /* Checksum */
-    int checksum = computeChecksum(packed15BytesPassword, 15);
-    if ( checksum != (packed15BytesPassword[0] & 0xFF) ) {
-        fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n");
-        return CHECKSUM_ERROR;
-    }
-
     return 0;
 }
 

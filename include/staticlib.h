@@ -194,6 +194,8 @@ int computeMoneyReward(int difficulty, int rewardType);
 
 int computeChecksum(const char* packedPassword, int bytes);
 
+int decodeWonderMail(const char *password, struct WM_INFO *mailInfoResult);
+int WonderMailIsInvalid(const char *password, char *packed15BytesPassword);
 void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack);
 void reallocateBytesDecodingWM(char *allocatePassword, const char *unallocatedPassword);
 int lookupTableDecodingWM(char *passwordIntegers, const char *allocatedPassword);

@@ -1,10 +1,78 @@
 #include "../../../include/decode_encode/decode/dec_wm.h"
+#include "../../../include/decode_encode/decode/decode.h"
 #include "../../../include/decode_encode/dec_enc_common.h"
 #include "../../../include/model/md1database.h"
 #include "../../../include/model/md1global.h"
 
 #include <stdio.h>
 #include <string.h>
+
+
+int decodeWonderMail(const char *password, struct WM_INFO *mailInfoResult)
+{
+    char packed15Bytes[15] = {0};
+    int errorCodeWM = WonderMailIsInvalid(password, packed15Bytes);
+    if (errorCodeWM) {
+        return errorCodeWM;
+    }
+
+    /* The first byte in the 15 byte packed password was merely a checksum, so it's useless and I'll remove it */
+    char* psw14Bytes = packed15Bytes + 1; /* You must be firm in pointer's arithmetic to handle this effectively, so take care doing this things */
+
+    /* Bit unpacking */
+    struct WONDERMAIL wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
+    bitUnpackingDecodingWM(psw14Bytes, &wm);
+
+    /* Flavor Texts */
+    int pairsIndex   = arePairs(wm.pkmnClient, wm.pkmnTarget);
+    int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
+    int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
+    int *textIndicator = flavorText(&wm, pairsIndex, loversIndex, parentsIndex);
+    flavorTextHead(&wm, textIndicator[HEAD], pairsIndex, loversIndex, parentsIndex, mailInfoResult);
+    flavorTextBody(&wm, textIndicator[BODY], pairsIndex, loversIndex, parentsIndex, mailInfoResult);
+
+    /* Bulking the mail's data... */
+    setWMInfo(mailInfoResult, &wm);
+    sprintf(mailInfoResult->WMail, "%s\n          %s", strncat(mailInfoResult->WMail, password, 12), password + 12);
+
+    return 0; /* means ok */
+}
+
+
+
+int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* is up to you to avoid a segmentation fault (receiving a 15 bytes array) */
+{
+    size_t pswLenght = strlen(password);
+    if (pswLenght != 24) {
+        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+        return INPUT_ERROR;
+    }
+
+    char pswAllocated[24] = {0}; /* Please, initialize all data. This is done at compile time, so there isn't runtime overload */
+    reallocateBytesDecodingWM(pswAllocated, password);
+
+    /* This password will be 'integerized' using the lookup table bellow */
+    char passIntegers[24] = {0};
+    if (lookupTableDecodingWM(passIntegers, pswAllocated) == INPUT_ERROR) {
+        return INPUT_ERROR;
+    }
+
+    /* Bit packing */
+    bitPackingDecoding(packed15BytesPassword, passIntegers, sizeof(passIntegers)); /* Pack the password */
+
+    /* Checksum */
+    int checksum = computeChecksum(packed15BytesPassword, 15);
+    if ( checksum != (packed15BytesPassword[0] & 0xFF) ) {
+        fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n");
+        return CHECKSUM_ERROR;
+    }
+
+    return 0;
+}
+
+
 
 void reallocateBytesDecodingWM(char* allocatedPassword, const char* unallocatedPassword)
 {
