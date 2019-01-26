@@ -13,7 +13,8 @@
 #include <string.h>
 
 int decodeWM(int argc, const char *argv[]);
-int encodeWonderMail(int argc, const char *argv[]);
+int encodeWM(int argc, const char *argv[]);
+void parseWMData(const char *argv[], struct WONDERMAIL *wm);
 int decodeSOSMail(int argc, const char *argv[]);
 int encodeSOSMail(int argc, const char *argv[]);
 int convertSOSMail(int argc, const char *argv[]);

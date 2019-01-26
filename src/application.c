@@ -8,9 +8,13 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
 
     struct WM_INFO mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
     /* This loop will allow to decode all entered wonder mails one by one. */
-    int argcCount;
+    int argcCount, errorCode;
     for (argcCount = 1; argcCount < argc; ++argcCount) { /* Almost all is contained inside this loop */
-        decodeWonderMail(argv[argcCount], &mailInfo);
+        errorCode = decodeWonderMail(argv[argcCount], &mailInfo);
+        if (errorCode) {
+            continue;
+        }
+
         if (argc > 1) {
             fprintf(stdout, "\n. . . . . . . . . . . . . . . . . . . . . . .\n             Wonder Mail No. %d:", argcCount);
         }
@@ -23,36 +27,42 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
 }
 
 
-int encodeWonderMail(int argc, const char *argv[])
+int encodeWM(int argc, const char *argv[])
 {
     if (argc != 10) {
         return showHelpEncodingWM(argv[0]);
     }
 
     struct WONDERMAIL wm;
-    if (!setMailData(argv, &wm, WONDER)) {
-        return INPUT_ERROR;
+    parseWMData(argv, &wm);
+    char finalPassword[25] = {0};
+    int errorCode = encodeWonderMail(&wm, finalPassword);
+    if (errorCode) {
+        return errorCode;
     }
-
-    char packed15BytesPassword[15] = {0};	/* the first byte is merely a checksum */
-    char *packed14BytesPassword = packed15BytesPassword + 1;	/* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
-    bitPackingEncodingWM(packed14BytesPassword, &wm);	/* bit packing while decoding are equivalent to bit unpacking while decoding */
-
-    packed15BytesPassword[0] = (char)computeChecksum(packed15BytesPassword, 15);
-
-    char password24Integers[24] = {0};
-    bitUnpackingEncoding(password24Integers, packed15BytesPassword, 15);
-
-    char password24Chars[24] = {0};
-    lookupTableEncodingWM(password24Integers, password24Chars);
-    char finalPassword[25] = {0}; /* 25 because we need one more char with a NULL value (if not fprintf() will maybe print garbage and cause a memory fragmentation failure) */
-    reallocateBytesEncodingWM(password24Chars, finalPassword);
 
     fprintf(stdout, "Password: %s\n", finalPassword);
     fflush(stdout);
 
     return 0;
 }
+
+
+
+void parseWMData(const char *argv[], struct WONDERMAIL *wm)
+{
+    wm->mailType         = 5; /* Wonder Mail */
+    wm->missionType      = (unsigned int)atoi(argv[1]);
+    wm->pkmnClient       = (unsigned int)atoi(argv[2]);
+    wm->pkmnTarget       = (wm->missionType == FIND || wm->missionType == ESCORT) ? (unsigned int)atoi(argv[3]) : wm->pkmnClient;
+    wm->itemDeliverFind  = (wm->missionType == FINDITEM || wm->missionType == DELIVERITEM) ? (unsigned int)atoi(argv[4]) : 9;
+    wm->dungeon          = (unsigned int)atoi(argv[5]);
+    wm->floor            = (unsigned int)atoi(argv[6]);
+    wm->rewardType       = (unsigned int)atoi(argv[7]);
+    wm->itemReward       = (unsigned int)atoi(argv[8]);
+    wm->friendAreaReward = (wm->rewardType == 9) ? (unsigned int)atoi(argv[9]) : 0;
+}
+
 
 
 int decodeSOSMail(int argc, const char *argv[])

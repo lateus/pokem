@@ -8,13 +8,8 @@
 
 int setMailData(const char *argv[], void *mail, enum MAIL_TYPE type)
 {
-    switch (type)
-    {
-        case WONDER:
-            return setWMData(argv, (struct WONDERMAIL*)mail);
-        default: /* SOS, obviously */
-            return setSOSData(argv, (struct SOSMAIL*)mail);
-    }
+    (void)type;
+    return setSOSData(argv, (struct SOSMAIL*)mail);
 }
 
 
@@ -24,9 +19,9 @@ void bitUnpackingEncoding(char* unpackedIntegers, const char *packedPassword, in
     int cnt = 0, row, col, val;
     int i, j;
 
-    for(i = 0; i < bytesToUnpack; ++i) {
+    for (i = 0; i < bytesToUnpack; ++i) {
 
-        for(j = 0; j < 8; ++j) {
+        for (j = 0; j < 8; ++j) {
 
             row = cnt / 5;
             col = cnt % 5;
