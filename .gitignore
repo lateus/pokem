@@ -1,0 +1,4 @@
+bin/
+binlib/
+build/
+*.user
