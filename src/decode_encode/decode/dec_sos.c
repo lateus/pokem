@@ -1,10 +1,34 @@
 #include "../../../include/decode_encode/decode/dec_sos.h"
+#include "../../../include/decode_encode/decode/decode.h"
 #include "../../../include/decode_encode/dec_enc_common.h"
 #include "../../../include/model/md1database.h"
 #include "../../../include/model/md1global.h"
 
 #include <stdio.h>
 #include <string.h>
+
+int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult)
+{
+    char packed34Bytes[34] = {0};
+    int errorCode;
+    errorCode = SOSMailIsInvalid(sosPassword, packed34Bytes);
+    if (errorCode) {
+        return errorCode;
+    }
+
+    /* The first byte in the 35 byte packed password was merely a checksum, so it's useless and I'll remove it */
+    char* psw33Bytes = packed34Bytes + 1; /* You must be firm in pointer's arithmetic to handle this */
+
+    /* Bit unpacking */
+    struct SOSMAIL sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
+    bitUnpackingDecodingSOS(psw33Bytes, &sosm);
+    setSOSInfo(sosMailInfoResult, &sosm);
+    sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
+
+    fflush(stdout);
+    return 0;
+}
+
 
 void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword)
 {
@@ -43,6 +67,7 @@ int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers
 
     return PSW_SUCCESS_OPERATION;
 }
+
 
 void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SOSMAIL *mail)
 {
@@ -139,6 +164,7 @@ void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SOSMAIL *
     mail->idk_last3Bits = (packed33BytesPassword[32] >> 3) & 0x07; /* get 3 bits and... finish! */
 }
 
+
 void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
 {
     strcpy(sosInfo->head, SOS_AskHelp1);
@@ -153,4 +179,39 @@ void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
     strcpy(sosInfo->reward, "???");
     sprintf(sosInfo->id, "%d", mail->mailID);
     sprintf(sosInfo->chancesLeft, "%d", mail->chancesLeft);
+}
+
+
+int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
+{
+
+    size_t pswLenght = strlen(password);
+    if (pswLenght != 54) {
+        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+        return INPUT_ERROR;
+    }
+
+    char pswAllocated[54] = {0}; /* Please, initialize all data */
+    reallocateBytesDecodingSOS(password, pswAllocated);
+
+    /* The password that will be converted to integers representation using the lookup table bellow */
+    char passIntegers[54] = {0};
+    if (lookupTableDecodingSOS(pswAllocated, passIntegers) == INPUT_ERROR) {
+        return INPUT_ERROR;
+    }
+
+    /* Bit packing */
+    bitPackingDecoding(packed34BytesPassword, passIntegers, sizeof(passIntegers)); /* Pack the password */
+
+    /* Checksum */
+    int checksum = computeChecksum(packed34BytesPassword, 34);
+
+    if ( checksum != (packed34BytesPassword[0] & 0xFF) ) {
+        fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n");
+        return CHECKSUM_ERROR;
+    }
+
+    return 0;
 }
