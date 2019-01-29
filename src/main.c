@@ -28,7 +28,7 @@ int main(int argc, const char *argv[])
         case 2:
             return encodeWM(argc, argv);
         case 3:
-            return decodeSOSMail(argc, argv);
+            return decodeSOSM(argc, argv);
         case 4:
             return encodeSOSMail(argc, argv);
         case 5:

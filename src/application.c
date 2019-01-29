@@ -59,7 +59,7 @@ void parseWMData(const char *argv[], struct WONDERMAIL *wm)
 
 
 
-int decodeSOSMail(int argc, const char *argv[])
+int decodeSOSM(int argc, const char *argv[])
 {
     if (argc == 1) {
         return showHelpDecodingSOS(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
