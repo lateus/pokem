@@ -64,33 +64,13 @@ int decodeSOSM(int argc, const char *argv[])
     if (argc == 1) {
         return showHelpDecodingSOS(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
     }
-
-    /* This loop will allow to decode all entered wonder mails one by one. */
-    int argcCount;
-    for (argcCount = 1; argcCount < argc; ++argcCount) { /* Almost all is contained inside this loop */
-
-        char packed34Bytes[34] = {0};
-        if (SOSMailIsInvalid(argv[argcCount], packed34Bytes)) {
-            continue;
-        }
-
-        /* The first byte in the 35 byte packed password was merely a checksum, so it's useless and I'll remove it */
-        char* psw33Bytes = packed34Bytes + 1; /* You must be firm in pointer's arithmetic to handle this */
-
-        /* Bit unpacking */
-        struct SOSMAIL sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
-        bitUnpackingDecodingSOS(psw33Bytes, &sosm);
-
-        /* Preparing to print the mail... */
-        struct SOS_INFO sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
-        setSOSInfo(&sosInfo, &sosm);
-        sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, argv[argcCount], 27), argv[argcCount] + 27);
-        if (argc > 1) {
-            fprintf(stdout, "\n. . . . . . . . . . . . . . . . . . . . . . .\n             SOS Mail No. %d:", argcCount);
-        }
-        printSOSData(&sosInfo); /* Finally, print the wonder mail info */
-
+    struct SOS_INFO sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
+    int errorCode;
+    errorCode = decodeSOSMail(argv[1], &sosInfo);
+    if (errorCode) {
+        return errorCode;
     }
+    printSOSData(&sosInfo); /* Finally, print the wonder mail info */
 
     fflush(stdout);
     return 0;
@@ -219,40 +199,6 @@ int convertSOSMail(int argc, const char *argv[])
     fprintf(stdout, "Thank-You Password: %27s\n                    %s\n", strncat(finalThankYouPassword, ThankYouPassword, 27), ThankYouPassword + 27);
 
     fflush(stdout);
-    return 0;
-}
-
-int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
-{
-
-    size_t pswLenght = strlen(password);
-    if (pswLenght != 54) {
-        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
-    }
-
-    char pswAllocated[54] = {0}; /* Please, initialize all data */
-    reallocateBytesDecodingSOS(password, pswAllocated);
-
-    /* The password that will be converted to integers representation using the lookup table bellow */
-    char passIntegers[54] = {0};
-    if (lookupTableDecodingSOS(pswAllocated, passIntegers) == INPUT_ERROR) {
-        return INPUT_ERROR;
-    }
-
-    /* Bit packing */
-    bitPackingDecoding(packed34BytesPassword, passIntegers, sizeof(passIntegers)); /* Pack the password */
-
-    /* Checksum */
-    int checksum = computeChecksum(packed34BytesPassword, 34);
-
-    if ( checksum != (packed34BytesPassword[0] & 0xFF) ) {
-        fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n");
-        return CHECKSUM_ERROR;
-    }
-
     return 0;
 }
 
