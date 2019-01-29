@@ -8,7 +8,7 @@
 #include <string.h>
 
 
-int decodeWonderMail(const char *password, struct WM_INFO *mailInfoResult)
+int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
 {
     char packed15Bytes[15] = {0};
     int errorCodeWM = WonderMailIsInvalid(password, packed15Bytes);
@@ -28,12 +28,12 @@ int decodeWonderMail(const char *password, struct WM_INFO *mailInfoResult)
     int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
     int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
     int *textIndicator = flavorText(&wm, pairsIndex, loversIndex, parentsIndex);
-    flavorTextHead(&wm, textIndicator[HEAD], pairsIndex, loversIndex, parentsIndex, mailInfoResult);
-    flavorTextBody(&wm, textIndicator[BODY], pairsIndex, loversIndex, parentsIndex, mailInfoResult);
+    flavorTextHead(&wm, textIndicator[HEAD], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    flavorTextBody(&wm, textIndicator[BODY], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
 
     /* Bulking the mail's data... */
-    setWMInfo(mailInfoResult, &wm);
-    sprintf(mailInfoResult->WMail, "%s\n          %s", strncat(mailInfoResult->WMail, password, 12), password + 12);
+    setWMInfo(wonderMailInfoResult, &wm);
+    sprintf(wonderMailInfoResult->WMail, "%s\n          %s", strncat(wonderMailInfoResult->WMail, password, 12), password + 12);
 
     return 0; /* means ok */
 }
