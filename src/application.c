@@ -77,7 +77,7 @@ int decodeSOSM(int argc, const char *argv[])
 }
 
 
-int encodeSOSMail(int argc, const char *argv[])
+int encodeSOSM(int argc, const char *argv[])
 {
     if (argc != 7) {
         return showHelpEncodingSOS(argv[0]);

@@ -30,7 +30,7 @@ int main(int argc, const char *argv[])
         case 3:
             return decodeSOSM(argc, argv);
         case 4:
-            return encodeSOSMail(argc, argv);
+            return encodeSOSM(argc, argv);
         case 5:
             return convertSOSMail(argc, argv);
         default:
@@ -60,7 +60,7 @@ int autodetect(int argc, const char *argv[])
     } else if (argc == 10) {
         return encodeWM(argc, argv);
     } else if (argc == 7) {
-        return encodeSOSMail(argc, argv);
+        return encodeSOSM(argc, argv);
     } else {
         return -1; /* failed to autodetect */
     }
