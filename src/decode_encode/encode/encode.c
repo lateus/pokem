@@ -6,13 +6,6 @@
 #include <string.h>
 
 
-int setMailData(const char *argv[], void *mail, enum MAIL_TYPE type)
-{
-    (void)type;
-    return setSOSData(argv, (struct SOSMAIL*)mail);
-}
-
-
 /* see the equivalent in "decode.c" if you are looking for details about how this function works */
 void bitUnpackingEncoding(char* unpackedIntegers, const char *packedPassword, int bytesToUnpack)
 {
