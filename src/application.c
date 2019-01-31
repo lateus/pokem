@@ -70,7 +70,7 @@ int decodeSOSM(int argc, const char *argv[])
     if (errorCode) {
         return errorCode;
     }
-    printSOSData(&sosInfo); /* Finally, print the wonder mail info */
+    printSOSData(&sosInfo); /* Finally, print the sos mail info */
 
     fflush(stdout);
     return 0;
@@ -83,36 +83,29 @@ int encodeSOSM(int argc, const char *argv[])
         return showHelpEncodingSOS(argv[0]);
     }
 
-    struct SOSMAIL sos = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
-    if (!setMailData(argv, &sos, SOS)) {
-        return INPUT_ERROR;
+    struct SOSMAIL sos;
+    parseSOSData(argv, &sos);
+    char finalPassword[55] = {0}; /* 55 because we need one more char with a NULL value (if not fprintf() will maybe print garbage and cause a segmentation fault) */
+    int errorCode = encodeSOSMail(&sos, finalPassword);
+    if (errorCode) {
+        return errorCode;
     }
 
-    char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
-    char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
-    bitPackingEncodingSOS(packed33BytesPassword, &sos); /* bit packing while decoding are equivalent to bit unpacking while encoding */
-
-    packed34BytesPassword[0] = (char)computeChecksum(packed34BytesPassword, 34);
-
-    char password54Integers[54] = {0};
-    bitUnpackingEncoding(password54Integers, packed34BytesPassword, 34);
-
-    char password54Chars[54] = {0};
-    lookupTableEncodingSOS(password54Chars, password54Integers);
-
-    char finalPassword[55] = {0}; /* 55 because we need one more char with a NULL value (if not fprintf() will maybe print garbage and cause a segmentation fault) */
-    realocateBytesEncodingSOS(finalPassword, password54Chars);
-
-    /* Preparing to print the mail... */
-    struct SOS_INFO sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
-    setSOSInfo(&sosInfo, &sos);
-    sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, finalPassword, 27), finalPassword + 27);
-    printSOSData(&sosInfo); /* Finally, print the wonder mail info */
-
+    fprintf(stdout, "Password: %s\n", finalPassword);
     fflush(stdout);
+
     return 0;
 }
 
+void parseSOSData(const char *argv[], struct SOSMAIL *sos)
+{
+    sos->pkmnToRescue = (unsigned int)atoi(argv[1]);
+    sos->dungeon = (unsigned int)atoi(argv[3]);
+    sos->floor = (unsigned int)atoi(argv[4]);
+    sos->mailID = (unsigned int)atoi(argv[5]);
+    sos->chancesLeft = (unsigned int)atoi(argv[6]);
+    strncpy(sos->pkmnNick, argv[2], 10);
+}
 
 int convertSOSMail(int argc, const char *argv[])
 {

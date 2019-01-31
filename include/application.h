@@ -16,6 +16,7 @@ int decodeWM(int argc, const char *argv[]);
 int encodeWM(int argc, const char *argv[]);
 void parseWMData(const char *argv[], struct WONDERMAIL *wm);
 int decodeSOSM(int argc, const char *argv[]);
+void parseSOSData(const char *argv[], struct SOSMAIL *sos);
 int encodeSOSM(int argc, const char *argv[]);
 int convertSOSMail(int argc, const char *argv[]);
 
