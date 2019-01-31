@@ -32,7 +32,7 @@ int main(int argc, const char *argv[])
         case 4:
             return encodeSOSM(argc, argv);
         case 5:
-            return convertSOSMail(argc, argv);
+            return convertSOS(argc, argv);
         default:
             fputs("Exiting...\n", stdout);
         }

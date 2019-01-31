@@ -107,7 +107,7 @@ void parseSOSData(const char *argv[], struct SOSMAIL *sos)
     strncpy(sos->pkmnNick, argv[2], 10);
 }
 
-int convertSOSMail(int argc, const char *argv[])
+int convertSOS(int argc, const char *argv[])
 {
     if (argc == 1) {
         return showHelpConverting(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */

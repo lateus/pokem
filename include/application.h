@@ -18,7 +18,7 @@ void parseWMData(const char *argv[], struct WONDERMAIL *wm);
 int decodeSOSM(int argc, const char *argv[]);
 void parseSOSData(const char *argv[], struct SOSMAIL *sos);
 int encodeSOSM(int argc, const char *argv[]);
-int convertSOSMail(int argc, const char *argv[]);
+int convertSOS(int argc, const char *argv[]);
 
 int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]);
 int SOSMailIsInvalid(const char *password, char packed34BytesPassword[]);
