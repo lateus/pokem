@@ -1,4 +1,5 @@
 #include "../../../include/decode_encode/encode/enc_sos.h"
+#include "../../../include/decode_encode/encode/encode.h"
 #include "../../../include/model/md1database.h"
 
 #include <stdio.h>
@@ -6,64 +7,71 @@
 #include <string.h>
 #include <time.h>
 
-int setSOSData(const char *argv[], struct SOSMAIL *sos)
+
+int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
 {
     srand((unsigned int)time(NULL));
 
-    sos->pkmnToRescue = (unsigned int)atoi(argv[1]);
-    sos->dungeon      = (unsigned int)atoi(argv[3]);
-    sos->floor        = (unsigned int)atoi(argv[4]);
-    sos->mailID       = (unsigned int)atoi(argv[5]);
-    sos->chancesLeft  = (unsigned int)atoi(argv[6]);
-    strncpy(sos->pkmnNick, argv[2], 10);
-
     sos->idk_random2 = rand() & 0xFFFF;
-
-    sos->mailType = 1; /* must be 1 for SOS Mail */
+    sos->mailType = 1;                                 /* must be 1 for SOS Mail */
     sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */
-    sos->idk_0Or1 = 0; /* 1 if Thank-You Mail, otherwise 0 */
-    sos->itemReward = 0; /* 0 if not Thank-You Mail */
-    sos->idk_0 = 0; /* as his name suggest */
+    sos->idk_0Or1 = 0;                                 /* 1 if Thank-You Mail, otherwise 0 */
+    sos->itemReward = 0;                               /* 0 if not Thank-You Mail */
+    sos->idk_0 = 0;                                    /* as his name suggest */
     sos->teamSeekingHelpID = (unsigned int)rand() & 0xFFFFFFFF;
-    sos->teamGivingHelpID  = 0; /* For SOS Mail, this is 0 */
+    sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
     sos->idk_last3Bits = 0;
 
-    int errors = foundErrorsEntriesSOS(sos, argv);
+    int errors = foundErrorsEntriesSOS(sos);
     if (errors) {
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
-        return 0;   /* to use the NOT operator */
-    } else {
-        return 1;
+        return INPUT_ERROR; /* to use the NOT operator */
     }
+
+    char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
+    char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
+    bitPackingEncodingSOS(packed33BytesPassword, sos); /* bit packing while decoding are equivalent to bit unpacking while encoding */
+
+    packed34BytesPassword[0] = (char)computeChecksum(packed34BytesPassword, 34);
+
+    char password54Integers[54] = {0};
+    bitUnpackingEncoding(password54Integers, packed34BytesPassword, 34);
+
+    char password54Chars[54] = {0};
+    lookupTableEncodingSOS(password54Chars, password54Integers);
+
+    realocateBytesEncodingSOS(finalPassword, password54Chars);
+
+    return 0;
 }
 
-int foundErrorsEntriesSOS(const struct SOSMAIL *sos, const char *argv[])
+int foundErrorsEntriesSOS(const struct SOSMAIL *sos)
 {
     int errorsFound = 0;
 
     /* pkmn to rescue check (limits) */
     if (sos->pkmnToRescue == 0 || sos->pkmnToRescue > 404) {
-        fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue): \"%s\"\n"
-                        "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", ++errorsFound, argv[1]);
+        fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
+                        "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", ++errorsFound);
     }
 
     /* dungeon check */
     if (sos->dungeon > 63) {
-        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon): \"%s\"\n"
-                        "      The dungeon must be a number between 0 and 63.\n\n", ++errorsFound, argv[3]);
+        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
+                        "      The dungeon must be a number between 0 and 63.\n\n", ++errorsFound);
     } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
-        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon): \"%s\"\n"
-                        "      The dungeon with index %u isn't a valid dungeon.\n\n", ++errorsFound, argv[3], sos->dungeon);
+        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
+                        "      The dungeon with index %u isn't a valid dungeon.\n\n", ++errorsFound, sos->dungeon);
     } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
-        fprintf(stderr, "ERROR No. %d in argument 4 (Floor): \"%s\"\n"
+        fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
                         "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
-                                    ++errorsFound, argv[4], dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
+                                    ++errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
     }
 
     /* rescue chances left */
     if (sos->chancesLeft < 1 || sos->chancesLeft > 10) {
-        fprintf(stderr, "ERROR No. %d in argument 6 (Chances left): \"%s\"\n"
-                        "      The chances left value must be between 1 and 10.\n\n", ++errorsFound, argv[6]);
+        fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
+                        "      The chances left value must be between 1 and 10.\n\n", ++errorsFound);
     }
 
     return errorsFound;

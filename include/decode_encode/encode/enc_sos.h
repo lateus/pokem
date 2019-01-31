@@ -3,8 +3,8 @@
 
 #include "../../model/md1global.h"
 
-int setSOSData(const char *argv[], struct SOSMAIL *wm);
-int foundErrorsEntriesSOS(const struct SOSMAIL *wm, const char *argv[]);
+int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword);
+int foundErrorsEntriesSOS(const struct SOSMAIL *sos);
 void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SOSMAIL* mail);
 
 #endif /* ENC_SOS_H */
