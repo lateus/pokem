@@ -1,4 +1,28 @@
 #include "../../../include/decode_encode/convert/convert.h"
+#include "../../../include/model/md1global.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
+{
+    size_t pswLenght = strlen(SOSPassword);
+    if (pswLenght != 54) {
+        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
+                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+        return INPUT_ERROR;
+    }
+
+    char pswAllocated[54] = {0}; /* Please, initialize all data */
+    reallocateBytesDecodingSOS(SOSPassword, pswAllocated);
+
+    /* The password that will be converted to integers representation using the lookup table bellow */
+    if (lookupTableDecodingSOS(pswAllocated, password54Integers) == INPUT_ERROR) {
+        return INPUT_ERROR;
+    }
+
+    return 0;
+}
 
 void convertSOSToAOKMail(char *password54Integers)
 {
