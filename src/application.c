@@ -154,7 +154,7 @@ int convertSOS(int argc, const char *argv[])
     /* SECOND: THANK-YOU MAIL */
     int item = 0;
     if (argc < 3) {
-        fputs("Reward item not specified. Default to nothing.\n", stdout);
+        fputs("Reward item not specified. Default to nothing.\n", stderr);
     } else {
         item = atoi(argv[2]);
         if (item <= 0 || item > 239) {
