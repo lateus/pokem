@@ -10,7 +10,6 @@
 #define BODY 1
 
 /* Data definitions */
-enum MAIL_TYPE { WONDER, SOS };
 enum MISSION_TYPE { HELPME, FIND, ESCORT, FINDITEM, DELIVERITEM, FRIENDRESCUE };
 
 /* If not programming in C, consider use buffers objects instead of structs and bit fields, it will be slower of course, but more safe and readable (performance is not everything) */
