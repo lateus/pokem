@@ -1,4 +1,10 @@
 #include "../include/application.h"
+#include "../include/decode_encode/decode/dec_wm.h"
+#include "../include/decode_encode/decode/dec_sos.h"
+#include "../include/decode_encode/encode/enc_wm.h"
+#include "../include/decode_encode/encode/enc_sos.h"
+
+#include <stdlib.h>
 
 int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
@@ -113,80 +119,20 @@ int convertSOS(int argc, const char *argv[])
         return showHelpConverting(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
     }
 
-    char password54Integers[54] = {0};
-    if (SOSMailIsInvalidForConverting(argv[1], password54Integers)) {
-        return INPUT_ERROR;
-    }
-
-    int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
-    if (mailType != 1) { /* 1 is SOS Mail */
-        fputs("ERROR: The mail entered not belongs to a SOS Mail.\n", stderr);
-        if (mailType == 4 || mailType == 5) {
-            fprintf(stderr, "        Apparently it belongs to a %s.\n", mailType == 4 ? "A-OK Mail" : "Thank-You Mail");
-        }
-        fputs("THE PASSWORD CAN'T BE DECODED.\n\n", stderr);
-        return INPUT_ERROR;
-    }
-
-    /* FIRST: A-OK MAIL */
-    convertSOSToAOKMail(password54Integers);
-
-    /* Bit packing */
-    char packed34Bytes[34] = {0}; /* The packed password */
-    bitPackingDecoding(packed34Bytes, password54Integers, sizeof (password54Integers)); /* Pack the password */
-
-    packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
-
-    /* back again */
-    int i;
-    for (i = 0; i < 54; ++i) {
-        password54Integers[i] = 0;
-    }
-    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
-    char passwordAllocated[54] = {0};
-    lookupTableEncodingSOS(passwordAllocated, password54Integers);
-    char AOKPassword[55] = {0};
-    realocateBytesEncodingSOS(AOKPassword, passwordAllocated);
-
-    char finalAOKPassword[100] = {0};
-    fprintf(stdout, "\nA-OK Password:      %27s\n                    %s\n", strncat(finalAOKPassword, AOKPassword, 27), AOKPassword + 27);
-
-    /* SECOND: THANK-YOU MAIL */
     int item = 0;
     if (argc < 3) {
         fputs("Reward item not specified. Default to nothing.\n", stderr);
     } else {
         item = atoi(argv[2]);
-        if (item <= 0 || item > 239) {
-            fputs("The specified item is invalid. Default to nothing.\n", stderr);
-            item = 0;
-        } else {
-            fprintf(stdout, "\nReward item:        %d [%s]\n", item, itemsStr[item]);
-        }
     }
 
-    convertAOKToThankYouMail(password54Integers, item);
+    char AOKPassword[55];
+    char ThankYouPassword[55];
+    convertSOSMail(argv[1], item, AOKPassword, ThankYouPassword);
 
-    /* Bit packing */
-    /* reseting variables */
-    for (i = 0; i < 34; ++i) {
-        packed34Bytes[i] = 0;
-    }
-    bitPackingDecoding(packed34Bytes, password54Integers, sizeof (password54Integers)); /* Pack the password */
-
-    packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
-
-    /* back again */
-    for (i = 0; i < 54; ++i) {
-        password54Integers[i] = 0;
-        passwordAllocated[i] = 0;
-    }
-    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
-    lookupTableEncodingSOS(passwordAllocated, password54Integers);
-    char ThankYouPassword[55] = {0};
-    realocateBytesEncodingSOS(ThankYouPassword, passwordAllocated);
-
+    char finalAOKPassword[100] = {0};
     char finalThankYouPassword[100] = {0};
+    fprintf(stdout, "\nA-OK Password:      %27s\n                    %s\n", strncat(finalAOKPassword, AOKPassword, 27), AOKPassword + 27);
     fprintf(stdout, "Thank-You Password: %27s\n                    %s\n", strncat(finalThankYouPassword, ThankYouPassword, 27), ThankYouPassword + 27);
 
     fflush(stdout);
