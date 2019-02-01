@@ -1,15 +1,12 @@
 #ifndef MD1GLOBAL_H
 #define MD1GLOBAL_H
 
-#define INPUT_ERROR  1          /* Value returned when an input error ocurr */
-#define CHECKSUM_ERROR 2        /* Value returnes when the checksum fails */
-#define HELP 3                  /* Value returned when the help is requested (no arguments are received) */
-#define PSW_SUCCESS_OPERATION 0 /* All is OK for now */
 /* For the text indicator. Used to specify the head or body in flavors texts. */
 #define HEAD 0
 #define BODY 1
 
 /* Data definitions */
+enum ERROR_TYPE { NO_ERROR, UNKNOWN_ERROR, INPUT_ERROR, CHECKSUM_ERROR, OUT_OF_RANGE_ERROR };
 enum MISSION_TYPE { HELPME, FIND, ESCORT, FINDITEM, DELIVERITEM, FRIENDRESCUE };
 
 /* If not programming in C, consider use buffers objects instead of structs and bit fields, it will be slower of course, but more safe and readable (performance is not everything) */
