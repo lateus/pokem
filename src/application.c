@@ -192,23 +192,3 @@ int convertSOS(int argc, const char *argv[])
     fflush(stdout);
     return 0;
 }
-
-int SOSMailIsInvalidForConverting(const char *password, char password54Integers[])
-{
-    size_t pswLenght = strlen(password);
-    if (pswLenght != 54) {
-        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
-    }
-
-    char pswAllocated[54] = {0}; /* Please, initialize all data */
-    reallocateBytesDecodingSOS(password, pswAllocated);
-
-    /* The password that will be converted to integers representation using the lookup table bellow */
-    if (lookupTableDecodingSOS(pswAllocated, password54Integers) == INPUT_ERROR) {
-        return INPUT_ERROR;
-    }
-
-    return 0;
-}
