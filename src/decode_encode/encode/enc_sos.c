@@ -194,3 +194,24 @@ void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SOSMAIL* ma
 
     /* The remaining bits in index 33 were filled with 0 during array initialization, so there is no need to do it now */
 }
+
+
+void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers)
+{
+    const char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    int i;
+    for (i = 0; i < 54; ++i) {
+        password54Chars[i] = table[(int)password54Integers[i]];
+    }
+}
+
+
+void realocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword)
+{
+    const int newPos[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
+
+    int i;
+    for (i = 0; i < 54; ++i) {
+        allocatedPassword[i] = unallocatedPassword[ newPos[i] ];
+    }
+}
