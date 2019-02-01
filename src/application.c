@@ -128,8 +128,6 @@ int convertSOS(int argc, const char *argv[])
         return INPUT_ERROR;
     }
 
-    /* TODO: RANDOMIZE */
-
     /* FIRST: A-OK MAIL */
     convertSOSToAOKMail(password54Integers);
 
