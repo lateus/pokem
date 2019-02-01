@@ -20,8 +20,4 @@ void parseSOSData(const char *argv[], struct SOSMAIL *sos);
 int encodeSOSM(int argc, const char *argv[]);
 int convertSOS(int argc, const char *argv[]);
 
-int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]);
-int SOSMailIsInvalid(const char *password, char packed34BytesPassword[]);
-int SOSMailIsInvalidForConverting(const char *password, char password54Integers[]);
-
 #endif /* APPLICATION_H */
