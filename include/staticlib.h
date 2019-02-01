@@ -184,6 +184,7 @@ extern const char* dungeonsStr[];
 /* Friend areas */
 extern const char* friendAreasStr[];
 
+/* DECODING/ENCODING COMMON FUNCTIONS */
 int areParents(int pkmnClient, int pkmnTarget);
 int arePairs(int pkmnClient, int pkmnTarget);
 int areLovers(int pkmnClient, int pkmnTarget);
@@ -191,12 +192,14 @@ unsigned int getSpecialJobIndicator(int pairsIndex, int loversIndex, int parents
 int findItemByDungeon(int item, int dungeon);
 int computeDifficulty(int dungeon, int dungeonFloor, int missionType);
 int computeMoneyReward(int difficulty, int rewardType);
-
 int computeChecksum(const char* packedPassword, int bytes);
 
-int decodeWonderMail(const char *password, struct WM_INFO *mailInfoResult);
-int WonderMailIsInvalid(const char *password, char *packed15BytesPassword);
+/* DECODING COMMON FUNCTIONS */
 void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack);
+
+/* DECODING WONDER MAIL */
+int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult);
+int WonderMailIsInvalid(const char *password, char *packed15BytesPassword);
 void reallocateBytesDecodingWM(char *allocatePassword, const char *unallocatedPassword);
 int lookupTableDecodingWM(char *passwordIntegers, const char *allocatedPassword);
 void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WONDERMAIL* mail);
@@ -205,6 +208,7 @@ void flavorTextHead(const struct WONDERMAIL *wm, int headIndicator, int pairsInd
 void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo);
 void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail);
 
+/* DECODING SOS MAIL */
 int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult);
 int SOSMailIsInvalid(const char *password, char *packed34BytesPassword);
 void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword);
@@ -212,21 +216,26 @@ int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers
 void bitUnpackingDecodingSOS(const char *packed14BytesPassword, struct SOSMAIL* mail);
 void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail);
 
-int setMailData(const char *argv[], void *mail, enum MAIL_TYPE type);
+/* ENCODING COMMON FUNCTIONS */
 void bitUnpackingEncoding(char* unpackedIntegers, const char* packedPassword, int bytesToUnpack);
-void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers);
-void realocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword);
 
+/* ENCODING WONDER MAIL */
 int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword);
 int foundErrorsEntriesWM(const struct WONDERMAIL *wm);
 void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* mail);
 void lookupTableEncodingWM(const char* password24Integers, char* password24Chars);
 void reallocateBytesEncodingWM(const char* unallocatedPassword, char* allocatePassword);
 
-int setSOSData(const char *argv[], struct SOSMAIL *wm);
-int foundErrorsEntriesSOS(const struct SOSMAIL *wm, const char *argv[]);
+/* ENCODING SOS MAIL */
+int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword);
+int foundErrorsEntriesSOS(const struct SOSMAIL *sos);
 void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SOSMAIL* mail);
+void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers);
+void realocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword);
 
+/* CONVERTING SOS MAIL */
+int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail);
+int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers);
 void convertSOSToAOKMail(char *password54Integers);
 void convertAOKToThankYouMail(char *password54Integers, int item);
 
