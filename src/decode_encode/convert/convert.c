@@ -1,8 +1,78 @@
 #include "../../../include/decode_encode/convert/convert.h"
+#include "../../../include/decode_encode/decode/dec_sos.h"
+#include "../../../include/decode_encode/decode/decode.h"
+#include "../../../include/decode_encode/encode/enc_sos.h"
+#include "../../../include/decode_encode/encode/encode.h"
+#include "../../../include/decode_encode/dec_enc_common.h"
 #include "../../../include/model/md1global.h"
+#include "../../../include/model/md1database.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+{
+    char password54Integers[54] = {0};
+    if (SOSMailIsInvalidForConverting(SOSPassword, password54Integers)) {
+        return INPUT_ERROR;
+    }
+
+    int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
+    if (mailType != 1) { /* 1 is SOS Mail */
+        fputs("ERROR: The mail entered not belongs to a SOS Mail.\n", stderr);
+        if (mailType == 4 || mailType == 5) {
+            fprintf(stderr, "        Apparently it belongs to a %s.\n", mailType == 4 ? "A-OK Mail" : "Thank-You Mail");
+        }
+        fputs("THE PASSWORD CAN'T BE DECODED.\n\n", stderr);
+        return INPUT_ERROR;
+    }
+
+    /* FIRST: A-OK MAIL */
+    convertSOSToAOKMail(password54Integers);
+
+    /* Bit packing */
+    char packed34Bytes[34] = {0}; /* The packed password */
+    bitPackingDecoding(packed34Bytes, password54Integers, sizeof(password54Integers)); /* Pack the password */
+
+    packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
+
+    /* back again */
+    int i;
+    for (i = 0; i < 54; ++i) {
+        password54Integers[i] = 0;
+    }
+    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
+    char passwordAllocated[54] = {0};
+    lookupTableEncodingSOS(passwordAllocated, password54Integers);
+    realocateBytesEncodingSOS(resultAOKMail, passwordAllocated);
+
+    /* SECOND: THANK-YOU MAIL */
+    if (item <= 0 || item > 239) {
+        fputs("The specified item is invalid. Default to nothing.\n", stderr);
+        item = 0;
+    }
+    convertAOKToThankYouMail(password54Integers, item);
+
+    /* Bit packing */
+    /* reseting variables */
+    for (i = 0; i < 34; ++i) {
+        packed34Bytes[i] = 0;
+    }
+    bitPackingDecoding(packed34Bytes, password54Integers, sizeof(password54Integers)); /* Pack the password */
+    packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
+
+    /* back again */
+    for (i = 0; i < 54; ++i) {
+        password54Integers[i] = 0;
+        passwordAllocated[i] = 0;
+    }
+    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
+    lookupTableEncodingSOS(passwordAllocated, password54Integers);
+    realocateBytesEncodingSOS(resultThankYouMail, passwordAllocated);
+
+    return 0;
+}
 
 int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
 {
