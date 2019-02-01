@@ -1,5 +1,6 @@
 #include "../../../include/decode_encode/encode/enc_wm.h"
 #include "../../../include/decode_encode/encode/encode.h"
+#include "../../../include/decode_encode/dec_enc_common.h"
 #include "../../../include/model/md1database.h"
 
 #include <stdio.h>
