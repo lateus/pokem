@@ -3,3 +3,4 @@ binlib/
 build/
 .vscode/
 *.user
+qt*.pro
