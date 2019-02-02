@@ -1,13 +1,10 @@
 #ifndef MD1GLOBAL_H
 #define MD1GLOBAL_H
 
-/* For the text indicator. Used to specify the head or body in flavors texts. */
-#define HEAD 0
-#define BODY 1
-
 /* Data definitions */
-enum ERROR_TYPE { NO_ERROR, UNKNOWN_ERROR, INPUT_ERROR, CHECKSUM_ERROR, OUT_OF_RANGE_ERROR };
+enum ERROR_TYPE { ALL_OK, UNKNOWN_ERROR, INPUT_ERROR, CHECKSUM_ERROR, OUT_OF_RANGE_ERROR };
 enum MISSION_TYPE { HELPME, FIND, ESCORT, FINDITEM, DELIVERITEM, FRIENDRESCUE };
+enum FLAVOR_TEXT_TYPE { FT_HEAD, FT_BODY };
 
 /* If not programming in C, consider use buffers objects instead of structs and bit fields, it will be slower of course, but more safe and readable (performance is not everything) */
 struct WONDERMAIL {
