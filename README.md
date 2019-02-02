@@ -42,9 +42,6 @@ On **MacOS**, if you don't have GCC installed, you can install it through X-Code
 On **Windows**, you can install GCC and use `mingw32-make` to build the project.
 
 ### More build methods
-#### Qt
-The project comes with a project file for Qt5, based on the `qmake` build system. Open it in Qt Creator and click the *Build* button, or pass the project to the `qmake` tool. CMake is currently not supported, but since Qt6's build system will be based on CMake, it's support is a priority.  
-
 #### Manual
 You can manually build it by passing to a C compiler all source files. For example:
 `cc -o app source1.c source2.c...`
