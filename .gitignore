@@ -3,4 +3,4 @@ binlib/
 build/
 .vscode/
 *.user
-*.pro
+qtPokem.pro
