@@ -63,7 +63,7 @@ int findItemByDungeon(int item, int dungeon)
 {
     /* the item and dungeon must have valid values when they enter this function */
     if (dungeon > 63) {
-        return 1; /* the error root is about the dungeon, not the item to find, so we skip the item check */
+        return 0; /* the error root is about the dungeon, not the item to find, so we skip the item check */
     }
 
     int found = 0;
