@@ -28,8 +28,8 @@ int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
     int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
     int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
     int *textIndicator = flavorText(&wm, pairsIndex, loversIndex, parentsIndex);
-    flavorTextHead(&wm, textIndicator[HEAD], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
-    flavorTextBody(&wm, textIndicator[BODY], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    flavorTextHead(&wm, textIndicator[FT_HEAD], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    flavorTextBody(&wm, textIndicator[FT_BODY], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
 
     /* Bulking the mail's data... */
     setWMInfo(wonderMailInfoResult, &wm);
@@ -110,7 +110,7 @@ int lookupTableDecodingWM(char* passwordIntegers, const char* allocatedPassword)
 
     }
 
-    return PSW_SUCCESS_OPERATION;
+    return ALL_OK;
 }
 
 
@@ -190,27 +190,27 @@ int* flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, in
         switch (special) {
         case 0x09:
             if (pairsIndex >= 0) {
-                textIndicator[HEAD] = 5;
-                textIndicator[BODY] = 7;
+                textIndicator[FT_HEAD] = 5;
+                textIndicator[FT_BODY] = 7;
             }
             return textIndicator;
         case 0x0A:
             if (loversIndex >= 0) {
-                textIndicator[HEAD] = 6;
-                textIndicator[BODY] = 8;
+                textIndicator[FT_HEAD] = 6;
+                textIndicator[FT_BODY] = 8;
             }
             return textIndicator;
         case 0x0F:
             if (parentsIndex >= 0) {
-                textIndicator[HEAD] = 4;
-                textIndicator[BODY] = 6;
+                textIndicator[FT_HEAD] = 4;
+                textIndicator[FT_BODY] = 6;
             }
             return textIndicator;
         }
     }
     /* Most of the cases will go here directly */
-    textIndicator[HEAD] =  8 + wm->missionType;
-    textIndicator[BODY] = 12 + wm->missionType;
+    textIndicator[FT_HEAD] =  8 + wm->missionType;
+    textIndicator[FT_BODY] = 12 + wm->missionType;
     return textIndicator;
 }
 
