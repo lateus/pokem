@@ -65,7 +65,7 @@ int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers
 
     }
 
-    return PSW_SUCCESS_OPERATION;
+    return ALL_OK;
 }
 
 
