@@ -79,6 +79,6 @@ Returns the amount of money you will receive after success in a mission with rew
 int computeChecksum(const char* packedPassword, int bytes)
 ```
 **Internal function, should not be used**  
-Returns the checksum of the first `bytes` bytes in the array `packedPassword`. The checksum is calculated by initializing a variable to `0`. Then, in each iteration, adding to it each byte plus it's index in the array and truncated it to 1-byte long.  
+Returns the checksum of the first `bytes` bytes in the array `packedPassword`. The checksum is calculated by initializing a variable to `0`. Then, in each iteration, adds to itself each byte plus it's index in the array, while truncating it to 1-byte long.  
 
 ----------  
