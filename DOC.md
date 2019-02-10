@@ -21,12 +21,14 @@ Official documentation of the library ***PokéM***. Here you will find an API co
 
 ## Decoding/Encoding common functions
 
+
 ```c
 int areParents(int pkmnClient, int pkmnTarget)
 ```
 Returns the index of the parent-son pair only if `pkmnClient` is parent of `pkmnTarget`. Otherwise, returns `-1`. Parents have a distinctive flavor text in mails.  
 
 ----------  
+
 
 ```c
 int arePairs(int pkmnClient, int pkmnTarget)
