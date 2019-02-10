@@ -19,7 +19,7 @@ Official documentation of the library ***PokéM***. Here you will find an API co
 
 # Function documentation
 
-## Decoding/Encoding commmon functions
+## Decoding/Encoding common functions
 
 ```c
 int areParents(int pkmnClient, int pkmnTarget)
