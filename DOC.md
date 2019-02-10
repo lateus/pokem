@@ -21,6 +21,7 @@ Official documentation of the library ***PokéM***. Here you will find an API co
 
 ## Decoding/Encoding common functions
 
+----------  
 
 ```c
 int areParents(int pkmnClient, int pkmnTarget)
@@ -92,6 +93,7 @@ Returns the checksum of the first `bytes` bytes in the array `packedPassword`. T
 ### General decoding functions  
 This functions are used for both decoding Wonder Mails and SOS Mails.
 
+----------  
 
 ```c
 void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack)
