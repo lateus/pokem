@@ -86,3 +86,18 @@ int computeChecksum(const char* packedPassword, int bytes)
 Returns the checksum of the first `bytes` bytes in the array `packedPassword`. The checksum is calculated by initializing a variable to `0`. Then, in each iteration, adds to itself each byte plus it's index in the array, while truncating it to 1-byte long.  
 
 ----------  
+
+## Decoding
+
+### General decoding functions  
+This functions are used for both decoding Wonder Mails and SOS Mails.
+
+
+```c
+void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack)
+```
+**Internal function, should not be used**  
+In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPassword` and packed in `packedPassword`. This optimization is done because only the first 5 bits of each octet are used.  
+
+----------  
+
