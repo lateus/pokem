@@ -19,7 +19,8 @@ Official documentation of the library ***PokéM***. Here you will find an API co
 
 # Function documentation
 
-## Decoding/Encoding common functions
+## Decoding/Encoding common functions  
+Functions used for both encode and decode all kinds of mails.
 
 ----------  
 
