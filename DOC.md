@@ -89,6 +89,7 @@ Returns the checksum of the first `bytes` bytes in the array `packedPassword`. T
 
 ----------  
 
+
 ## Decoding
 
 ### General decoding functions  
@@ -101,6 +102,18 @@ void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int 
 ```
 **Internal function, should not be used**  
 In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPassword` and packed in `packedPassword`. This optimization is done because only the first 5 bits of each octet are used.  
+
+----------  
+
+### Wonder Mail Decoding functions  
+This functions are used to decode Wonder Mails.
+
+----------  
+
+```c
+int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
+``` 
+Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
 
 ----------  
 
