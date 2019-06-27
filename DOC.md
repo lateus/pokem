@@ -132,3 +132,10 @@ Returns in `allocatePassword` a reallocated version of `unallocatedPassword`. Th
 
 ----------  
 
+```c
+int lookupTableDecodingWM(char *passwordIntegers, const char *allocatedPassword)
+```  
+**Internal function, should not be used**  
+Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingWM` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
+
+----------  
