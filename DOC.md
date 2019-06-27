@@ -85,7 +85,7 @@ Returns the amount of money you will receive after success in a mission with rew
 int computeChecksum(const char* packedPassword, int bytes)
 ```
 **Internal function, should not be used**  
-Returns the checksum of the first `bytes` bytes in the array `packedPassword`. The checksum is calculated by initializing a variable to `0`. Then, in each iteration, adds to itself each byte plus it's index in the array, while truncating it to 1-byte long.  
+Returns the checksum of the first `bytes` bytes in the array `packedPassword`. The checksum is calculated by initializing a variable to `0`. Then, in each iteration, adds to itself each byte plus it's index in the array, while truncating it to 1-byte long. This function is an internal function and should not be used.  
 
 ----------  
 
@@ -101,7 +101,7 @@ This functions are used for both decoding Wonder Mails and SOS Mails.
 void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack)
 ```
 **Internal function, should not be used**  
-In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPassword` and packed in `packedPassword`. This optimization is done because only the first 5 bits of each octet are used.  
+In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPassword` and packed in `packedPassword`. This optimization is done because only the first 5 bits of each octet are used. This function is an internal function and should not be used.  
 
 ----------  
 
@@ -114,6 +114,14 @@ This functions are used to decode Wonder Mails.
 int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
 ``` 
 Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
+
+----------  
+
+```c
+int WonderMailIsInvalid(const char *password, char *packed15BytesPassword)
+``` 
+**Internal function, should not be used**  
+Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type). This function is an internal function and should not be used.  
 
 ----------  
 
