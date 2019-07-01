@@ -181,7 +181,7 @@ void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WONDERMAIL
 
 int* flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, int parentsIndex)
 {
-    /* TODO: Create a `PAIR` struct that holds the two values. The current way is unsafe. */
+    /* TODO: Call the HEAD/BODY functions directly from here instead of return the address of a static pointer. */
     static int textIndicator[2];   /* In the index [0] we store a indicator relative to the title (head), the index [1] holds a body's indicator */
     int special = wm->specialJobIndicator;
 
