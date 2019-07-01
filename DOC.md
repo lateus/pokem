@@ -171,3 +171,10 @@ void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsInd
 This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWM`, the BODY code returned by `flavorText` and stored in `bodyIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WM_INFO` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the body of the flavor text. This is an internal function and should not be used.  
 
 ----------  
+
+```c
+void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail)
+```  
+This function extract the information contained in `mail` and format it in a mail-style layout before writting it to `mailInfo`. The flavor text is not filled here, you must call `flavorText` and related function to get it.  
+
+----------  
