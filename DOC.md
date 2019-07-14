@@ -105,6 +105,13 @@ Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMail
 
 ----------  
 
+```c
+int SOSMailIsInvalid(const char *password, char *packed34BytesPassword)
+```  
+Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
+
+----------  
+
 
 **END OF API DOCUMENTATION**
 
