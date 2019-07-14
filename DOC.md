@@ -75,7 +75,7 @@ Returns the amount of money you will receive after success in a mission with rew
 ## Decoding
 
 ### Wonder Mail Decoding functions  
-This functions are used to decode Wonder Mails.  
+These functions are used to decode Wonder Mails.  
 
 ----------  
 
@@ -93,8 +93,8 @@ Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the W
 
 ----------  
 
-### Wonder Mail Decoding functions  
-This functions are used to decode Wonder Mails.  
+### SOS Mail Decoding functions  
+These functions are used to decode SOS Mails.  
 
 ----------  
 
@@ -103,7 +103,7 @@ This functions are used to decode Wonder Mails.
 
 
 # Internal functions  
-This functions are used internally by the official API, and should not be used directly.  
+These functions are used internally by the official API, and should not be used directly.  
 
 ## Decoding/Encoding common internal functions  
 
