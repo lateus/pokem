@@ -98,6 +98,10 @@ This functions are used to decode Wonder Mails.
 
 ----------  
 
+
+**END OF API DOCUMENTATION**
+
+
 # Internal functions  
 This functions are used internally by the official API, and should not be used directly.  
 
