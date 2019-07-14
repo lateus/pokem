@@ -175,6 +175,6 @@ This function takes the decoded Wonder Mail `wm` as returned the function `bitUn
 ```c
 void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail)
 ```  
-This function extract the information contained in `mail` and format it in a mail-style layout before writting it to `mailInfo`. The flavor text is not filled here, you must call `flavorText` and related function to get it.  
+This function extract the information contained in `mail` and write it to `mailInfo` in a mail-style layout. The flavor text is not filled here, you must call `flavorText` and related functions to do so.  
 
 ----------  
