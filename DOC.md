@@ -98,6 +98,13 @@ These functions are used to decode SOS Mails.
 
 ----------  
 
+```c
+int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult)
+```  
+Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
+
+----------  
+
 
 **END OF API DOCUMENTATION**
 
@@ -129,7 +136,7 @@ Returns the checksum of the first `bytes` bytes in the array `packedPassword`. T
 
 ## Decoding
 
-### General decoding functions  
+### General decoding internal functions  
 
 ----------  
 
@@ -142,7 +149,7 @@ In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPa
 ----------  
 
 
-### Wonder Mail Decoding functions  
+### Wonder Mail Decoding internal functions  
 
 ----------  
 
