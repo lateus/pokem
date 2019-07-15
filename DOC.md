@@ -180,7 +180,7 @@ Since mails only works with alphanumeric characters plus some others, and not wi
 void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WONDERMAIL* mail)
 ```  
 **Internal function, should not be used**  
-This function takes the packed 14 bytes stored in `packed15BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
+This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
 
 ----------  
 
@@ -215,3 +215,40 @@ void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail)
 This function extract the information contained in `mail` and write it to `mailInfo` in a mail-style layout. The flavor text is not filled here, you must call `flavorText` and related functions to do so. This is an internal function and should not be used.  
 
 ----------  
+
+
+### SOS Mail Decoding internal functions  
+
+----------
+
+```c
+void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword)
+```  
+**Internal function, should not be used**  
+Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
+
+----------  
+
+```c
+int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers)
+```  
+**Internal function, should not be used**  
+Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingSOS` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void bitUnpackingDecodingSOS(const char *packed14BytesPassword, struct SOSMAIL* mail)
+```  
+**Internal function, should not be used**  
+This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
+```  
+**Internal function, should not be used** 
+This function extract the information contained in `mail` and write it to `sosInfo` in a mail-style layout. This is an internal function and should not be used.  
+
+---------- 
