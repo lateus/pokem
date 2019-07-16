@@ -17,7 +17,9 @@ Official documentation of the library ***PokéM***. Here you will find an API co
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
+
 # Function documentation  
+
 
 ## Decoding/Encoding common functions  
 Functions used for both encode and decode all kinds of mails.  
@@ -68,6 +70,7 @@ Returns the amount of money you will receive after success in a mission with rew
 
 ## Decoding
 
+
 ### Wonder Mail decoding functions  
 These functions are used to decode Wonder Mails.  
 
@@ -86,6 +89,7 @@ int WonderMailIsInvalid(const char *password, char *packed15BytesPassword)
 Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
 
 ----------  
+
 
 ### SOS Mail decoding functions  
 These functions are used to decode SOS Mails.  
@@ -109,6 +113,7 @@ Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS 
 
 ## Encoding
 
+
 ### Wonder Mail encoding functions  
 These functions are used to encode Wonder Mails.  
 
@@ -127,6 +132,7 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
 This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
 
 ----------  
+
 
 ### SOS Mail encoding functions  
 These functions are used to decode SOS Mails.  
@@ -155,6 +161,7 @@ This function scans the SOS Mail `sos` and return the number of errors found whi
 **This thread is mainly for developers and contributors of this project.**  
 These functions are used internally by the official API, and should not be used directly.  
 
+
 ## Decoding/Encoding - common internal functions  
 
 ----------  
@@ -178,6 +185,7 @@ Returns the checksum of the first `bytes` bytes in the array `packedPassword`. T
 
 
 ## Decoding - internal functions
+
 
 ### General decoding - internal functions  
 
@@ -312,6 +320,35 @@ This is the inverse process of decoding. This function takes `password24Integers
 
 ```c
 void reallocateBytesEncodingWM(const char* unallocatedPassword, char* allocatedPassword)
+```  
+**Internal function, should not be used**  
+Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
+
+----------  
+
+
+### Wonder Mail encoding - internal functions  
+
+----------  
+
+```c
+void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SOSMAIL* mail)
+```  
+**Internal function, should not be used**  
+This function takes the content of the SOS Mail `sos`, encodes it and writes the result to `packed33BytesPassword` in the form of packed 33 bytes. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers)
+```  
+**Internal function, should not be used**  
+This is the inverse process of decoding. This function takes `password54Integers` and writes the resulting ASCCI buffer in `password54Chars` using a lookup table. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void reallocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
