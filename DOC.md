@@ -154,6 +154,18 @@ This function scans the SOS Mail `sos` and return the number of errors found whi
 ----------  
 
 
+## Converting  
+
+----------  
+
+```c
+int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+```  
+This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
+
+----------  
+
+
 **END OF API DOCUMENTATION**
 
 
@@ -298,6 +310,9 @@ This function extract the information contained in `mail` and write it to `sosIn
 ----------  
 
 
+## Encoding - internal functions
+
+
 ### Wonder Mail encoding - internal functions  
 
 ----------  
@@ -354,3 +369,6 @@ void reallocateBytesEncodingSOS(char* allocatedPassword, const char* unallocated
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
 
 ----------  
+
+
+## Converting - internal functions
