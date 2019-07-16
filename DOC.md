@@ -31,14 +31,12 @@ Returns the index of the parent-son pair only if `pkmnClient` is parent of `pkmn
 
 ----------  
 
-
 ```c
 int arePairs(int pkmnClient, int pkmnTarget)
 ```  
 Returns the index of the pair only if `pkmnClient` is a special pair with `pkmnTarget` (or viceversa). Otherwise, returns `-1`. Special pairs have a distinctive flavor text in mails.  
 
 ----------  
-
 
 ```c
 int areLovers(int pkmnClient, int pkmnTarget)
@@ -47,14 +45,12 @@ Returns the index of the pair only if `pkmnClient` is inloved with `pkmnTarget` 
 
 ----------  
 
-
 ```c
 int findItemByDungeon(int item, int dungeon)
 ```  
 Returns `1` if `item` is found in `dungeon`. `0` otherwise. You cannot deliver an item that doesn't exists in the dungeon you are making a mission.  
 
 ----------  
-
 
 ```c
 int computeDifficulty(int dungeon, int dungeonFloor, int missionType)
@@ -63,18 +59,16 @@ Returns the difficulty level of the mission with type `missionType` that takes p
 
 ----------  
 
-
 ```c
 int computeMoneyReward(int difficulty, int rewardType)
 ```  
 Returns the amount of money you will receive after success in a mission with reward type `rewardType`. The `difficulty` parameter is the same returned by the function `computeDifficulty`.  
-
 ----------  
 
 
 ## Decoding
 
-### Wonder Mail Decoding functions  
+### Wonder Mail decoding functions  
 These functions are used to decode Wonder Mails.  
 
 ----------  
@@ -93,7 +87,7 @@ Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the W
 
 ----------  
 
-### SOS Mail Decoding functions  
+### SOS Mail decoding functions  
 These functions are used to decode SOS Mails.  
 
 ----------  
@@ -132,7 +126,26 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
 ```  
 This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
 
----------- 
+----------  
+
+### SOS Mail encoding functions  
+These functions are used to decode SOS Mails.  
+
+----------  
+
+```c
+int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
+```  
+Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
+
+----------  
+
+```c
+int foundErrorsEntriesSOS(const struct SOSMAIL *sos)
+```  
+This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSOSMail`, but you may want to call it to report entry errors at real-time.  
+
+----------  
 
 
 **END OF API DOCUMENTATION**
