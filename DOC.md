@@ -113,6 +113,21 @@ Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS 
 ----------  
 
 
+## Encoding
+
+### Wonder Mail encoding functions  
+These functions are used to encode Wonder Mails.  
+
+----------  
+
+```c
+int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword)
+```  
+Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a encoded Wonder Mail password, it's the best approach.  
+
+----------  
+
+
 **END OF API DOCUMENTATION**
 
 
