@@ -139,6 +139,7 @@ This function scans the Wonder Mail `wm` and return the number of errors found w
 
 
 # Internal functions  
+**This thread is mainly for developers and contributors of this project.**  
 These functions are used internally by the official API, and should not be used directly.  
 
 ## Decoding/Encoding - common internal functions  
