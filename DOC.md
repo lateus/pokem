@@ -372,3 +372,30 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 
 
 ## Converting - internal functions
+
+
+----------  
+
+```c
+int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
+```  
+**Internal function, should not be used**  
+Tries to convert the SOS Mail. Returns the error code (check the `ERROR_TYPE` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void convertSOSToAOKMail(char *password54Integers)
+```  
+**Internal function, should not be used**  
+Converts the SOS intermediate integers password into a A-OK one. The password `password54Integers` is modified directly, so the SOS password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void convertAOKToThankYouMail(char *password54Integers, int item)
+```  
+**Internal function, should not be used**  
+Converts the A-OK intermediate integers password into a Thank-You one with the reward item `item`. The password `password54Integers` is modified directly, so the A-OK password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  
+
+----------  
