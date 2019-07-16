@@ -141,7 +141,7 @@ This function scans the Wonder Mail `wm` and return the number of errors found w
 # Internal functions  
 These functions are used internally by the official API, and should not be used directly.  
 
-## Decoding/Encoding common internal functions  
+## Decoding/Encoding - common internal functions  
 
 ----------  
 
@@ -163,9 +163,9 @@ Returns the checksum of the first `bytes` bytes in the array `packedPassword`. T
 ----------  
 
 
-## Decoding
+## Decoding - internal functions
 
-### General decoding internal functions  
+### General decoding - internal functions  
 
 ----------  
 
@@ -178,7 +178,7 @@ In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPa
 ----------  
 
 
-### Wonder Mail Decoding internal functions  
+### Wonder Mail decoding - internal functions  
 
 ----------  
 
@@ -239,7 +239,7 @@ This function extract the information contained in `mail` and write it to `mailI
 ----------  
 
 
-### SOS Mail Decoding internal functions  
+### SOS Mail decoding - internal functions  
 
 ----------
 
@@ -273,4 +273,33 @@ void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
 **Internal function, should not be used** 
 This function extract the information contained in `mail` and write it to `sosInfo` in a mail-style layout. This is an internal function and should not be used.  
 
----------- 
+----------  
+
+
+### Wonder Mail encoding - internal functions  
+
+----------  
+
+```c
+void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* mail)
+```  
+**Internal function, should not be used**  
+This function takes the content of the Wonder Mail `wm`, encodes it and writes the result to `packed14BytesPassword` in the form of packed 14 bytes. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void lookupTableEncodingWM(const char* password24Integers, char* password24Chars)
+```  
+**Internal function, should not be used**  
+This is the inverse process of decoding. This function takes `password24Integers` and writes the resulting ASCCI buffer in `password24Chars` using a lookup table. This is an internal function and should not be used.  
+
+----------  
+
+```c
+void reallocateBytesEncodingWM(const char* unallocatedPassword, char* allocatedPassword)
+```  
+**Internal function, should not be used**  
+Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
+
+----------  
