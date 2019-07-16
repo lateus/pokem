@@ -127,6 +127,13 @@ Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the
 
 ----------  
 
+```c
+int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
+```  
+This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
+
+---------- 
+
 
 **END OF API DOCUMENTATION**
 
