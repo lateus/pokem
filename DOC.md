@@ -166,6 +166,123 @@ This function takes the SOS Mail password `SOSPassword` and converts it into an 
 ----------  
 
 
+# Database documentation  
+
+
+## Pokémon  
+
+Bellow is the complete database of pokémon. Observe that these **are not** the dex numbers, but the numbers used by the game to identify each criature. The number `0` corresponds to *Decamark* (i.e., nothing, an empty spot) and cannot be used. Also, some mail types add limitations to the species that can be used (for example, legendaries).  
+
+These values are defined as:
+
+```c
+const char* pkmnSpeciesStr[];
+```  
+
+No. | Pokémon         | No. | Pokémon         | No. | Pokémon         | No. | Pokémon         | No. | Pokémon
+--- | --------------- | --- | --------------- | --- | --------------- | --- | --------------- | --- | -------
+  1 | Bulbasaur       | 101 | Electrode       | 201 | Unown           | 301 | Taillow         | 401 | Salamence
+  2 | Ivysaur         | 102 | Exeggcute       | 202 | Unown           | 302 | Swellow         | 402 | Beldum
+  3 | Venusaur        | 103 | Exeggutor       | 203 | Unown           | 303 | Wingull         | 403 | Metang
+  4 | Charmander      | 104 | Cubone          | 204 | Unown           | 304 | Pelipper        | 404 | Metagross
+  5 | Charmeleon      | 105 | Marowak         | 205 | Unown           | 305 | Ralts           | 405 | Regirock
+  6 | Charizard       | 106 | Hitmonlee       | 206 | Unown           | 306 | Kirlia          | 406 | Regice
+  7 | Squirtle        | 107 | Hitmonchan      | 207 | Unown           | 307 | Gardevoir       | 407 | Registeel
+  8 | Wartortle       | 108 | Lickitung       | 208 | Unown           | 308 | Surskit         | 408 | Latias
+  9 | Blastoise       | 109 | Koffing         | 209 | Unown           | 309 | Masquerain      | 409 | Latios
+ 10 | Caterpie        | 110 | Weezing         | 210 | Unown           | 310 | Shroomish       | 410 | Kyogre
+ 11 | Metapod         | 111 | Rhyhorn         | 211 | Unown           | 311 | Breloom         | 411 | Groudon
+ 12 | Butterfree      | 112 | Rhydon          | 212 | Unown           | 312 | Slakoth         | 412 | Rayquaza
+ 13 | Weedle          | 113 | Chansey         | 213 | Unown           | 313 | Vigoroth        | 413 | Jirachi
+ 14 | Kakuna          | 114 | Tangela         | 214 | Unown           | 314 | Slaking         | 414 | Deoxys
+ 15 | Beedrill        | 115 | Kangaskhan      | 215 | Unown           | 315 | Nincada
+ 16 | Pidgey          | 116 | Horsea          | 216 | Unown           | 316 | Ninjask
+ 17 | Pidgeotto       | 117 | Seadra          | 217 | Unown           | 317 | Shedinja
+ 18 | Pidgeot         | 118 | Goldeen         | 218 | Unown           | 318 | Whismur
+ 19 | Rattata         | 119 | Seaking         | 219 | Unown           | 319 | Loudred
+ 20 | Raticate        | 120 | Staryu          | 220 | Unown           | 320 | Exploud
+ 21 | Spearow         | 121 | Starmie         | 221 | Unown           | 321 | Makuhita
+ 22 | Fearow          | 122 | Mr. Mime        | 222 | Unown           | 322 | Hariyama
+ 23 | Ekans           | 123 | Scyther         | 223 | Unown           | 323 | Azurill
+ 24 | Arbok           | 124 | Jynx            | 224 | Unown           | 324 | Nosepass
+ 25 | Pikachu         | 125 | Electabuzz      | 225 | Unown           | 325 | Skitty
+ 26 | Raichu          | 126 | Magmar          | 226 | Unown           | 326 | Delcatty
+ 27 | Sandshrew       | 127 | Pinsir          | 227 | Wobbuffet       | 327 | Sableye
+ 28 | Sandslash       | 128 | Tauros          | 228 | Girafarig       | 328 | Mawile
+ 29 | NidoranF        | 129 | Magikarp        | 229 | Pineco          | 329 | Aron
+ 30 | Nidorina        | 130 | Gyarados        | 230 | Forretress      | 330 | Lairon
+ 31 | Nidoqueen       | 131 | Lapras          | 231 | Dunsparce       | 331 | Aggron
+ 32 | NidoranM        | 132 | Ditto           | 232 | Gligar          | 332 | Meditite
+ 33 | Nidorino        | 133 | Eevee           | 233 | Steelix         | 333 | Medicham
+ 34 | Nidoking        | 134 | Vaporeon        | 234 | Snubbull        | 334 | Electrike
+ 35 | Clefairy        | 135 | Jolteon         | 235 | Granbull        | 335 | Manectric
+ 36 | Clefable        | 136 | Flareon         | 236 | Qwilfish        | 336 | Plusle
+ 37 | Vulpix          | 137 | Porygon         | 237 | Scizor          | 337 | Minun
+ 38 | Ninetales       | 138 | Omanyte         | 238 | Shuckle         | 338 | Volbeat
+ 39 | Jigglypuff      | 139 | Omastar         | 239 | Heracross       | 339 | Illumise
+ 40 | Wigglytuff      | 140 | Kabuto          | 240 | Sneasel         | 340 | Roselia
+ 41 | Zubat           | 141 | Kabutops        | 241 | Teddiursa       | 341 | Gulpin
+ 42 | Golbat          | 142 | Aerodactyl      | 242 | Ursaring        | 342 | Swalot
+ 43 | Oddish          | 143 | Snorlax         | 243 | Slugma          | 343 | Carvanha
+ 44 | Gloom           | 144 | Articuno        | 244 | Magcargo        | 344 | Sharpedo
+ 45 | Vileplume       | 145 | Zapdos          | 245 | Swinub          | 345 | Wailmer
+ 46 | Paras           | 146 | Moltres         | 246 | Piloswine       | 346 | Wailord
+ 47 | Parasect        | 147 | Dratini         | 247 | Corsola         | 347 | Numel
+ 48 | Venonat         | 148 | Dragonair       | 248 | Remoraid        | 348 | Camerupt
+ 49 | Venomoth        | 149 | Dragonite       | 249 | Octillery       | 349 | Torkoal
+ 50 | Diglett         | 150 | Mewtwo          | 250 | Delibird        | 350 | Spoink
+ 51 | Dugtrio         | 151 | Mew             | 251 | Mantine         | 351 | Grumpig
+ 52 | Meowth          | 152 | Chikorita       | 252 | Skarmory        | 352 | Spinda
+ 53 | Persian         | 153 | Bayleef         | 253 | Houndour        | 353 | Trapinch
+ 54 | Psyduck         | 154 | Meganium        | 254 | Houndoom        | 354 | Vibrava
+ 55 | Golduck         | 155 | Cyndaquil       | 255 | Kingdra         | 355 | Flygon
+ 56 | Mankey          | 156 | Quilava         | 256 | Phanpy          | 356 | Cacnea
+ 57 | Primeape        | 157 | Typhlosion      | 257 | Donphan         | 357 | Cacturne
+ 58 | Growlithe       | 158 | Totodile        | 258 | Porygon2        | 358 | Swablu
+ 59 | Arcanine        | 159 | Croconaw        | 259 | Stantler        | 359 | Altaria
+ 60 | Poliwag         | 160 | Feraligatr      | 260 | Smeargle        | 360 | Zangoose
+ 61 | Poliwhirl       | 161 | Sentret         | 261 | Tyrogue         | 361 | Seviper
+ 62 | Poliwrath       | 162 | Furret          | 262 | Hitmontop       | 362 | Lunatone
+ 63 | Abra            | 163 | Hoothoot        | 263 | Smoochum        | 363 | Solrock
+ 64 | Kadabra         | 164 | Noctowl         | 264 | Elekid          | 364 | Barboach
+ 65 | Alakazam        | 165 | Ledyba          | 265 | Magby           | 365 | Whiscash
+ 66 | Machop          | 166 | Ledian          | 266 | Miltank         | 366 | Corphish
+ 67 | Machoke         | 167 | Spinarak        | 267 | Blissey         | 367 | Crawdaunt
+ 68 | Machamp         | 168 | Ariados         | 268 | Raikou          | 368 | Baltoy
+ 69 | Bellsprout      | 169 | Crobat          | 269 | Entei           | 369 | Claydol
+ 70 | Weepinbell      | 170 | Chinchou        | 270 | Suicune         | 370 | Lileep
+ 71 | Victreebel      | 171 | Lanturn         | 271 | Larvitar        | 371 | Cradily
+ 72 | Tentacool       | 172 | Pichu           | 272 | Pupitar         | 372 | Anorith
+ 73 | Tentacruel      | 173 | Cleffa          | 273 | Tyranitar       | 373 | Armaldo
+ 74 | Geodude         | 174 | Igglybuff       | 274 | Lugia           | 374 | Feebas
+ 75 | Graveler        | 175 | Togepi          | 275 | Ho-Oh           | 375 | Milotic
+ 76 | Golem           | 176 | Togetic         | 276 | Celebi          | 376 | Castform
+ 77 | Ponyta          | 177 | Natu            | 277 | Treecko         | 377 | Castform
+ 78 | Rapidash        | 178 | Xatu            | 278 | Grovyle         | 378 | Castform
+ 79 | Slowpoke        | 179 | Mareep          | 279 | Sceptile        | 379 | Castform
+ 80 | Slowbro         | 180 | Flaaffy         | 280 | Torchic         | 380 | Kecleon
+ 81 | Magnemite       | 181 | Ampharos        | 281 | Combusken       | 381 | Shuppet
+ 82 | Magneton        | 182 | Bellossom       | 282 | Blaziken        | 382 | Banette
+ 83 | Farfetch'd      | 183 | Marill          | 283 | Mudkip          | 383 | Duskull
+ 84 | Doduo           | 184 | Azumarill       | 284 | Marshtomp       | 384 | Dusclops
+ 85 | Dodrio          | 185 | Sudowoodo       | 285 | Swampert        | 385 | Tropius
+ 86 | Seel            | 186 | Politoed        | 286 | Poochyena       | 386 | Chimecho
+ 87 | Dewgong         | 187 | Hoppip          | 287 | Mightyena       | 387 | Absol
+ 88 | Grimer          | 188 | Skiploom        | 288 | Zigzagoon       | 388 | Wynaut
+ 89 | Muk             | 189 | Jumpluff        | 289 | Linoone         | 389 | Snorunt
+ 90 | Shellder        | 190 | Aipom           | 290 | Wurmple         | 390 | Glalie
+ 91 | Cloyster        | 191 | Sunkern         | 291 | Silcoon         | 391 | Spheal
+ 92 | Gastly          | 192 | Sunflora        | 292 | Beautifly       | 392 | Sealeo
+ 93 | Haunter         | 193 | Yanma           | 293 | Cascoon         | 393 | Walrein
+ 94 | Gengar          | 194 | Wooper          | 294 | Dustox          | 394 | Clamperl
+ 95 | Onix            | 195 | Quagsire        | 295 | Lotad           | 395 | Huntail
+ 96 | Drowzee         | 196 | Espeon          | 296 | Lombre          | 396 | Gorebyss
+ 97 | Hypno           | 197 | Umbreon         | 297 | Ludicolo        | 397 | Relicanth
+ 98 | Krabby          | 198 | Murkrow         | 298 | Seedot          | 398 | Luvdisc
+ 99 | Kingler         | 199 | Slowking        | 299 | Nuzleaf         | 399 | Bagon
+100 | Voltorb         | 200 | Misdreavus      | 300 | Shiftry         | 400 | Shelgon
+
+
 **END OF API DOCUMENTATION**
 
 
