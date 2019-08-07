@@ -283,6 +283,120 @@ No. | Pokémon         | No. | Pokémon         | No. | Pokémon         | No. |
 100 | Voltorb         | 200 | Misdreavus      | 300 | Shiftry         | 400 | Shelgon
 
 
+## Items  
+
+Bellow is the complete database of items. The number `0` corresponds to *Nothing*. Also, some missions add limitations to the items that can be involved (for example, you cannot find an item that not exist in the mission's dungeon).  
+
+These values are defined as:
+
+```c
+const char* itemsStr[];
+```  
+
+No. | Item            | No. | Item            | No. | Item
+--- | --------------- | --- | --------------- | --- | ---------------
+  0 | Nothing         | 100 | Royal Gummi     | 200 | Escape Orb
+  1 | Stick           | 101 | Black Gummi     | 201 | Scanner Orb
+  2 | Iron Thorn      | 102 | Silver Gummi    | 202 | Radar Orb
+  3 | Silver Spike    | 103 | Banana          | 203 | Drought Orb
+  4 | Gold Fang       | 104 | Chestnut        | 204 | Trapbust Orb
+  5 | Cacnea Spike    | 105 | Poke            | 205 | Rollcall Orb
+  6 | Corsola Twig    | 106 | Upgrade         | 206 | Invisify Orb
+  7 | Gravelerock     | 107 | King's Rock     | 207 | One-Shot Orb
+  8 | Geo Pebble      | 108 | Thunderstone    | 208 | Identify Orb
+  9 | Mobile Scarf    | 109 | Deepseascale    | 209 | Vacuum-Cut
+ 10 | Heal Ribbon     | 110 | Deepseatooth    | 210 | Reviver Orb
+ 11 | Twist Band      | 111 | Sun Stone       | 211 | Shocker Orb
+ 12 | Scope Lens      | 112 | Moon Stone      | 212 | Sizebust Orb
+ 13 | Patsy Band      | 113 | Fire Stone      | 213 | One-Room Orb
+ 14 | No-Stick Cap    | 114 | Water Stone     | 214 | Fill-In Orb
+ 15 | Pierce Band     | 115 | Metal Coat      | 215 | Trapper Orb
+ 16 | Joy Ribbon      | 116 | Leaf Stone      | 216 | Possess Orb
+ 17 | X-Ray Specs     | 117 | Dragon Scale    | 217 | Itemizer Orb
+ 18 | Persim Band     | 118 | Link Cable      | 218 | Hurl Orb
+ 19 | Power Band      | 119 | Ice Part        | 219 | Mobile Orb
+ 20 | Pecha Scarf     | 120 | Steel Part      | 220 | Toss Orb
+ 21 | Insomniscope    | 121 | Rock Part       | 221 | Stairs Orb
+ 22 | Warp Scarf      | 122 | Music Box       | 222 | Longtoss Orb
+ 23 | Tight Belt      | 123 | Key             | 223 | Pierce Orb
+ 24 | Sneak Scarf     | 124 | Used TM         | 224 | Cut
+ 25 | Gold Ribbon     | 125 | Focus Punch     | 225 | Fly
+ 26 | Goggle Specs    | 126 | Dragon Claw     | 226 | Surf
+ 27 | Diet Ribbon     | 127 | Water Pulse     | 227 | Strength
+ 28 | Trap Scarf      | 128 | Calm Mind       | 228 | Flash
+ 29 | Racket Band     | 129 | Roar            | 229 | Rock Smash
+ 30 | Def. Scarf      | 130 | Toxic           | 230 | Waterfall
+ 31 | Stamina Band    | 131 | Hail Orb        | 231 | Dive
+ 32 | Plain Ribbon    | 132 | Bulk Up         | 232 | Link Box
+ 33 | Special Band    | 133 | Bullet Seed     | 233 | Switch Box
+ 34 | Zinc Band       | 134 | Hidden Power    | 234 | Weavile Fig
+ 35 | Detect Band     | 135 | Sunny Orb       | 235 | Mime Jr. Fig
+ 36 | Alert Specs     | 136 | Taunt           | 236 | Beatup Orb
+ 37 | Dodge Scarf     | 137 | Ice Beam        | 237 | G Machine 6
+ 38 | Bounce Band     | 138 | Blizzard        | 238 | G Machine 7
+ 39 | Curve Band      | 139 | Hyper Beam      | 239 | G Machine 8
+ 40 | Whiff Specs     | 140 | Light Screen
+ 41 | No-Aim Scope    | 141 | Protect
+ 42 | Lockon Specs    | 142 | Rainy Orb
+ 43 | Munch Belt      | 143 | Giga Drain
+ 44 | Pass Scarf      | 144 | Safeguard
+ 45 | Weather Band    | 145 | Frustration
+ 46 | Friend Bow      | 146 | Solarbeam
+ 47 | Beauty Scarf    | 147 | Iron Tail
+ 48 | Sun Ribbon      | 148 | Thunderbolt
+ 49 | Lunar Ribbon    | 149 | Thunder
+ 50 | Ring D          | 150 | Earthquake
+ 51 | Ring E          | 151 | Return
+ 52 | Ring F          | 152 | Dig
+ 53 | Heal Seed       | 153 | Psychic
+ 54 | Wish Stone      | 154 | Shadow Ball
+ 55 | Oran Berry      | 155 | Brick Break
+ 56 | Sitrus Berry    | 156 | Evasion Orb
+ 57 | Eyedrop Seed    | 157 | Reflect
+ 58 | Reviver Seed    | 158 | Shock Wave
+ 59 | Blinker Seed    | 159 | Flamethrower
+ 60 | Doom Seed       | 160 | Sludge Bomb
+ 61 | Allure Seed     | 161 | Sandy Orb
+ 62 | Life Seed       | 162 | Fire Blast
+ 63 | Rawst Berry     | 163 | Rocky Orb
+ 64 | Hunger Seed     | 164 | Aerial Ace
+ 65 | Quick Seed      | 165 | Torment
+ 66 | Pecha Berry     | 166 | Facade
+ 67 | Cheri Berry     | 167 | Secret Power
+ 68 | Totter Seed     | 168 | Rest
+ 69 | Sleep Seed      | 169 | Attract
+ 70 | Plain Seed      | 170 | Thief
+ 71 | Warp Seed       | 171 | Steel Wing
+ 72 | Blast Seed      | 172 | Skill Swap
+ 73 | Ginseng         | 173 | Snatch Orb
+ 74 | Joy Seed        | 174 | Overheat
+ 75 | Chesto Berry    | 175 | Wide Slash
+ 76 | Stun Seed       | 176 | Excavate
+ 77 | Max Elixir      | 177 | Spin Slash
+ 78 | Protein         | 178 | See-Trap Orb
+ 79 | Calcium         | 179 | Mug Orb
+ 80 | Iron            | 180 | Rebound Orb
+ 81 | Zinc            | 181 | Lob Orb
+ 82 | Apple           | 182 | Switcher Orb
+ 83 | Big Apple       | 183 | Blowback Orb
+ 84 | Grimy Food      | 184 | Warp Orb
+ 85 | Huge Apple      | 185 | Transfer Orb
+ 86 | White Gummi     | 186 | Slow Orb
+ 87 | Red Gummi       | 187 | Quick Orb
+ 88 | Blue Gummi      | 188 | Luminous Orb
+ 89 | Grass Gummi     | 189 | Petrify Orb
+ 90 | Yellow Gummi    | 190 | Stayaway Orb
+ 91 | Clear Gummi     | 191 | Pounce Orb
+ 92 | Orange Gummi    | 192 | Trawl Orb
+ 93 | Pink Gummi      | 193 | Cleanse Orb
+ 94 | Brown Gummi     | 194 | Observer Orb
+ 95 | Sky Gummi       | 195 | Decoy Orb
+ 96 | Gold Gummi      | 196 | Slumber Orb
+ 97 | Green Gummi     | 197 | Totter Orb
+ 98 | Gray Gummi      | 198 | Two-Edge Orb
+ 99 | Purple Gummi    | 199 | Silence Orb
+
+
 **END OF API DOCUMENTATION**
 
 
