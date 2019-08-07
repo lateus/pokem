@@ -415,7 +415,7 @@ No. | Dungeon
   3 | Sinister Woods
   4 | Silent Chasm
   5 | Mt. Thunder
-  6 | Mt. Thunder Peak
+  6 | Mt. Thunder Peak*
   7 | Great Canyon
   8 | Lapis Cave
   9 | Mt. Blaze
@@ -423,15 +423,15 @@ No. | Dungeon
  11 | Frosty Forest
  12 | Frosty Grotto
  13 | Mt. Freeze
- 14 | Mt. Freeze Peak
+ 14 | Mt. Freeze Peak*
  15 | Magma Cavern
- 16 | Magma Cavern Pit
+ 16 | Magma Cavern Pit*
  17 | Sky Tower
- 18 | Sky Tower Summit
+ 18 | Sky Tower Summit*
  19 | Stormy Sea
  20 | Silver Trench
  21 | Meteor Cave
- 22 | Mt. Freeze Peak
+ 22 | Mt. Freeze Peak*
  23 | Western Cave
  24 | [INVALID]
  25 | [INVALID]
@@ -456,12 +456,12 @@ No. | Dungeon
  44 | Remains Island
  45 | Marvelous Sea
  46 | Fantasy Strait
- 47 | Rock Path
- 48 | Snow Path
+ 47 | Rock Path*
+ 48 | Snow Path*
  49 | [INVALID]
  50 | [INVALID]
  51 | [INVALID]
- 52 | Dojo Registration
+ 52 | Dojo Registration*
  53 | Howling Forest
  54 | [INVALID]
  55 | Fantasy Strait
@@ -473,6 +473,7 @@ No. | Dungeon
  61 | [INVALID]
  62 | Purity Forest
 
+**NOTE:** Dungeons marked with a * are valid but cannot be accepted in Wonder Mails.
 
 **END OF API DOCUMENTATION**
 
