@@ -399,7 +399,7 @@ No. | Item            | No. | Item            | No. | Item
 
 ## Dungeons  
 
-Bellow is the complete database of dungeons. Dungeons marked as **[INVALID]** cannot be used in mails. Some mail types add limitations to the dungeons that can be involved (for example, you can be rescued in **Sky Tower Summit** by a friend, but you cannot accept a regular mission there).  
+Bellow is the complete database of dungeons. Dungeons marked as **[INVALID]** cannot be used in mails. Some mail types add limitations to the dungeons that can be involved (for example, you can be rescued in **Sky Tower Summit** by a friend, but you cannot accept a Wonder Mail mission there).  
 
 These values are defined as:
 
