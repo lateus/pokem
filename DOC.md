@@ -397,6 +397,83 @@ No. | Item            | No. | Item            | No. | Item
  99 | Purple Gummi    | 199 | Silence Orb
 
 
+## Dungeons  
+
+Bellow is the complete database of dungeons. Dungeons marked as **[INVALID]** cannot be used in mails. Some mail types add limitations to the dungeons that can be involved (for example, you can be rescued in **Sky Tower Summit** by a friend, but you cannot accept a regular mission there).  
+
+These values are defined as:
+
+```c
+const char* dungeonsStr[];
+```  
+
+No. | Dungeon        
+--- | ---------------
+  0 | Tiny Woods
+  1 | Thunderwave Cave
+  2 | Mt. Steel
+  3 | Sinister Woods
+  4 | Silent Chasm
+  5 | Mt. Thunder
+  6 | Mt. Thunder Peak
+  7 | Great Canyon
+  8 | Lapis Cave
+  9 | Mt. Blaze
+ 10 | Mt. Blaze Peak
+ 11 | Frosty Forest
+ 12 | Frosty Grotto
+ 13 | Mt. Freeze
+ 14 | Mt. Freeze Peak
+ 15 | Magma Cavern
+ 16 | Magma Cavern Pit
+ 17 | Sky Tower
+ 18 | Sky Tower Summit
+ 19 | Stormy Sea
+ 20 | Silver Trench
+ 21 | Meteor Cave
+ 22 | Mt. Freeze Peak
+ 23 | Western Cave
+ 24 | [INVALID]
+ 25 | [INVALID]
+ 26 | Wish Cave
+ 27 | Buried Relic
+ 28 | Pitfall Valley
+ 29 | Northern Range
+ 30 | [INVALID]
+ 31 | Desert Region
+ 32 | Southern Cavern
+ 33 | Wyvern Hill
+ 34 | Fiery Field
+ 35 | Northwind Field
+ 36 | Solar Cave
+ 37 | Lightning Field
+ 38 | Darknight Relic
+ 39 | [INVALID]
+ 40 | Murky Cave
+ 41 | Grand Sea
+ 42 | Uproar Forest
+ 43 | Oddity Cave
+ 44 | Remains Island
+ 45 | Marvelous Sea
+ 46 | Fantasy Strait
+ 47 | Rock Path
+ 48 | Snow Path
+ 49 | [INVALID]
+ 50 | [INVALID]
+ 51 | [INVALID]
+ 52 | Dojo Registration
+ 53 | Howling Forest
+ 54 | [INVALID]
+ 55 | Fantasy Strait
+ 56 | Waterfall Pond
+ 57 | Unown Relic
+ 58 | Joyous Tower
+ 59 | Far-off Sea
+ 60 | Mt. Faraway
+ 61 | [INVALID]
+ 62 | Purity Forest
+
+
 **END OF API DOCUMENTATION**
 
 
