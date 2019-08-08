@@ -1,5 +1,4 @@
-#include "../../include/view/view.h"
-#include "../../include/model/md1database.h"
+#include "view.h"
 
 #include <stdio.h>
 #include <stdlib.h>

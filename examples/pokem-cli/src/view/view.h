@@ -1,7 +1,7 @@
 #ifndef VIEW_H
 #define VIEW_H
 
-#include "../model/md1global.h"
+#include "../../lib/pokem.h"
 
 int showSelectionScreen(void);
 

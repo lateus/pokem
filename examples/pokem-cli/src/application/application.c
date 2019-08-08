@@ -1,8 +1,5 @@
-#include "../include/application.h"
-#include "../include/decode_encode/decode/dec_wm.h"
-#include "../include/decode_encode/decode/dec_sos.h"
-#include "../include/decode_encode/encode/enc_wm.h"
-#include "../include/decode_encode/encode/enc_sos.h"
+#include "application.h"
+#include "../view/view.h"
 
 #include <stdlib.h>
 

@@ -1,5 +1,5 @@
-#include "../include/application.h"
-#include "../include/view/view.h"
+#include "application/application.h"
+#include "view/view.h"
 
 #include <stdio.h>
 
