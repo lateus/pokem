@@ -9,22 +9,22 @@ BINDIR		:=	bin
 BINLIBDIR	:=	binlib
 
 SOURCES		:=	src/core/Decode/DecodeSOS/DecodeSOS.c \
-                src/core/Decode/DecodeWonderMail/DecodeWonderMail.c \
-                src/core/Decode/UtilDecode/UtilDecode.c \
-                src/core/Encode/EncodeSOS/EncodeSOS.c \
-                src/core/Encode/EncodeWonderMail/EncodeWonderMail.c \
-                src/core/Encode/UtilEncode/UtilEncode.c \
-                src/core/Convert/Convert.c \
-                src/core/UtilCore/UtilCore.c \
-                src/data/md1database/md1database.c
+				src/core/Decode/DecodeWonderMail/DecodeWonderMail.c \
+				src/core/Decode/UtilDecode/UtilDecode.c \
+				src/core/Encode/EncodeSOS/EncodeSOS.c \
+				src/core/Encode/EncodeWonderMail/EncodeWonderMail.c \
+				src/core/Encode/UtilEncode/UtilEncode.c \
+				src/core/Convert/Convert.c \
+				src/core/UtilCore/UtilCore.c \
+				src/data/md1database/md1database.c
 
 OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o $(BUILDDIR)/view.o
 
 OBJS_SLIB	:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
-                $(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
-                $(BUILDDIR)/Convert.o \
-                $(BUILDDIR)/UtilCore.o \
-                $(BUILDDIR)/md1database.o
+				$(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
+				$(BUILDDIR)/Convert.o \
+				$(BUILDDIR)/UtilCore.o \
+				$(BUILDDIR)/md1database.o
 
 LIB_HEADER      :=      src/lib/pokem.h
 
@@ -82,14 +82,14 @@ else
 	MKDIR_FLAGS	:=	-p
 endif
 
-.PHONY: all
-all: $(STATIC_LIB)
+.DEFAULT_GOAL := all
+.PHONY: all staticlib clean help
 
-.PHONY: staticlib
-staticlib: $(BUILDDIR) $(STATIC_LIB)
+all: $(STATIC_LIB) ## Build Pokem project
 
-.PHONY: clean
-clean:
+staticlib: $(BUILDDIR) $(STATIC_LIB) ## Build Pokem static library (default)
+
+clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
@@ -102,6 +102,9 @@ clean:
 	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
 	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
 	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
+
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
 
 $(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS_SLIB) $(OBJS) $(BINDIR)
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
