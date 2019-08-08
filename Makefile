@@ -5,29 +5,59 @@ CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
 
 # DIRECTORIES
 BUILDDIR	:=	build
-BINDIR		:=	bin
 BINLIBDIR	:=	binlib
 
-SRCS		:=	src/main.c src/application.c \
-				src/model/md1database.c \
-				src/decode_encode/dec_enc_common.c \
-				src/decode_encode/encode/enc_wm.c src/decode_encode/encode/enc_sos.c src/decode_encode/encode/encode.c \
-				src/decode_encode/decode/dec_wm.c src/decode_encode/decode/dec_sos.c src/decode_encode/decode/decode.c \
-				src/decode_encode/convert/convert.c \
-				src/view/view.c
+SOURCES		:=	src/core/Decode/DecodeSOS/DecodeSOS.c \
+				src/core/Decode/DecodeWonderMail/DecodeWonderMail.c \
+				src/core/Decode/UtilDecode/UtilDecode.c \
+				src/core/Encode/EncodeSOS/EncodeSOS.c \
+				src/core/Encode/EncodeWonderMail/EncodeWonderMail.c \
+				src/core/Encode/UtilEncode/UtilEncode.c \
+				src/core/Convert/Convert.c \
+				src/core/UtilCore/UtilCore.c \
+				src/data/md1database/md1database.c
 
-OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o $(BUILDDIR)/view.o
+OBJS_SLIB	:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
+				$(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
+				$(BUILDDIR)/Convert.o \
+				$(BUILDDIR)/UtilCore.o \
+				$(BUILDDIR)/md1database.o
 
-OBJS_SLIB	:=	$(BUILDDIR)/md1database.o \
-				$(BUILDDIR)/dec_enc_common.o \
-				$(BUILDDIR)/enc_wm.o $(BUILDDIR)/enc_sos.o $(BUILDDIR)/encode.o \
-				$(BUILDDIR)/dec_wm.o $(BUILDDIR)/dec_sos.o $(BUILDDIR)/decode.o \
-				$(BUILDDIR)/convert.o
+LIB_HEADER_NAME		:=	pokem.h
+LIB_HEADER_FILEPATH	:=	src/lib/$(LIB_HEADER_NAME)
 
-STATIC_LIB	:=	$(BINLIBDIR)/libpokem.a
-STATIC_HDR	:=	$(BINLIBDIR)/pokem.h
+# Examples
+EXAMPLES_DIR	:=	examples
+EXAMPLES		:=	$(EXAMPLES_DIR)/pokem-cli
+
+# Deployment
+STATIC_LIB_NAME				:=	libpokem.a
+STATIC_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(STATIC_LIB_NAME)
+
+LIB_HEADER_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(LIB_HEADER_NAME)
 
 AR_FLAGS	:=	rcs
+
+# Platform-specific switches
+ifeq ($(OS),Windows_NT)
+	SHELL		:=	cmd
+	RM			:=	del
+	CP			:=	cp
+	CC			:=	gcc
+	RMDIR		:=	rd
+	RM_FLAGS	:=
+	RMDIR_FLAGS	:=
+	MKDIR		:=	mkdir
+	MKDIR_FLAGS	:=
+else
+	RMDIR		:=	$(RM)
+	CP			:=	cp
+	CP_FLAGS	:=	-f
+	RM_FLAGS	:=
+	RMDIR_FLAGS	:=	-frd
+	MKDIR		:=	mkdir
+	MKDIR_FLAGS	:=	-p
+endif
 
 # MESSAGES
 MSG			:=	printf
@@ -50,101 +80,65 @@ LIGHTCYAN	:=	\033[1;36m
 LIGHTGRAY	:=	\033[0;37m
 WHITE		:=	\033[1;37m
 
-# Platform-specific switches
-ifeq ($(OS),Windows_NT)
-	SHELL		:=	cmd
-	RM			:=	del
-	CP			:=	cp
-	CC			:=	gcc
-	RMDIR		:=	rd
-	WINRES		:=	windres
-	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
-	RC_FILE		:=	res/manifest.rc
-	RC_OBJ		:=	$(BUILDDIR)/res.o
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=
-else
-	RMDIR		:=	$(RM)
-	CP			:=	cp
-	WINRES		:=
-	EXECUTABLE	:=	$(BINDIR)/pokeM
-	RC_FILE		:=
-	RC_OBJ		:=
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=	-frd
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=	-p
-endif
+.DEFAULT_GOAL := all
+.PHONY: all staticlib examples clean help
 
-.PHONY: all
-all: $(EXECUTABLE)
+all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem project (default)
 
-.PHONY: staticlib
-staticlib: $(BUILDDIR) $(STATIC_LIB)
+staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
-.PHONY: clean
-clean:
+examples: $(EXAMPLES) ## Build examples
+
+clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(EXECUTABLE)
-	$(RM) $(RM_FLAGS) $(STATIC_LIB)
+	$(RM) $(RM_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(ORANGE)Removing headers...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(STATIC_HDR)
+	$(RM) $(RM_FLAGS) $(STATIC_H)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
 	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
-	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
 	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
-	@$(MSG) "$(GREEN)Done.$(NOCOLOR)\n"
+	@$(MSG) "\n$(ORANGE)Cleaning examples...$(NOCOLOR)\n"
+	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
+	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
+	@$(MSG) "\n$(GREEN)Project $(WHITE)Pokem$(GREEN) cleaned.$(NOCOLOR)\n\n"
 
-$(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS_SLIB) $(OBJS) $(BINDIR)
-	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
-	$(CC) $(CFLAGS) $(CC_LFLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS) -o $@
-	@$(MSG) "$(GREEN)Done. The program was build in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory.$(NOCOLOR)\n"
-	@$(MSG) "$(GREEN)You can run it by typing: $(WHITE)./$(EXECUTABLE)$(GREEN). Enjoy.$(NOCOLOR)\n"
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
 
-$(STATIC_LIB): $(BINLIBDIR) $(OBJS_SLIB)
+$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJS_SLIB)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJS_SLIB)
-	@$(MSG) "$(YELLOW)Copying the static library header file...$(NOCOLOR)\n"
-	$(CP) include/staticlib.h $(STATIC_HDR)
-	@$(MSG) "$(GREEN)Done. The static library was build in the $(LIGHTBLUE)$(BINLIBDIR)$(GREEN) directory.$(NOCOLOR)\n"
+	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
+	$(CP) $(CP_FLAGS) $(LIB_HEADER_FILEPATH) $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n$(GREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(GREEN) directory.$(NOCOLOR)\n\n"
 
-$(OBJS):
-	$(CC) -c $(CFLAGS) $< -o $@
+$(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
+	@$(MSG) "$(LIGHTBLUE)Building $(WHITE)$@$(LIGHTBLUE)...$(NOCOLOR)\n"
+	@$(MSG) "$(YELLOW)Updating static library...$(NOCOLOR)\n"
+	$(CP) $(CP_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH) $@/lib/$(STATIC_LIB_NAME)
+	$(CP) $(CP_FLAGS) $(LIB_HEADER_DEPLOY_FILEPATH) $@/lib/$(LIB_HEADER_NAME)
+	@$(MAKE) --directory $@
 
 $(OBJS_SLIB):
 	$(CC) -c $(CFLAGS) $< -o $@
 
-$(RC_OBJ):
-	@$(MSG) "$(YELLOW)Building MS Windows's RC file...$(NOCOLOR)\n"
-	$(WINRES) -i $(RC_FILE) -o $@
-	@$(MSG) "$(YELLOW)Building intermediate objects files...$(NOCOLOR)\n"
-
 $(BUILDDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BUILDDIR)
-
-$(BINDIR):
-	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
-	$(MKDIR) $(MKDIR_FLAGS) $(BINDIR)
 
 $(BINLIBDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BINLIBDIR)
 
 # INTERMEDIATE OBJECTS BUILD RULES
-$(BUILDDIR)/main.o:				src/main.c
-$(BUILDDIR)/application.o:		src/application.c
-$(BUILDDIR)/md1database.o:		src/model/md1database.c
-$(BUILDDIR)/dec_enc_common.o:	src/decode_encode/dec_enc_common.c
-$(BUILDDIR)/enc_wm.o:			src/decode_encode/encode/enc_wm.c
-$(BUILDDIR)/enc_sos.o:			src/decode_encode/encode/enc_sos.c
-$(BUILDDIR)/encode.o:			src/decode_encode/encode/encode.c
-$(BUILDDIR)/dec_wm.o:			src/decode_encode/decode/dec_wm.c
-$(BUILDDIR)/dec_sos.o:			src/decode_encode/decode/dec_sos.c
-$(BUILDDIR)/decode.o:			src/decode_encode/decode/decode.c
-$(BUILDDIR)/convert.o:			src/decode_encode/convert/convert.c
-$(BUILDDIR)/view.o:				src/view/view.c
+$(BUILDDIR)/DecodeSOS.o:        src/core/Decode/DecodeSOS/DecodeSOS.c
+$(BUILDDIR)/DecodeWonderMail.o: src/core/Decode/DecodeWonderMail/DecodeWonderMail.c
+$(BUILDDIR)/UtilDecode.o:       src/core/Decode/UtilDecode/UtilDecode.c
+$(BUILDDIR)/EncodeSOS.o:        src/core/Encode/EncodeSOS/EncodeSOS.c
+$(BUILDDIR)/EncodeWonderMail.o: src/core/Encode/EncodeWonderMail/EncodeWonderMail.c
+$(BUILDDIR)/UtilEncode.o:       src/core/Encode/UtilEncode/UtilEncode.c
+$(BUILDDIR)/Convert.o:          src/core/Convert/Convert.c
+$(BUILDDIR)/UtilCore.o:         src/core/UtilCore/UtilCore.c
+$(BUILDDIR)/md1database.o:      src/data/md1database/md1database.c

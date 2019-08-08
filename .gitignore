@@ -2,5 +2,13 @@ bin/
 binlib/
 build/
 .vscode/
+
+# Qt project files
 *.user
+*.user.*
 *.pro
+*.cflags
+*.cxxflags
+*.creator
+*.files
+*.includes
