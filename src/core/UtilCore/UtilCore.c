@@ -1,6 +1,6 @@
-#include "../../include/decode_encode/dec_enc_common.h"
-#include "../../include/model/md1global.h"
-#include "../../include/model/md1database.h"
+#include "UtilCore.h"
+#include "../../data/md1database/md1database.h"
+#include "../../data/md1global/md1global.h"
 
 int areParents(int pkmnClient, int pkmnTarget)
 {

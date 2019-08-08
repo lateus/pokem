@@ -8,24 +8,28 @@ BUILDDIR	:=	build
 BINDIR		:=	bin
 BINLIBDIR	:=	binlib
 
-SRCS		:=	src/main.c src/application.c \
-				src/model/md1database.c \
-				src/decode_encode/dec_enc_common.c \
-				src/decode_encode/encode/enc_wm.c src/decode_encode/encode/enc_sos.c src/decode_encode/encode/encode.c \
-				src/decode_encode/decode/dec_wm.c src/decode_encode/decode/dec_sos.c src/decode_encode/decode/decode.c \
-				src/decode_encode/convert/convert.c \
-				src/view/view.c
+SOURCES		:=	src/core/Decode/DecodeSOS/DecodeSOS.c \
+                src/core/Decode/DecodeWonderMail/DecodeWonderMail.c \
+                src/core/Decode/UtilDecode/UtilDecode.c \
+                src/core/Encode/EncodeSOS/EncodeSOS.c \
+                src/core/Encode/EncodeWonderMail/EncodeWonderMail.c \
+                src/core/Encode/UtilEncode/UtilEncode.c \
+                src/core/Convert/Convert.c \
+                src/core/UtilCore/UtilCore.c \
+                src/data/md1database/md1database.c
 
 OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o $(BUILDDIR)/view.o
 
-OBJS_SLIB	:=	$(BUILDDIR)/md1database.o \
-				$(BUILDDIR)/dec_enc_common.o \
-				$(BUILDDIR)/enc_wm.o $(BUILDDIR)/enc_sos.o $(BUILDDIR)/encode.o \
-				$(BUILDDIR)/dec_wm.o $(BUILDDIR)/dec_sos.o $(BUILDDIR)/decode.o \
-				$(BUILDDIR)/convert.o
+OBJS_SLIB	:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
+                $(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
+                $(BUILDDIR)/Convert.o \
+                $(BUILDDIR)/UtilCore.o \
+                $(BUILDDIR)/md1database.o
+
+LIB_HEADER      :=      src/lib/pokem.h
 
 STATIC_LIB	:=	$(BINLIBDIR)/libpokem.a
-STATIC_HDR	:=	$(BINLIBDIR)/pokem.h
+STATIC_HEADER	:=	$(BINLIBDIR)/pokem.h
 
 AR_FLAGS	:=	rcs
 
@@ -79,7 +83,7 @@ else
 endif
 
 .PHONY: all
-all: $(EXECUTABLE)
+all: $(STATIC_LIB)
 
 .PHONY: staticlib
 staticlib: $(BUILDDIR) $(STATIC_LIB)
@@ -105,11 +109,11 @@ $(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS_SLIB) $(OBJS) $(BINDIR)
 	@$(MSG) "$(GREEN)Done. The program was build in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory.$(NOCOLOR)\n"
 	@$(MSG) "$(GREEN)You can run it by typing: $(WHITE)./$(EXECUTABLE)$(GREEN). Enjoy.$(NOCOLOR)\n"
 
-$(STATIC_LIB): $(BINLIBDIR) $(OBJS_SLIB)
+$(STATIC_LIB): $(BUILDDIR) $(BINLIBDIR) $(OBJS_SLIB)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJS_SLIB)
 	@$(MSG) "$(YELLOW)Copying the static library header file...$(NOCOLOR)\n"
-	$(CP) include/staticlib.h $(STATIC_HDR)
+	$(CP) $(LIB_HEADER) $(STATIC_HEADER)
 	@$(MSG) "$(GREEN)Done. The static library was build in the $(LIGHTBLUE)$(BINLIBDIR)$(GREEN) directory.$(NOCOLOR)\n"
 
 $(OBJS):
@@ -136,15 +140,12 @@ $(BINLIBDIR):
 	$(MKDIR) $(MKDIR_FLAGS) $(BINLIBDIR)
 
 # INTERMEDIATE OBJECTS BUILD RULES
-$(BUILDDIR)/main.o:				src/main.c
-$(BUILDDIR)/application.o:		src/application.c
-$(BUILDDIR)/md1database.o:		src/model/md1database.c
-$(BUILDDIR)/dec_enc_common.o:	src/decode_encode/dec_enc_common.c
-$(BUILDDIR)/enc_wm.o:			src/decode_encode/encode/enc_wm.c
-$(BUILDDIR)/enc_sos.o:			src/decode_encode/encode/enc_sos.c
-$(BUILDDIR)/encode.o:			src/decode_encode/encode/encode.c
-$(BUILDDIR)/dec_wm.o:			src/decode_encode/decode/dec_wm.c
-$(BUILDDIR)/dec_sos.o:			src/decode_encode/decode/dec_sos.c
-$(BUILDDIR)/decode.o:			src/decode_encode/decode/decode.c
-$(BUILDDIR)/convert.o:			src/decode_encode/convert/convert.c
-$(BUILDDIR)/view.o:				src/view/view.c
+$(BUILDDIR)/DecodeSOS.o:        src/core/Decode/DecodeSOS/DecodeSOS.c
+$(BUILDDIR)/DecodeWonderMail.o: src/core/Decode/DecodeWonderMail/DecodeWonderMail.c
+$(BUILDDIR)/UtilDecode.o:       src/core/Decode/UtilDecode/UtilDecode.c
+$(BUILDDIR)/EncodeSOS.o:        src/core/Encode/EncodeSOS/EncodeSOS.c
+$(BUILDDIR)/EncodeWonderMail.o: src/core/Encode/EncodeWonderMail/EncodeWonderMail.c
+$(BUILDDIR)/UtilEncode.o:       src/core/Encode/UtilEncode/UtilEncode.c
+$(BUILDDIR)/Convert.o:          src/core/Convert/Convert.c
+$(BUILDDIR)/UtilCore.o:         src/core/UtilCore/UtilCore.c
+$(BUILDDIR)/md1database.o:      src/data/md1database/md1database.c

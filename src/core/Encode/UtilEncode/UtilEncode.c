@@ -1,10 +1,4 @@
-#include "../../../include/decode_encode/encode/encode.h"
-#include "../../../include/model/md1global.h"
-#include "../../../include/model/md1database.h"
-
-#include <stdio.h>
-#include <string.h>
-
+#include "UtilEncode.h"
 
 /* see the equivalent in "decode.c" if you are looking for details about how this function works */
 void bitUnpackingEncoding(char* unpackedIntegers, const char *packedPassword, int bytesToUnpack)

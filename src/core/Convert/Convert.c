@@ -1,14 +1,12 @@
-#include "../../../include/decode_encode/convert/convert.h"
-#include "../../../include/decode_encode/decode/dec_sos.h"
-#include "../../../include/decode_encode/decode/decode.h"
-#include "../../../include/decode_encode/encode/enc_sos.h"
-#include "../../../include/decode_encode/encode/encode.h"
-#include "../../../include/decode_encode/dec_enc_common.h"
-#include "../../../include/model/md1global.h"
-#include "../../../include/model/md1database.h"
+#include "Convert.h"
+#include "../Decode/DecodeSOS/DecodeSOS.h"
+#include "../Encode/EncodeSOS/EncodeSOS.h"
+#include "../Decode/UtilDecode/UtilDecode.h"
+#include "../Encode/UtilEncode/UtilEncode.h"
+#include "../UtilCore/UtilCore.h"
+#include "../../data/md1global/md1global.h"
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)

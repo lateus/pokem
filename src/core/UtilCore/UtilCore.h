@@ -1,5 +1,5 @@
-#ifndef DEC_ENC_COMMON_H
-#define DEC_ENC_COMMON_H
+#ifndef UTILCORE_H
+#define UTILCORE_H
 
 int areParents(int pkmnClient, int pkmnTarget);
 int arePairs(int pkmnClient, int pkmnTarget);
@@ -10,4 +10,4 @@ int computeDifficulty(int dungeon, int dungeonFloor, int missionType);
 int computeMoneyReward(int difficulty, int rewardType);
 int computeChecksum(const char* packedPassword, int bytes);
 
-#endif /* DEC_ENC_COMMON_H */
+#endif /* UTILCORE_H */

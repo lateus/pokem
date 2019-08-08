@@ -1,7 +1,7 @@
-#ifndef DEC_WM_H
-#define DEC_WM_H
+#ifndef DECODEWONDERMAIL_H
+#define DECODEWONDERMAIL_H
 
-#include "../../model/md1global.h"
+#include "../../../data/md1global/md1global.h"
 
 int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult);
 int WonderMailIsInvalid(const char *password, char *packed15BytesPassword);
@@ -13,4 +13,4 @@ void flavorTextHead(const struct WONDERMAIL *wm, int headIndicator, int pairsInd
 void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo);
 void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail);
 
-#endif /* DEC_WM_H */
+#endif /* DECODEWONDERMAIL_H */

@@ -1,5 +1,4 @@
-#include "../../../include/decode_encode/decode/decode.h"
-#include <stdio.h>
+#include "UtilDecode.h"
 
 void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack)
 {

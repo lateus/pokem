@@ -1,7 +1,7 @@
-#include "../../../include/decode_encode/encode/enc_wm.h"
-#include "../../../include/decode_encode/encode/encode.h"
-#include "../../../include/decode_encode/dec_enc_common.h"
-#include "../../../include/model/md1database.h"
+#include "EncodeWonderMail.h"
+#include "../UtilEncode/UtilEncode.h"
+#include "../../UtilCore/UtilCore.h"
+#include "../../../data/md1database/md1database.h"
 
 #include <stdio.h>
 #include <stdlib.h>

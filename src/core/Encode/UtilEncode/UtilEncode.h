@@ -1,6 +1,6 @@
-#ifndef ENCODE_H
-#define ENCODE_H
+#ifndef UTILENCODE_H
+#define UTILENCODE_H
 
 void bitUnpackingEncoding(char* unpackedIntegers, const char* packedPassword, int bytesToUnpack);
 
-#endif /* ENCODE_H */
+#endif /* UTILENCODE_H */

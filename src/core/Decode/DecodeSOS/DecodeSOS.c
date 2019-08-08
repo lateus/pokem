@@ -1,8 +1,7 @@
-#include "../../../include/decode_encode/decode/dec_sos.h"
-#include "../../../include/decode_encode/decode/decode.h"
-#include "../../../include/decode_encode/dec_enc_common.h"
-#include "../../../include/model/md1database.h"
-#include "../../../include/model/md1global.h"
+#include "DecodeSOS.h"
+#include "../UtilDecode/UtilDecode.h"
+#include "../../UtilCore/UtilCore.h"
+#include "../../../data/md1database/md1database.h"
 
 #include <stdio.h>
 #include <string.h>

@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "md1global.h"
+#include "../data/md1global/md1global.h"
 
 
 #define DEBUG(X, Y) fputs("["#X"] " Y "\n", stderr);

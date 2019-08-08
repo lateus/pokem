@@ -1,4 +1,4 @@
-#include "../../include/model/md1database.h"
+#include "md1database.h"
 
 /* Difficulties */
 /*

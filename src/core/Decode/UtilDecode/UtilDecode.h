@@ -1,6 +1,6 @@
-#ifndef DECODE_H
-#define DECODE_H
+#ifndef UTILDECODE_H
+#define UTILDECODE_H
 
 void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack);
 
-#endif/* DECODE_H */
+#endif/* UTILDECODE_H */
