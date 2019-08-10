@@ -78,7 +78,7 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
 	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
 	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
-	@$(MSG) "$(GREEN)Example $(WHITE)pokem-cli$(GREEN) cleaned.$(NOCOLOR)\n\n"
+	@$(MSG) "$(LIGHTGREEN)Example $(WHITE)pokem-cli$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
@@ -86,7 +86,7 @@ help:
 $(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS) $(BINDIR)
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
 	$(CC) -o $@ $(CFLAGS) $(CC_LFLAGS) $(RC_OBJ) $(OBJS) -L$(LIBDIR) -l$(LIBS)
-	@$(MSG) "$(GREEN)Done. The example $(WHITE)pokem-cli$(GREEN) was built in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory. Enjoy.$(NOCOLOR)\n"
+	@$(MSG) "$(LIGHTGREEN)Done. The example $(WHITE)pokem-cli$(LIGHTGREEN) was built in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory. Enjoy.$(NOCOLOR)\n"
 
 $(OBJS):
 	$(CC) -c $(CFLAGS) $< -o $@
