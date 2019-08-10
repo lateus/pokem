@@ -102,7 +102,7 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "\n$(ORANGE)Cleaning examples...$(NOCOLOR)\n"
 	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
 	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
-	@$(MSG) "\n$(GREEN)Project $(WHITE)Pokem$(GREEN) cleaned.$(NOCOLOR)\n\n"
+	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)Pokem$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
@@ -112,7 +112,7 @@ $(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJS_SLIB)
 	$(AR) $(AR_FLAGS) $@ $(OBJS_SLIB)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
 	$(CP) $(CP_FLAGS) $(LIB_HEADER_FILEPATH) $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n$(GREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(GREEN) directory.$(NOCOLOR)\n\n"
+	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
 
 $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(LIGHTBLUE)Building $(WHITE)$@$(LIGHTBLUE)...$(NOCOLOR)\n"
@@ -122,7 +122,8 @@ $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MAKE) --directory $@
 
 $(OBJS_SLIB):
-	$(CC) -c $(CFLAGS) $< -o $@
+	@$(MSG) "$(GREEN)Compiling $(LIGHTBLUE)$<$(GREEN)...$(NOCOLOR)\n"
+	@$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILDDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
