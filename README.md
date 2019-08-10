@@ -23,13 +23,19 @@ The only build requirement is a C Compiler. You can use the [Makefile](Makefile)
 Most **Linux** distros already comes with a basic equipment for developers that includes GCC, or at least a C and a C++ compiler set, and also a `make` tool. If not, to install `make` and a C compiler, use the package manager of your distribution.  
 
 * **Debian** (*apt*):  
-`sudo apt install build-essential`  
+```sh
+$ sudo apt install build-essential  
+```
 
 * **Fedora**/**RHEL**/**CentOS** (*yum*):  
-`sudo yum groupinstall "C Development Tools and Libraries"`  
-
+```sh
+$ sudo yum groupinstall "C Development Tools and Libraries"
+```
+  
 * **openSUSE** (*zypper*):  
-`sudo zypper install -t pattern devel_basis`  
+```sh
+$ sudo zypper install -t pattern devel_basis
+```
 
 These are just examples. If you use a different package manager, you must search for the corresponding package in your distribution.
 
