@@ -17,11 +17,14 @@ SOURCES		:=	src/core/Decode/DecodeSOS/DecodeSOS.c \
 				src/core/UtilCore/UtilCore.c \
 				src/data/md1database/md1database.c
 
-OBJS_SLIB	:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
+OBJECTS		:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
 				$(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
 				$(BUILDDIR)/Convert.o \
 				$(BUILDDIR)/UtilCore.o \
 				$(BUILDDIR)/md1database.o
+
+TEST_SUITE	:=	test/CuTest.c test/allTests.c
+TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c
 
 LIB_HEADER_NAME		:=	pokem.h
 LIB_HEADER_FILEPATH	:=	src/lib/$(LIB_HEADER_NAME)
@@ -49,6 +52,7 @@ ifeq ($(OS),Windows_NT)
 	RMDIR_FLAGS	:=
 	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=
+	TEST_RESULT	:=	$(BUILDDIR)/tests.exe
 else
 	RMDIR		:=	$(RM)
 	CP			:=	cp
@@ -57,6 +61,7 @@ else
 	RMDIR_FLAGS	:=	-frd
 	MKDIR		:=	mkdir
 	MKDIR_FLAGS	:=	-p
+	TEST_RESULT	:=	$(BUILDDIR)/tests
 endif
 
 # MESSAGES
@@ -83,19 +88,23 @@ WHITE		:=	\033[1;37m
 .DEFAULT_GOAL := all
 .PHONY: all staticlib examples clean help
 
-all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem project (default)
+all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library and examples (default)
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
 examples: $(EXAMPLES) ## Build examples
 
+tests: $(TEST_RESULT) ## Build and run tests
+
 clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS)
+	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJECTS) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(ORANGE)Removing headers...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(STATIC_H)
+	@$(MSG) "$(ORANGE)Removing tests...$(NOCOLOR)\n"
+	$(RM) $(RM_FLAGS) $(TEST_RESULT)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
 	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
 	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
@@ -107,9 +116,9 @@ clean: ## Remove all leftovers from the previous build
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
 
-$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJS_SLIB)
+$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
-	$(AR) $(AR_FLAGS) $@ $(OBJS_SLIB)
+	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
 	$(CP) $(CP_FLAGS) $(LIB_HEADER_FILEPATH) $(LIB_HEADER_DEPLOY_FILEPATH)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
@@ -121,7 +130,13 @@ $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
 	$(CP) $(CP_FLAGS) $(LIB_HEADER_DEPLOY_FILEPATH) $@/lib/$(LIB_HEADER_NAME)
 	@$(MAKE) --directory $@
 
-$(OBJS_SLIB):
+$(TEST_RESULT): $(BUILDDIR)
+	@$(MSG) "$(LIGHTGREEN)Building tests...$(NOCOLOR)\n"
+	@$(CC) -o $@ $(TEST_SUITE) $(TEST_FILES) $(SOURCES)
+	@$(MSG) "$(LIGHTGREEN)Running tests...$(NOCOLOR)\n"
+	@$@
+
+$(OBJECTS):
 	@$(MSG) "$(GREEN)Compiling $(LIGHTBLUE)$<$(GREEN)...$(NOCOLOR)\n"
 	@$(CC) -c $(CFLAGS) $< -o $@
 
