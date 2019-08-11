@@ -61,20 +61,13 @@ unsigned int getSpecialJobIndicator(int pairsIndex, int loversIndex, int parents
 
 int findItemByDungeon(int item, int dungeon)
 {
-    /* the item and dungeon must have valid values when they enter this function */
-    if (dungeon > 63) {
-        return 0; /* the error root is about the dungeon, not the item to find, so we skip the item check */
-    }
-
-    int found = 0;
     int i;
-    for(i = 0; i < itemsInDungeons[dungeon][0]; ++i) { /* the loop run while the i-th element in the dungeon is not zero (because that marks the end) */
-        if(item == itemsInDungeons[dungeon][i]) {
-            ++found;
-            break;
+    for (i = 1; i <= itemsInDungeons[dungeon][0]; ++i) {
+        if (item == itemsInDungeons[dungeon][i]) {
+            return 1;
         }
     }
-    return found;
+    return 0;
 }
 
 
