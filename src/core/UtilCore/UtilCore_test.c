@@ -144,26 +144,25 @@ void computeMoneyReward_test(CuTest *tc)
 #undef ARRAY_SIZE
 }
 
-/* This test fails. We must dump the binary data of the packed password in UtilCore.c: computeChecksum */
 void computeChecksum_test(CuTest *tc)
 {
 #define ARRAY_SIZE 5
-    char input1[ARRAY_SIZE][33] = {
-        { 37, 56, -128, 32, -95, 18, -128,  1,   -9, -1,   64, 0, 0, 0 }, // 1?J9N/X?4P?34??764?0P??W (WM - VALID)
-        { 37, 56, -128, 32, -95, 18, -112,  1,   -9, -1,   64, 0, 0, 0 }, // 2?J9N/X?4P?34??764?0P??W (WM - INVALID)
-        { 37, 40,  54, -88,  55, 40,    0, 79, -111,  0, -127, 1, 0, 0 }, // 4?6F7M+?4JNRJ*??K??0+9?? (WM - VALID)
-        { -47,  9, -20, 28, -95, 96, -114,  38, -127, -110, 103, -86, -45,  3, 0,    0,   0,  0,  0,  0, 0, 0, 0, 8, 125, 73, 88, 1, 0, 0, 0, 80, 0 }, // ?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04? (SOS - VALID)
-        {  97, 10,  76, 17,  96, 94,   -6, -11,  -87,  -31,  10,  18,  43, 99, 3, -111, 122, 19, 43, 99, 3, 0, 0, 8, 125, 73, 88, 1, 0, 0, 0, 80, 0 }  // S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N (SOS - VALID)
+    unsigned char input1[ARRAY_SIZE][34] = {
+        { 0xD0, 0x25, 0x38, 0x80, 0x20, 0xA1, 0x12, 0x80, 0x01, 0xF7, 0xFF, 0x40, 0x00, 0x00, 0x00 }, // 1?J9N/X?4P?34??764?0P??W (WM - VALID)
+        { 0xD0, 0x25, 0x38, 0x80, 0x20, 0xA1, 0x12, 0x90, 0x01, 0xF7, 0xFF, 0x40, 0x00, 0x00, 0x00 }, // 2?J9N/X?4P?34??764?0P??W (WM - INVALID)
+        { 0x55, 0x25, 0x28, 0x36, 0xA8, 0x37, 0x28, 0x00, 0x4F, 0x91, 0x00, 0x81, 0x01, 0x00, 0x00 }, // 4?6F7M+?4JNRJ*??K??0+9?? (WM - VALID)
+        { 0x39, 0xD1, 0x09, 0xEC, 0x1C, 0xA1, 0x60, 0x8E, 0x26, 0x81, 0x92, 0x67, 0xAA, 0xD3, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x7D, 0x49, 0x58, 0x01, 0x00, 0x00, 0x00, 0x50, 0x00 }, // ?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04? (SOS - VALID)
+        { 0x03, 0x61, 0x0A, 0x4C, 0x11, 0x60, 0x5E, 0xFA, 0xF5, 0xA9, 0xE1, 0x0A, 0x12, 0x2B, 0x63, 0x03, 0x91, 0x7A, 0x13, 0x2B, 0x63, 0x03, 0x00, 0x00, 0x08, 0x7D, 0x49, 0x58, 0x01, 0x00, 0x00, 0x00, 0x50, 0x00 }  // S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N (SOS - VALID)
     };
-    int input2[ARRAY_SIZE] = { 14, 14, 14, 33, 33 };
+    int input2[ARRAY_SIZE] = { 15, 15, 15, 34, 34 };
 
     int actual[ARRAY_SIZE];
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        actual[i] = computeChecksum(input1[i], input2[i]);
+        actual[i] = computeChecksum((char*)input1[i], input2[i]);
     }
 
-    int expected[ARRAY_SIZE] = { 208, 224, 85, 57, 3 };
+    int expected[ARRAY_SIZE] = { 0xD0, 0xE0, 0x55, 0x39, 0x03 };
     for (i = 0; i < ARRAY_SIZE; ++i) {
         CuAssertIntEquals(tc, expected[i], actual[i]);
     }
