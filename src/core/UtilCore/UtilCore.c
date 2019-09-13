@@ -5,7 +5,7 @@
 int areParents(int pkmnClient, int pkmnTarget)
 {
     int i;
-    for(i = 0; i < 42; i+=2) {
+    for (i = 0; i < 42; i+=2) {
         if ( (parents[i] == pkmnClient) && (parents[i + 1] == pkmnTarget) ) {
             return (i >> 1); /* same as i/2 */
         }
@@ -19,7 +19,7 @@ int areParents(int pkmnClient, int pkmnTarget)
 int arePairs(int pkmnClient, int pkmnTarget)
 {
     int i;
-    for(i = 0; i < 90; i+=2) {
+    for (i = 0; i < 90; i+=2) {
         if ( ( (pairs[i] == pkmnClient) && (pairs[i + 1] == pkmnTarget) ) || ( (pairs[i] == pkmnTarget) && (pairs[i + 1] == pkmnClient) ) ) {
             return (i >> 1); /* same as i/2 */
         }
@@ -33,8 +33,8 @@ int arePairs(int pkmnClient, int pkmnTarget)
 int areLovers(int pkmnClient, int pkmnTarget)
 {
     int i;
-    for(i = 0; i < 12; i+=2) {
-        if( ( (lovers[i] == pkmnClient) && (lovers[i + 1] == pkmnTarget) ) || ( (lovers[i] == pkmnTarget) && (lovers[i + 1] == pkmnClient) ) ) {
+    for (i = 0; i < 12; i+=2) {
+        if ( ( (lovers[i] == pkmnClient) && (lovers[i + 1] == pkmnTarget) ) || ( (lovers[i] == pkmnTarget) && (lovers[i + 1] == pkmnClient) ) ) {
             return (i >> 1); /* same as i/2 */
         }
     }
