@@ -24,7 +24,7 @@ OBJECTS		:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/U
 				$(BUILDDIR)/md1database.o
 
 TEST_SUITE	:=	test/CuTest.c test/allTests.c
-TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c
+TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c src/core/Decode/UtilDecode/UtilDecode_test.c
 
 LIB_HEADER_NAME		:=	pokem.h
 LIB_HEADER_FILEPATH	:=	src/lib/$(LIB_HEADER_NAME)
