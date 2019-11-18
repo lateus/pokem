@@ -27,7 +27,6 @@ TEST_SUITE	:=	test/CuTest.c test/allTests.c
 TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c src/core/Decode/UtilDecode/UtilDecode_test.c src/core/Encode/UtilEncode/UtilEncode_test.c
 
 LIB_HEADER_NAME		:=	pokem.h
-LIB_HEADER_FILEPATH	:=	src/lib/$(LIB_HEADER_NAME)
 
 # Examples
 EXAMPLES_DIR	:=	examples
@@ -55,6 +54,7 @@ ifeq ($(OS),Windows_NT)
 	TEST_RESULT	:=	$(BUILDDIR)/tests.exe
 else
 	RMDIR		:=	$(RM)
+	FIND		:=	find
 	CP			:=	cp
 	CP_FLAGS	:=	-f
 	RM_FLAGS	:=
@@ -120,7 +120,13 @@ $(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
-	$(CP) $(CP_FLAGS) $(LIB_HEADER_FILEPATH) $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "#ifndef POKEM_H\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "#define POKEM_H\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n#endif /* POKEM_H */" >> $(LIB_HEADER_DEPLOY_FILEPATH)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
 
 $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
