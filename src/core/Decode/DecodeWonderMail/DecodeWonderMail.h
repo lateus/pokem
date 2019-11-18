@@ -3,6 +3,7 @@
 
 #include "../../../data/md1global/md1global.h"
 
+/* DECODING WONDER MAIL FUNCTIONS */
 int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult);
 int WonderMailIsInvalid(const char *password, char *packed15BytesPassword);
 void reallocateBytesDecodingWM(char *allocatePassword, const char *unallocatedPassword);

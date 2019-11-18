@@ -3,6 +3,7 @@
 
 #include "../../../data/md1global/md1global.h"
 
+/* DECODING SOS MAIL FUNCTIONS */
 int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult);
 int SOSMailIsInvalid(const char *password, char *packed34BytesPassword);
 void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword);

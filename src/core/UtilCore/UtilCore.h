@@ -1,6 +1,7 @@
 #ifndef UTILCORE_H
 #define UTILCORE_H
 
+/* DECODING/ENCODING COMMON FUNCTIONS */
 int areParents(int pkmnClient, int pkmnTarget);
 int arePairs(int pkmnClient, int pkmnTarget);
 int areLovers(int pkmnClient, int pkmnTarget);

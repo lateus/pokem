@@ -3,6 +3,7 @@
 
 #include "../../../data/md1global/md1global.h"
 
+/* ENCODING WONDER MAIL FUNCTIONS */
 int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword);
 int foundErrorsEntriesWM(const struct WONDERMAIL *wm);
 void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* mail);
