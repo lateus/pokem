@@ -1,4 +1,4 @@
-<p align="center"><img src=resources/logo/png/pokem_128x128@1.png></p>  
+<p align="center"><img src=resources/logo/pokem.png></p>  
 
 # PokéM - Pokémon Mystery Dungeon Mail Generator
 
