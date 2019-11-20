@@ -65,6 +65,7 @@ Returns the difficulty level of the mission with type `missionType` that takes p
 int computeMoneyReward(int difficulty, int rewardType)
 ```  
 Returns the amount of money you will receive after success in a mission with reward type `rewardType`. The `difficulty` parameter is the same returned by the function `computeDifficulty`.  
+
 ----------  
 
 
