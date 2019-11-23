@@ -1,4 +1,4 @@
-CC_WFLAGS	:=	-W -Wall -Wextra
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
 CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
