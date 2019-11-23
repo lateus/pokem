@@ -1,0 +1,12 @@
+# Known bugs
+
+1. The last floor of a dungeon can always be selected, even if you can't make a mission there (for example, floor `99` of *Purity Forest*).
+2. Floor `0` can be selected.
+3. Two-digits positive floors are prefixed with a `?` character in the mail info (for example, `Place: Purity Forest  ?98F`).
+4. A *Find item* mission can be generated when, while the item can be found in the desired dungeon, it cannot be found in the requested floor or in any floor before it. 
+
+---------------------------------------------
+
+## Bug tracker
+
+Report new bugs and request new features at [github.com/lateo96/pokem](github.com/lateo96/pokem).
