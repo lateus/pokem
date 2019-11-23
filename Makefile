@@ -124,12 +124,12 @@ $(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS)
 	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
 	@$(MSG) "#ifndef POKEM_H\n" > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "#define POKEM_H\n" > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n#endif /* POKEM_H */" > $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "#define POKEM_H\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "\n#endif /* POKEM_H */" >> $(LIB_HEADER_DEPLOY_FILEPATH)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
 
 $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
