@@ -78,9 +78,9 @@
 const char* difficultiesChars = "EDCBAS*";
 
 
-/* Dungeon-up or dungeon-down ('-' is B#F, ' ' (space) is #F, '\?' is UNKNOWN and/or INVALID) */
+/* Dungeon-up or dungeon-down (negative floors are `B#F`, positive floors are ` #F`, '\?' are for INVALID dungeons) */
     /* PD: I use the scape secuence '\?' instead of just '?' because of trigraphs */
-const char* dungeonUpOrDown = "BB  B \? B \? \? \?B\? \?BBB B\?\?BBB \? B   B B\?BBBBBBB\?\?\?\?\?\?B \?BBB B \? ";
+const char* dungeonUpOrDown = "BB  B   B      BB  BBB B\?\?BBB \? B   B B\?BBBBBBBBB\?\?\?B \?BBB B \? ";
 
 
 /* Items in dungeons */
