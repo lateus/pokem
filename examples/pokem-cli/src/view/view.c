@@ -162,31 +162,34 @@ void showDatabase()
               "Your choice?: ", stdout);
         fflush(stdout);
         fflush(stdin);
-        int choice = getchar();
-        if (choice < '1' || choice > '5') {
+        int choice;
+        if (scanf("%d", &choice) <= 0) {
+            choice = 0; /* exit */
+        }
+        if (choice < 1 || choice > 5) {
             fputs("Exiting...\n", stdout);
             return;
         } else {
             switch (choice) {
-            case '1':
+            case 1:
                 fprintf(stdout, " :: Pkmn database: ---\n");
                 for (i = 0; i < 405; ++i) {
                     fprintf(stdout, "    %d - %s\n", i, pkmnSpeciesStr[i]);
                 }
                 break;
-            case '2':
+            case 2:
                 fprintf(stdout, " :: Dungeons database: ---\n");
                 for (i = 0; i < 63; ++i) {
                     fprintf(stdout, "    %d - %s\n", i, dungeonsStr[i]);
                 }
                 break;
-            case '3':
+            case 3:
                 fprintf(stdout, " :: Mission type: ---\n");
                 for (i = 0; i < 6; ++i) {
                     fprintf(stdout, "    %d - %s\n", i, missionTypeObjectiveStr[i]);
                 }
                 break;
-            case '4':
+            case 4:
                 fprintf(stdout, " :: Reward type: ---\n");
                 fputs("    0 - Money\n"
                       "    1 - Money + ?\n"
@@ -198,7 +201,7 @@ void showDatabase()
                       "    7 - Item + ?\n"
                       "    8 - Friend area\n", stdout);
                 break;
-            case '5':
+            case 5:
                 fprintf(stdout, " :: Friend area reward: ---\n"); /* update the range if you uncomment the full database */
                 for (i = 0; i < 4; ++i) {
                     fprintf(stdout, "    %d - %s\n", i, friendAreasStr[i]);
