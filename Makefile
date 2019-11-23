@@ -1,4 +1,4 @@
-CC_WFLAGS	:=	-W -Wall -Wextra
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
 CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
@@ -24,7 +24,10 @@ OBJECTS		:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/U
 				$(BUILDDIR)/md1database.o
 
 TEST_SUITE	:=	test/CuTest.c test/allTests.c
-TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c src/core/Decode/UtilDecode/UtilDecode_test.c src/core/Encode/UtilEncode/UtilEncode_test.c
+TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
+				src/core/Decode/UtilDecode/UtilDecode_test.c \
+				src/core/Encode/UtilEncode/UtilEncode_test.c \
+				src/core/Decode/DecodeWonderMail/DecodeWonderMail_test.c
 
 LIB_HEADER_NAME		:=	pokem.h
 
@@ -144,7 +147,7 @@ $(TEST_RESULT): $(BUILDDIR)
 
 $(OBJECTS):
 	@$(MSG) "$(GREEN)Compiling $(LIGHTBLUE)$<$(GREEN)...$(NOCOLOR)\n"
-	@$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILDDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
