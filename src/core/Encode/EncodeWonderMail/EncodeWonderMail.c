@@ -139,7 +139,13 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
     }
 
 
-    /* floor check */
+    /* floor check (floor 0) */
+    if (wm->floor == 0) {
+        fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                        "      Floor 0 does not exists.\n\n",
+                ++errorsFound);
+    }
+    /* floor check (limit) */
     if (wm->floor > difficulties[wm->dungeon][0]) {
         fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
                         "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",

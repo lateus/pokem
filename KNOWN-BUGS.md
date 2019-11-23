@@ -1,8 +1,7 @@
 # Known bugs
 
 1. The last floor of a dungeon can always be selected, even if you can't make a mission there (for example, floor `99` of *Purity Forest*).
-2. Floor `0` can be selected.
-3. A *Find item* mission can be generated when, while the item can be found in the desired dungeon, it cannot be found in the requested floor or in any floor before it. 
+2. A *Find item* mission can be generated even if, while the item can be found in the desired dungeon, it cannot be found in the requested floor or in any floor before it. 
 
 ---------------------------------------------
 
