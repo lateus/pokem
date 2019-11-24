@@ -14,7 +14,6 @@ int main(int argc, const char *argv[])
 
     if (argc == 1) { /* no input */
         showGeneralHelp(argv[0]);
-        fflush(stdout);
         return 0;
     }
 
