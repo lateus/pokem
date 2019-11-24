@@ -85,7 +85,7 @@ Decodes the Wonder Mail with password `password` and puts the result in `wonderM
 ----------  
 
 ```c
-int WonderMailIsInvalid(const char *password, char *packed15BytesPassword)
+int wonderMailIsInvalid(const char *password, char *packed15BytesPassword)
 ```  
 Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
 

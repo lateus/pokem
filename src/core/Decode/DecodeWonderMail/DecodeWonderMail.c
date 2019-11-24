@@ -10,7 +10,7 @@
 int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
 {
     char packed15Bytes[15] = {0};
-    int errorCodeWM = WonderMailIsInvalid(password, packed15Bytes);
+    int errorCodeWM = wonderMailIsInvalid(password, packed15Bytes);
     if (errorCodeWM) {
         return errorCodeWM;
     }
@@ -39,7 +39,7 @@ int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
 
 
 
-int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* is up to you to avoid a segmentation fault (receiving a 15 bytes array) */
+int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* is up to you to avoid a segmentation fault (receiving a 15 bytes array) */
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 24) {
@@ -68,7 +68,7 @@ int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
         return ChecksumError;
     }
 
-    return 0;
+    return NoError;
 }
 
 

@@ -5,7 +5,7 @@
 
 /* DECODING WONDER MAIL FUNCTIONS */
 int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult);
-int WonderMailIsInvalid(const char *password, char *packed15BytesPassword);
+int wonderMailIsInvalid(const char *password, char *packed15BytesPassword);
 void reallocateBytesDecodingWM(char *allocatePassword, const char *unallocatedPassword);
 int lookupTableDecodingWM(char *passwordIntegers, const char *allocatedPassword);
 void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WONDERMAIL* mail);
