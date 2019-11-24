@@ -1,20 +1,21 @@
 #include "CuTest.h"
 
 #include <stdio.h>
+#include <string.h>
 
 extern CuSuite* UtilCoreGetTestSuite(void);
 extern CuSuite* UtilDecodeGetTestSuite(void);
 extern CuSuite* UtilEncodeGetTestSuite(void);
 extern CuSuite* DecodeWonderMailGetTestSuite(void);
 
-void RunAllTests(void);
+int RunAllTests(void);
 
 int main(void)
 {
-    RunAllTests();
+    return RunAllTests();
 }
 
-void RunAllTests()
+int RunAllTests()
 {
     CuString *output = CuStringNew();
     CuSuite* suite = CuSuiteNew();
@@ -28,4 +29,6 @@ void RunAllTests()
     CuSuiteSummary(suite, output);
     CuSuiteDetails(suite, output);
     printf("%s\n", output->buffer);
+
+    return strstr(output->buffer, "!!!FAILURES!!!") ? 1 : 0;
 }
