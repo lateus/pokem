@@ -131,15 +131,7 @@ void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WONDERMAIL
         Then the next bit is retrieved and stored, and so on until all bits
         are stored. If a bit cannot be retrieved and stored in the source or the result,
         then the next byte of the source or the result is used.
-
-        That was the generic idea to catch the unpacking process.
-        In languages with poor performance (I mean compared with C, such as C#, Java, and others) I recommend
-        use buffers objects instead of bit fields (bit fields are not available on most languages),
-        it will be slower of course, but more safe and readable.
     */
-
-    /* I wrote the bits that a field must store, assign more will cause an overflow. I'll use Standard C Bit Fields. */
-    /* As final observation, I only will read the bits in the array, without destroying bits, instead I'll shift bits: non-destructive read is faster than destructive read */
 
     mail->mailType = (packed14BytesPassword[0] & 0x0F); /* get the 4 rightmost bits of the first byte. An AND operation with 0x0F=1111 turn (before assignment) zeros all bits except the first four bits */
 
