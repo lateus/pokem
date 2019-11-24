@@ -80,14 +80,14 @@ These functions are used to decode Wonder Mails.
 ```c
 int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
 ```  
-Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
+Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
 
 ----------  
 
 ```c
 int wonderMailIsInvalid(const char *password, char *packed15BytesPassword)
 ```  
-Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
+Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
 
 ----------  
 
@@ -100,14 +100,14 @@ These functions are used to decode SOS Mails.
 ```c
 int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult)
 ```  
-Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
+Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
 
 ----------  
 
 ```c
 int SOSMailIsInvalid(const char *password, char *packed34BytesPassword)
 ```  
-Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
+Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
 
 ----------  
 
@@ -123,7 +123,7 @@ These functions are used to encode Wonder Mails.
 ```c
 int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword)
 ```  
-Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a encoded Wonder Mail password, it's the best approach.  
+Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded Wonder Mail password, it's the best approach.  
 
 ----------  
 
@@ -143,7 +143,7 @@ These functions are used to decode SOS Mails.
 ```c
 int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
 ```  
-Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
+Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
 
 ----------  
 
@@ -162,7 +162,7 @@ This function scans the SOS Mail `sos` and return the number of errors found whi
 ```c
 int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 ```  
-This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
+This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
 
 ----------  
 
@@ -690,7 +690,7 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
 ```  
 **Internal function, should not be used**  
-Tries to convert the SOS Mail. Returns the error code (check the `ERROR_TYPE` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  
+Tries to convert the SOS Mail. Returns the error code (check the `ErrorType` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  
 
 ----------  
 
