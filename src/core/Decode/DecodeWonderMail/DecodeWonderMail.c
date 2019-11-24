@@ -146,40 +146,40 @@ void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WONDERMAIL
     mail->missionType = ((packed14BytesPassword[0] >> 4) & 0x07); /* we need 3 more bits to fit the second field, but we already get bits from this byte, so before obtain the bits it's neccesary rightshift the bits used earlier (4 in this case). Then an AND with 0x07=111 give to us the remaining first three bits */
 
     mail->specialJobIndicator  = ((packed14BytesPassword[0] >> 7) & 0x01); /* in the first byte there is a unused bit yet, so rightshift 7 bits to destroy the first 7 bits and make an AND with 0x01=1 to obtain the first bit (originally the last bit). Now the first byte has been used, so the next byte will be used */
-    mail->specialJobIndicator |= (packed14BytesPassword[1] & 0x07) << 1; /* all bits of the first byte were used, so we use the next byte: get the first 3 bits with an AND with 0x07=111, then we need to insert the bits in the current field, but the first bit of the field is occupied with the last bit of the first byte, so we leftshift 1 bit the new bits before assignment. An OR assignment insert the bits */
+    mail->specialJobIndicator |= (packed14BytesPassword[1] & 0x07) << 1;   /* all bits of the first byte were used, so we use the next byte: get the first 3 bits with an AND with 0x07=111, then we need to insert the bits in the current field, but the first bit of the field is occupied with the last bit of the first byte, so we leftshift 1 bit the new bits before assignment. An OR assignment insert the bits */
 
     mail->pkmnClient  = ((packed14BytesPassword[1] >> 3) & 0x1F); /* rightshift the 3 bits used earlier, then get bits (five in this case, using an AND with 0x1F=11111) until fill the field or arrive to the last bit of the byte (that ocurr in this case). If you empty the current byte (the second one in this case), use the next byte (the third one) */
-    mail->pkmnClient |= (packed14BytesPassword[2] & 0x0F) << 5; /* get 4 bits with an AND with 0x0F=1111, and before assignment leftshift the newly bits to fit the field, then use an OR-assignment to insert the bits */
+    mail->pkmnClient |= (packed14BytesPassword[2] & 0x0F) << 5;   /* get 4 bits with an AND with 0x0F=1111, and before assignment leftshift the newly bits to fit the field, then use an OR-assignment to insert the bits */
 
     /* No more detailed comments, now you should know what to do... unless you are stu&@$... upppss! ;) */
     mail->pkmnTarget  = ((packed14BytesPassword[2] >> 4) & 0x0F); /* get 4 bits, remaining bits in the current byte: 0 (the next byte will be used) */
-    mail->pkmnTarget |= (packed14BytesPassword[3] & 0x1F) << 4; /* get 5 bits, remaining bits in the current byte: 3 */
+    mail->pkmnTarget |= (packed14BytesPassword[3] & 0x1F) << 4;   /* get 5 bits, remaining bits in the current byte: 3 */
 
     mail->itemDeliverFind  = ((packed14BytesPassword[3] >> 5) & 0x07); /* get 3 bits, remaining bits in the current byte: 0 (the next byte will be used) */
     mail->itemDeliverFind |= (packed14BytesPassword[4] & 0x1F) << 3; /* get 5 bits, remaining bits in the current byte: 3 */
 
     mail->rewardType  = ((packed14BytesPassword[4] >> 5) & 0x07); /* get 3 bits, remaining: 0 bits */
-    mail->rewardType |= (packed14BytesPassword[5] & 0x01) << 3; /* get 1 bit, remaining: 7 bits */
+    mail->rewardType |= (packed14BytesPassword[5] & 0x01) << 3;   /* get 1 bit, remaining: 7 bits */
 
     mail->itemReward  = ((packed14BytesPassword[5] >> 1) & 0x7F); /* get 7 bits, remaining: 0 bits */
-    mail->itemReward |= (packed14BytesPassword[6] & 0x01) << 7; /* get 1 bit, remaining: 7 bits */
+    mail->itemReward |= (packed14BytesPassword[6] & 0x01) << 7;   /* get 1 bit, remaining: 7 bits */
 
     mail->friendAreaReward  = ((packed14BytesPassword[6] >> 1) & 0x3F); /* get 6 bits, remaining: 1 bits */
 
-    mail->flavorText  = ((packed14BytesPassword[6] >> 7) & 0x01);   /* get 1 bit, remaining: 0 bits */
-    mail->flavorText |= (packed14BytesPassword[7] & 0x7F) << 1; /* get 7 bits, remaining: 1 bit */
+    mail->flavorText  = ((packed14BytesPassword[6] >> 7) & 0x01); /* get 1 bit, remaining: 0 bits */
+    mail->flavorText |= (packed14BytesPassword[7] & 0x7F) << 1;   /* get 7 bits, remaining: 1 bit */
 
-    mail->random  = ((packed14BytesPassword[7] >> 7) & 0x01);   /* get 1 bit, remaining: 0 bits */
-    mail->random |= (packed14BytesPassword[8] & 0x7F) << 1; /* get 7 bits, remaining: 1 bit */
+    mail->random  = ((packed14BytesPassword[7] >> 7) & 0x01); /* get 1 bit, remaining: 0 bits */
+    mail->random |= (packed14BytesPassword[8] & 0x7F) << 1;   /* get 7 bits, remaining: 1 bit */
 
-    mail->idk_always0xFF  = ((packed14BytesPassword[8] >> 7) & 0x01);   /* get 1 bit, remaining: 0 bits */
-    mail->idk_always0xFF |= (packed14BytesPassword[9] & 0x7F) << 1; /* get 7 bits, remaining: 1 bit */
+    mail->idk_always0xFF  = ((packed14BytesPassword[8] >> 7) & 0x01); /* get 1 bit, remaining: 0 bits */
+    mail->idk_always0xFF |= (packed14BytesPassword[9] & 0x7F) << 1;   /* get 7 bits, remaining: 1 bit */
 
-    mail->dungeon  = ((packed14BytesPassword[9] >> 7) & 0x01);  /* get 1 bit, remaining: 0 bits */
-    mail->dungeon |= (packed14BytesPassword[10] & 0x3F) << 1;   /* get 6 bits, remaining: 2 bits */
+    mail->dungeon  = ((packed14BytesPassword[9] >> 7) & 0x01); /* get 1 bit, remaining: 0 bits */
+    mail->dungeon |= (packed14BytesPassword[10] & 0x3F) << 1;  /* get 6 bits, remaining: 2 bits */
 
-    mail->floor  = ((packed14BytesPassword[10] >> 6) & 0x03);   /* get 2 bits, remaining: 0 bits */
-    mail->floor |= (packed14BytesPassword[11] & 0x1F) << 2; /* get 5 bits and... finish! */
+    mail->floor  = ((packed14BytesPassword[10] >> 6) & 0x03); /* get 2 bits, remaining: 0 bits */
+    mail->floor |= (packed14BytesPassword[11] & 0x1F) << 2;   /* get 5 bits and... finish! */
 }
 
 
