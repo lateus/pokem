@@ -76,7 +76,7 @@ int computeDifficulty(int dungeon, int dungeonFloor, int missionType)
 {
     int difficulty = difficulties[dungeon][dungeonFloor];
 
-    if (missionType == ESCORT) { /* Escort mission */
+    if (missionType == Escort) { /* Escort mission */
         difficulty += 2;
     }
 

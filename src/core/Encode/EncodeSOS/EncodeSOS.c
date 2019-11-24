@@ -26,7 +26,7 @@ int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
     int errors = foundErrorsEntriesSOS(sos);
     if (errors) {
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
-        return INPUT_ERROR; /* to use the NOT operator */
+        return InputError; /* to use the NOT operator */
     }
 
     char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */

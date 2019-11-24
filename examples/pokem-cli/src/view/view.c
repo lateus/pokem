@@ -38,7 +38,7 @@ int showGeneralHelp(const char *programName)
                     "about a specific topic.\n\n"
                     "Developed by Carlos Enrique Perez Sanchez.\n", programName);
     fflush(stdout);
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -60,7 +60,7 @@ int showHelpDecodingWM(const char* programName) /* argv[0] is the program path/n
                     "      The first one will decode three Wonder Mails, and the second will decode just one.\n\n"
                     "Developed by Carlos Enrique Perez Sanchez.\n", programName, programName, programName);
     fflush(stdout);
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -79,7 +79,7 @@ int showHelpEncodingWM(const char* programName)
     showDatabase();
 
     fflush(stdout);
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -102,7 +102,7 @@ int showHelpDecodingSOS(const char* programName)
             "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName, programName);
 
     fflush(stdout);
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -119,7 +119,7 @@ int showHelpEncodingSOS(const char *programName)
                     "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName);
     showDatabase();
 
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -144,7 +144,7 @@ int showHelpConverting(const char *programName)
             "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName, programName);
 
     fflush(stdout);
-    return ALL_OK;
+    return NoError;
 }
 
 

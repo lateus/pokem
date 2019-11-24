@@ -13,7 +13,7 @@ int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char 
 {
     char password54Integers[54] = {0};
     if (SOSMailIsInvalidForConverting(SOSPassword, password54Integers)) {
-        return INPUT_ERROR;
+        return InputError;
     }
 
     int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
@@ -23,7 +23,7 @@ int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char 
             fprintf(stderr, "        Apparently it belongs to a %s.\n", mailType == 4 ? "A-OK Mail" : "Thank-You Mail");
         }
         fputs("THE PASSWORD CAN'T BE DECODED.\n\n", stderr);
-        return INPUT_ERROR;
+        return InputError;
     }
 
     /* FIRST: A-OK MAIL */
@@ -78,15 +78,15 @@ int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integ
     if (pswLenght != 54) {
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
+        return InputError;
     }
 
     char pswAllocated[54] = {0}; /* Please, initialize all data */
     reallocateBytesDecodingSOS(SOSPassword, pswAllocated);
 
     /* The password that will be converted to integers representation using the lookup table bellow */
-    if (lookupTableDecodingSOS(pswAllocated, password54Integers) == INPUT_ERROR) {
-        return INPUT_ERROR;
+    if (lookupTableDecodingSOS(pswAllocated, password54Integers) == InputError) {
+        return InputError;
     }
 
     return 0;

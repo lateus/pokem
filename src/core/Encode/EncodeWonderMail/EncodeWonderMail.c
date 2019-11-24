@@ -25,7 +25,7 @@ int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword)
     int errors = foundErrorsEntriesWM(wm);
     if (errors) {
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE\a\n\n", errors);
-        return INPUT_ERROR;
+        return InputError;
     }
 
     /* now adjust the friend area reward values if necessary */
@@ -87,7 +87,7 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
                         "      Legendaries are not valid values.\n\n", ++errorsFound);
     }
 
-    if (wm->missionType == FIND || wm->missionType == ESCORT) {
+    if (wm->missionType == Find || wm->missionType == Escort) {
         /* pkmn target check (limits) */
         if (wm->pkmnTarget == 0 || wm->pkmnTarget > 404) {
             fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
@@ -105,14 +105,14 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
 
 
     /* item to deliver/find check (limits) */
-    if (wm->missionType == FINDITEM || wm->missionType == DELIVERITEM) {
+    if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
         if (wm->itemDeliverFind > 232) {
             fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
                             "      Items to find or deliver must be numbers between 1 and 232.\n\n", ++errorsFound);
         }
 
         /* item to deliver/find check (existence) */
-        if (wm->missionType == FINDITEM) {
+        if (wm->missionType == FindItem) {
             if (!findItemByDungeon(wm->itemDeliverFind, wm->dungeon)) {
                 fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
                                 "      The item %s (index %d) can't be found in the dungeon %s (index %d).\n"

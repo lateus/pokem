@@ -2,9 +2,9 @@
 #define MD1GLOBAL_H
 
 /* Data definitions */
-enum ERROR_TYPE { ALL_OK, UNKNOWN_ERROR, INPUT_ERROR, CHECKSUM_ERROR, OUT_OF_RANGE_ERROR };
-enum MISSION_TYPE { HELPME, FIND, ESCORT, FINDITEM, DELIVERITEM, FRIENDRESCUE };
-enum FLAVOR_TEXT_TYPE { FT_HEAD, FT_BODY };
+enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };
+enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
+enum FlavorTextLocation { FlavorTextHead, FlavorTextBody };
 
 /* If not programming in C, consider use buffers objects instead of structs and bit fields, it will be slower of course, but more safe and readable (performance is not everything) */
 struct WONDERMAIL {

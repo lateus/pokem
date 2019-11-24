@@ -27,8 +27,8 @@ int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
     int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
     int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
     int *textIndicator = flavorText(&wm, pairsIndex, loversIndex, parentsIndex);
-    flavorTextHead(&wm, textIndicator[FT_HEAD], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
-    flavorTextBody(&wm, textIndicator[FT_BODY], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    flavorTextHead(&wm, textIndicator[FlavorTextHead], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    flavorTextBody(&wm, textIndicator[FlavorTextBody], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
 
     /* Bulking the mail's data... */
     setWMInfo(wonderMailInfoResult, &wm);
@@ -45,7 +45,7 @@ int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
     if (pswLenght != 24) {
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
+        return InputError;
     }
 
     char pswAllocated[24] = {0}; /* Please, initialize all data. This is done at compile time, so there isn't runtime overload */
@@ -53,8 +53,8 @@ int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 
     /* This password will be 'integerized' using the lookup table bellow */
     char passIntegers[24] = {0};
-    if (lookupTableDecodingWM(passIntegers, pswAllocated) == INPUT_ERROR) {
-        return INPUT_ERROR;
+    if (lookupTableDecodingWM(passIntegers, pswAllocated) == InputError) {
+        return InputError;
     }
 
     /* Bit packing */
@@ -65,7 +65,7 @@ int WonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
     if ( checksum != (packed15BytesPassword[0] & 0xFF) ) {
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n");
-        return CHECKSUM_ERROR;
+        return ChecksumError;
     }
 
     return 0;
@@ -104,12 +104,12 @@ int lookupTableDecodingWM(char* passwordIntegers, const char* allocatedPassword)
                             "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
                             "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
                             "THE PASSWORD CAN'T BE DECODED.\n\n", allocatedPassword[i], i);
-            return INPUT_ERROR;
+            return InputError;
         }
 
     }
 
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -190,27 +190,27 @@ int* flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, in
         switch (special) {
         case 0x09:
             if (pairsIndex >= 0) {
-                textIndicator[FT_HEAD] = 5;
-                textIndicator[FT_BODY] = 7;
+                textIndicator[FlavorTextHead] = 5;
+                textIndicator[FlavorTextBody] = 7;
             }
             return textIndicator;
         case 0x0A:
             if (loversIndex >= 0) {
-                textIndicator[FT_HEAD] = 6;
-                textIndicator[FT_BODY] = 8;
+                textIndicator[FlavorTextHead] = 6;
+                textIndicator[FlavorTextBody] = 8;
             }
             return textIndicator;
         case 0x0F:
             if (parentsIndex >= 0) {
-                textIndicator[FT_HEAD] = 4;
-                textIndicator[FT_BODY] = 6;
+                textIndicator[FlavorTextHead] = 4;
+                textIndicator[FlavorTextBody] = 6;
             }
             return textIndicator;
         }
     }
     /* Most of the cases will go here directly */
-    textIndicator[FT_HEAD] =  8 + wm->missionType;
-    textIndicator[FT_BODY] = 12 + wm->missionType;
+    textIndicator[FlavorTextHead] =  8 + wm->missionType;
+    textIndicator[FlavorTextBody] = 12 + wm->missionType;
     return textIndicator;
 }
 
@@ -352,16 +352,16 @@ void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail)
     strcpy(mailInfo->client, pkmnSpeciesStr[mail->pkmnClient]);
 
     switch (mail->missionType) {
-    case FIND:
+    case Find:
         sprintf(mailInfo->objective, missionTypeObjectiveStr[mail->missionType], pkmnSpeciesStr[mail->pkmnTarget]);
         break;
-    case ESCORT:
+    case Escort:
         sprintf(mailInfo->objective, missionTypeObjectiveStr[mail->missionType], pkmnSpeciesStr[mail->pkmnTarget]);
         break;
-    case FINDITEM:
+    case FindItem:
         sprintf(mailInfo->objective, missionTypeObjectiveStr[mail->missionType], itemsStr[mail->itemDeliverFind]);
         break;
-    case DELIVERITEM:
+    case DeliverItem:
         sprintf(mailInfo->objective, missionTypeObjectiveStr[mail->missionType], itemsStr[mail->itemDeliverFind]);
         break;
     default:

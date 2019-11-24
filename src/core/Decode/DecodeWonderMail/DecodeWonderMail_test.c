@@ -6,6 +6,7 @@
 
 
 CuSuite* DecodeWonderMailGetTestSuite(void);
+
 void decodeWonderMail_test(CuTest *tc);
 
 

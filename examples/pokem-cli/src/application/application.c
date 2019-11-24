@@ -51,8 +51,8 @@ void parseWMData(const char *argv[], struct WONDERMAIL *wm)
     wm->mailType         = 5; /* Wonder Mail */
     wm->missionType      = (unsigned int)atoi(argv[1]);
     wm->pkmnClient       = (unsigned int)atoi(argv[2]);
-    wm->pkmnTarget       = (wm->missionType == FIND || wm->missionType == ESCORT) ? (unsigned int)atoi(argv[3]) : wm->pkmnClient;
-    wm->itemDeliverFind  = (wm->missionType == FINDITEM || wm->missionType == DELIVERITEM) ? (unsigned int)atoi(argv[4]) : 9;
+    wm->pkmnTarget       = (wm->missionType == Find || wm->missionType == Escort) ? (unsigned int)atoi(argv[3]) : wm->pkmnClient;
+    wm->itemDeliverFind  = (wm->missionType == FindItem || wm->missionType == DeliverItem) ? (unsigned int)atoi(argv[4]) : 9;
     wm->dungeon          = (unsigned int)atoi(argv[5]);
     wm->floor            = (unsigned int)atoi(argv[6]);
     wm->rewardType       = (unsigned int)atoi(argv[7]);

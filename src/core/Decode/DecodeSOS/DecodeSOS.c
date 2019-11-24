@@ -59,12 +59,12 @@ int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers
                             "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
                             "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
                             "THE PASSWORD CAN'T BE DECODED.\n\n", allocatedPassword[i], i);
-            return INPUT_ERROR;
+            return InputError;
         }
 
     }
 
-    return ALL_OK;
+    return NoError;
 }
 
 
@@ -170,10 +170,10 @@ void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
     strcpy(sosInfo->body, SOS_AskHelp2);
     strcpy(sosInfo->nickname, mail->pkmnNick);
     strcpy(sosInfo->client, pkmnSpeciesStr[mail->pkmnToRescue]);
-    strcpy(sosInfo->objective, missionTypeObjectiveStr[FRIENDRESCUE]);
+    strcpy(sosInfo->objective, missionTypeObjectiveStr[FriendRescue]);
     strcpy(sosInfo->place, dungeonsStr[mail->dungeon]);
     sprintf(sosInfo->floor, "%c%dF", dungeonUpOrDown[mail->dungeon], mail->floor);
-    int diffValue = computeDifficulty(mail->dungeon, mail->floor, FRIENDRESCUE);
+    int diffValue = computeDifficulty(mail->dungeon, mail->floor, FriendRescue);
     sosInfo->difficulty = difficultiesChars[diffValue];
     strcpy(sosInfo->reward, "???");
     sprintf(sosInfo->id, "%d", mail->mailID);
@@ -188,7 +188,7 @@ int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
     if (pswLenght != 54) {
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
+        return InputError;
     }
 
     char pswAllocated[54] = {0}; /* Please, initialize all data */
@@ -196,8 +196,8 @@ int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
 
     /* The password that will be converted to integers representation using the lookup table bellow */
     char passIntegers[54] = {0};
-    if (lookupTableDecodingSOS(pswAllocated, passIntegers) == INPUT_ERROR) {
-        return INPUT_ERROR;
+    if (lookupTableDecodingSOS(pswAllocated, passIntegers) == InputError) {
+        return InputError;
     }
 
     /* Bit packing */
@@ -209,7 +209,7 @@ int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
     if ( checksum != (packed34BytesPassword[0] & 0xFF) ) {
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n");
-        return CHECKSUM_ERROR;
+        return ChecksumError;
     }
 
     return 0;
