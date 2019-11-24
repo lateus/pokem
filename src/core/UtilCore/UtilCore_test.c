@@ -110,7 +110,7 @@ void computeDifficulty_test(CuTest *tc)
 #define ARRAY_SIZE 10
     int input1[ARRAY_SIZE] = {    0,      0,       17,     18,          62,     62,           62,     62,     62,     62 };
     int input2[ARRAY_SIZE] = {    1,      1,       25,      1,           1,      1,           20,     25,     25,     60 };
-    int input3[ARRAY_SIZE] = { FIND, ESCORT, FINDITEM, HELPME, DELIVERITEM, ESCORT, FRIENDRESCUE, HELPME, ESCORT, HELPME };
+    int input3[ARRAY_SIZE] = { Find, Escort, FindItem, HelpMe, DeliverItem, Escort, FriendRescue, HelpMe, Escort, HelpMe };
 
     int actual[ARRAY_SIZE];
     int i;
