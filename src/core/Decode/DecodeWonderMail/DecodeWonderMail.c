@@ -26,9 +26,7 @@ int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
     int pairsIndex   = arePairs(wm.pkmnClient, wm.pkmnTarget);
     int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
     int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
-    int *textIndicator = flavorText(&wm, pairsIndex, loversIndex, parentsIndex);
-    flavorTextHead(&wm, textIndicator[FlavorTextHead], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
-    flavorTextBody(&wm, textIndicator[FlavorTextBody], pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    flavorText(&wm, pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
 
     /* Bulking the mail's data... */
     setWMInfo(wonderMailInfoResult, &wm);
@@ -176,40 +174,36 @@ void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WONDERMAIL
 
 
 
-int* flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, int parentsIndex)
+void flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo)
 {
-    /* TODO: Call the HEAD/BODY functions directly from here instead of return the address of a static pointer. */
-    static int textIndicator[2];   /* In the index [0] we store a indicator relative to the title (head), the index [1] holds a body's indicator */
-    int special = wm->specialJobIndicator;
+    int headIndicator, bodyIndicator;
 
-    if (special < 9) {
-        special = 0;
-    } else {
-        switch (special) {
-        case 0x09:
-            if (pairsIndex >= 0) {
-                textIndicator[FlavorTextHead] = 5;
-                textIndicator[FlavorTextBody] = 7;
-            }
-            return textIndicator;
-        case 0x0A:
-            if (loversIndex >= 0) {
-                textIndicator[FlavorTextHead] = 6;
-                textIndicator[FlavorTextBody] = 8;
-            }
-            return textIndicator;
-        case 0x0F:
-            if (parentsIndex >= 0) {
-                textIndicator[FlavorTextHead] = 4;
-                textIndicator[FlavorTextBody] = 6;
-            }
-            return textIndicator;
+    switch (wm->specialJobIndicator) {
+    case 0x09:
+        if (pairsIndex >= 0) {
+            headIndicator = 5;
+            bodyIndicator = 7;
         }
+        break;
+    case 0x0A:
+        if (loversIndex >= 0) {
+            headIndicator = 6;
+            bodyIndicator = 8;
+        }
+        break;
+    case 0x0F:
+        if (parentsIndex >= 0) {
+            headIndicator = 4;
+            bodyIndicator = 6;
+        }
+        break;
+    default: /* Most of the cases will go here directly */
+        headIndicator =  8 + wm->missionType;
+        bodyIndicator = 12 + wm->missionType;
     }
-    /* Most of the cases will go here directly */
-    textIndicator[FlavorTextHead] =  8 + wm->missionType;
-    textIndicator[FlavorTextBody] = 12 + wm->missionType;
-    return textIndicator;
+
+    flavorTextHead(wm, headIndicator, pairsIndex, loversIndex, parentsIndex, mailInfo);
+    flavorTextBody(wm, bodyIndicator, pairsIndex, loversIndex, parentsIndex, mailInfo);
 }
 
 
