@@ -43,8 +43,10 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 24) {
+#if DEBUG
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+#endif
         return InputError;
     }
 
@@ -63,8 +65,10 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
     /* Checksum */
     int checksum = computeChecksum(packed15BytesPassword, 15);
     if ( checksum != (packed15BytesPassword[0] & 0xFF) ) {
+#if DEBUG
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n");
+#endif
         return ChecksumError;
     }
 
@@ -98,12 +102,14 @@ int lookupTableDecodingWM(char* passwordIntegers, const char* allocatedPassword)
             }
         }
         if (j == 32) { /* If there is some way to avoid this comparison... (without using goto statement) */
+#if DEBUG            
             fprintf(stderr, "ERROR: INVALID character: '%c' found in index [%d].\n"
                             "Valid characters are:\n"
                             "    > Numbers: '0' to '9'.\n"
                             "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
                             "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
                             "THE PASSWORD CAN'T BE DECODED.\n\n", allocatedPassword[i], i);
+#endif
             return InputError;
         }
 
