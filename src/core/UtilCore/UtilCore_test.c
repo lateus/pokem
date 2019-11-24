@@ -132,13 +132,11 @@ void computeMoneyReward_test(CuTest *tc)
     int input2[ARRAY_SIZE] = { 0, 1, 5, 6, 0, 0, 0, 1, 1, 5, 2, 3, 4, 7, 8, 9, 9 };
 
     int actual[ARRAY_SIZE];
+    int expected[ARRAY_SIZE] = { 100, 200, 400, 400, 300, 400, 500, 600, 700, 1400, 0, 0, 0, 0, 0, 0, 0 };
+    
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         actual[i] = computeMoneyReward(input1[i], input2[i]);
-    }
-
-    int expected[ARRAY_SIZE] = { 100, 200, 400, 400, 300, 400, 500, 600, 700, 1400, 0, 0, 0, 0, 0, 0, 0 };
-    for (i = 0; i < ARRAY_SIZE; ++i) {
         CuAssertIntEquals(tc, expected[i], actual[i]);
     }
 #undef ARRAY_SIZE
@@ -157,13 +155,11 @@ void computeChecksum_test(CuTest *tc)
     int input2[ARRAY_SIZE] = { 15, 15, 15, 34, 34 };
 
     int actual[ARRAY_SIZE];
+    int expected[ARRAY_SIZE] = { 0xD0, 0xE0, 0x55, 0x39, 0x03 };
+
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         actual[i] = computeChecksum((char*)input1[i], input2[i]);
-    }
-
-    int expected[ARRAY_SIZE] = { 0xD0, 0xE0, 0x55, 0x39, 0x03 };
-    for (i = 0; i < ARRAY_SIZE; ++i) {
         CuAssertIntEquals(tc, expected[i], actual[i]);
     }
 #undef ARRAY_SIZE
