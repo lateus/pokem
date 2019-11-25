@@ -166,8 +166,9 @@ void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SOSMAIL *
 
 void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
 {
-    strcpy(sosInfo->head, SOS_AskHelp1);
-    strcpy(sosInfo->body, SOS_AskHelp2);
+    int mailType = mail->mailType;
+    strcpy(sosInfo->head, mailType == 4 ? SOS_GoHelp1 : mailType == 5 ? SOS_Thanks1 : SOS_AskHelp1);
+    strcpy(sosInfo->body, mailType == 4 ? SOS_GoHelp2 : mailType == 5 ? SOS_Thanks2 : SOS_AskHelp2);
     strcpy(sosInfo->nickname, mail->pkmnNick);
     strcpy(sosInfo->client, pkmnSpeciesStr[mail->pkmnToRescue]);
     strcpy(sosInfo->objective, missionTypeObjectiveStr[FriendRescue]);
@@ -175,7 +176,7 @@ void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
     sprintf(sosInfo->floor, "%c%dF", dungeonUpOrDown[mail->dungeon], mail->floor);
     int diffValue = computeDifficulty(mail->dungeon, mail->floor, FriendRescue);
     sosInfo->difficulty = difficultiesChars[diffValue];
-    strcpy(sosInfo->reward, "???");
+    strcpy(sosInfo->reward, mailType != 5 ? "???" : itemsStr[mail->itemReward]);
     sprintf(sosInfo->id, "%d", mail->mailID);
     sprintf(sosInfo->chancesLeft, "%d", mail->chancesLeft);
 }
