@@ -99,7 +99,10 @@ int encodeSOSM(int argc, const char *argv[])
         return errorCode;
     }
 
-    fprintf(stdout, "Password: %s\n", finalPassword);
+    struct SOS_INFO sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    setSOSInfo(&sosInfo, &sos);
+    sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, finalPassword, 27), finalPassword + 27);
+    printSOSData(&sosInfo);
     fflush(stdout);
 
     return 0;
