@@ -103,7 +103,7 @@ int encodeSOSM(int argc, const char *argv[])
     }
 
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
-    setSosInfo(&sosInfo, &sos);
+    setSosInfo(&sos, &sosInfo);
     sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, finalPassword, 27), finalPassword + 27);
     printSOSData(&sosInfo);
     fflush(stdout);

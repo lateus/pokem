@@ -612,7 +612,7 @@ This function takes the packed 14 bytes stored in `packed14BytesPassword`, decod
 ----------  
 
 ```c
-void setSosInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
+void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
 ```  
 **Internal function, should not be used** 
 This function extract the information contained in `mail` and write it to `sosInfo` in a mail-style layout. This is an internal function and should not be used.  

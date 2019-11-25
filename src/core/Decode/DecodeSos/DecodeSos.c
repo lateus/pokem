@@ -21,7 +21,7 @@ int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
     /* Bit unpacking */
     struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
     bitUnpackingDecodingSos(psw33Bytes, &sosm);
-    setSosInfo(sosMailInfoResult, &sosm);
+    setSosInfo(&sosm, sosMailInfoResult);
     sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
 
     fflush(stdout);
@@ -164,7 +164,7 @@ void bitUnpackingDecodingSos(const char *packed33BytesPassword, struct SosMail *
 }
 
 
-void setSosInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
+void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
 {
     int mailType = mail->mailType;
     strcpy(sosInfo->head, mailType == 4 ? SOS_GoHelp1 : mailType == 5 ? SOS_Thanks1 : SOS_AskHelp1);

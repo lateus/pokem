@@ -9,6 +9,6 @@ int sosMailIsInvalid(const char *password, char *packed34BytesPassword);
 void reallocateBytesDecodingSos(const char *unallocatedPassword, char *allocatedPassword);
 int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers);
 void bitUnpackingDecodingSos(const char *packed14BytesPassword, struct SosMail* mail);
-void setSosInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail);
+void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo);
 
 #endif /* DECODESOS_H */
