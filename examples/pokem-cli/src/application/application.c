@@ -17,7 +17,7 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
         return errorCode;
     }
 
-    printWMData(&mailInfo);   /* Finally, print the wonder mail info */
+    printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
     fflush(stdout);
 
     return 0;
@@ -40,10 +40,10 @@ int encodeWM(int argc, const char *argv[])
 
     /* Get the full Wonder Mail info */
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
-    setWMInfo(&wmInfo, &wm);
+    setWonderMailInfo(&wm, &wmInfo);
     setFlavorText(&wm, &wmInfo);
     sprintf(wmInfo.WMail, "%s\n          %s", strncat(wmInfo.WMail, finalPassword, 12), finalPassword + 12);
-    printWMData(&wmInfo);
+    printWonderMailData(&wmInfo);
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
         fprintf(stderr, "* Warning: You will not be able to accept the above mission.\n");
     }

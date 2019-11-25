@@ -575,7 +575,7 @@ This function takes the decoded Wonder Mail `wm` as returned the function `bitUn
 ----------  
 
 ```c
-void setWMInfo(struct WonderMailInfo *mailInfo, const struct WonderMail *mail)
+void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo)
 ```  
 **Internal function, should not be used** 
 This function extract the information contained in `mail` and write it to `mailInfo` in a mail-style layout. The flavor text is not filled here, you must call `flavorText` and related functions to do so. This is an internal function and should not be used.  

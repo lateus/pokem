@@ -26,7 +26,7 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
     setFlavorText(&wm, wonderMailInfoResult);
 
     /* Bulking the mail's data... */
-    setWMInfo(wonderMailInfoResult, &wm);
+    setWonderMailInfo(&wm, wonderMailInfoResult);
     sprintf(wonderMailInfoResult->WMail, "%s\n          %s", strncat(wonderMailInfoResult->WMail, password, 12), password + 12);
 
     return 0; /* means ok */
@@ -337,7 +337,7 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
     }
 }
 
-void setWMInfo(struct WonderMailInfo *mailInfo, const struct WonderMail *mail)
+void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo)
 {
     strcpy(mailInfo->client, pkmnSpeciesStr[mail->pkmnClient]);
 

@@ -12,6 +12,6 @@ void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WonderMail
 void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo);
 void setFlavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo);
 void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo);
-void setWMInfo(struct WonderMailInfo *mailInfo, const struct WonderMail *mail);
+void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo);
 
 #endif /* DECODEWonderMail_H */

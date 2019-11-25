@@ -217,7 +217,7 @@ void showDatabase()
 }
 
 
-void printWMData(const struct WonderMailInfo *mailInfo)
+void printWonderMailData(const struct WonderMailInfo *mailInfo)
 {
     fprintf(stdout, "\n%s\n\n%s\n%s\n\n"
                     "Client: %s\n"

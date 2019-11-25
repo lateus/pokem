@@ -14,7 +14,7 @@ int showHelpConverting(const char *programName);
 
 void showDatabase(void);
 
-void printWMData(const struct WonderMailInfo *mailInfo);
+void printWonderMailData(const struct WonderMailInfo *mailInfo);
 void printSOSData(const struct SosMailInfo *mailInfo);
 
 #endif /* VIEW_H */
