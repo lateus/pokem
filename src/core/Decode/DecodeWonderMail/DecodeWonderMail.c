@@ -29,7 +29,7 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
     setWonderMailInfo(&wm, wonderMailInfoResult);
     sprintf(wonderMailInfoResult->WMail, "%s\n          %s", strncat(wonderMailInfoResult->WMail, password, 12), password + 12);
 
-    return 0; /* means ok */
+    return NoError; /* means ok */
 }
 
 

@@ -69,7 +69,7 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     lookupTableEncodingSos(passwordAllocated, password54Integers);
     realocateBytesEncodingSos(resultThankYouMail, passwordAllocated);
 
-    return 0;
+    return NoError;
 }
 
 int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
@@ -89,7 +89,7 @@ int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integ
         return InputError;
     }
 
-    return 0;
+    return NoError;
 }
 
 void convertSosToAOkMail(char *password54Integers)

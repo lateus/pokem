@@ -57,7 +57,7 @@ unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionT
     } else if (pairsIndex >= 0) {
         return 0x09;
     } else {
-        return 0;
+        return NoError;
     }
 }
 
@@ -71,7 +71,7 @@ int findItemByDungeon(int item, int dungeon)
             return 1;
         }
     }
-    return 0;
+    return NoError;
 }
 
 
@@ -104,7 +104,7 @@ int computeMoneyReward(int difficulty, int rewardType)
     } else if (rewardType == 5 || rewardType == 6) {
         return money << 1;  /* same as money*2 */
     } else {
-        return 0;
+        return NoError;
     }
 }
 

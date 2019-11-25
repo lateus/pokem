@@ -43,7 +43,7 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
 
     realocateBytesEncodingSos(finalPassword, password54Chars);
 
-    return 0;
+    return NoError;
 }
 
 int foundErrorsEntriesSos(const struct SosMail *sos)

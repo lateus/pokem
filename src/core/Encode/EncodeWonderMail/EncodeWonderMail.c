@@ -55,7 +55,7 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
     lookupTableEncodingWM(password24Integers, password24Chars);
     reallocateBytesEncodingWM(password24Chars, finalPassword);
 
-    return 0; /* means ok */
+    return NoError; /* means ok */
 }
 
 

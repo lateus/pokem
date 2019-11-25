@@ -25,7 +25,7 @@ int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
     sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
 
     fflush(stdout);
-    return 0;
+    return NoError;
 }
 
 
@@ -213,5 +213,5 @@ int sosMailIsInvalid(const char *password, char packed34BytesPassword[])
         return ChecksumError;
     }
 
-    return 0;
+    return NoError;
 }

@@ -20,7 +20,7 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
     printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
     fflush(stdout);
 
-    return 0;
+    return NoError;
 }
 
 
@@ -49,7 +49,7 @@ int encodeWM(int argc, const char *argv[])
     }
     fflush(stdout);
 
-    return 0;
+    return NoError;
 }
 
 
@@ -84,7 +84,7 @@ int decodeSOSM(int argc, const char *argv[])
     printSOSData(&sosInfo); /* Finally, print the sos mail info */
 
     fflush(stdout);
-    return 0;
+    return NoError;
 }
 
 
@@ -108,7 +108,7 @@ int encodeSOSM(int argc, const char *argv[])
     printSOSData(&sosInfo);
     fflush(stdout);
 
-    return 0;
+    return NoError;
 }
 
 void parseSOSData(const char *argv[], struct SosMail *sos)
@@ -147,5 +147,5 @@ int convertSOS(int argc, const char *argv[])
     fprintf(stdout, "============ Thank-You Mail ===========");
     printSOSData(&ThxInfo);
     fflush(stdout);
-    return 0;
+    return NoError;
 }
