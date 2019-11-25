@@ -687,7 +687,7 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
+int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
 ```  
 **Internal function, should not be used**  
 Tries to convert the SOS Mail. Returns the error code (check the `ErrorType` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  

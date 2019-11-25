@@ -12,7 +12,7 @@
 int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 {
     char password54Integers[54] = {0};
-    if (SOSMailIsInvalidForConverting(SOSPassword, password54Integers)) {
+    if (sosMailIsInvalidForConverting(SOSPassword, password54Integers)) {
         return InputError;
     }
 
@@ -72,7 +72,7 @@ int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     return 0;
 }
 
-int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
+int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
 {
     size_t pswLenght = strlen(SOSPassword);
     if (pswLenght != 54) {
