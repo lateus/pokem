@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 {
     char password54Integers[54] = {0};
     if (sosMailIsInvalidForConverting(SOSPassword, password54Integers)) {
@@ -27,7 +27,7 @@ int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     }
 
     /* FIRST: A-OK MAIL */
-    convertSOSToAOKMail(password54Integers);
+    convertSosToAOkMail(password54Integers);
 
     /* Bit packing */
     char packed34Bytes[34] = {0}; /* The packed password */
@@ -42,15 +42,15 @@ int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     }
     bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
     char passwordAllocated[54] = {0};
-    lookupTableEncodingSOS(passwordAllocated, password54Integers);
-    realocateBytesEncodingSOS(resultAOKMail, passwordAllocated);
+    lookupTableEncodingSos(passwordAllocated, password54Integers);
+    realocateBytesEncodingSos(resultAOKMail, passwordAllocated);
 
     /* SECOND: THANK-YOU MAIL */
     if (item <= 0 || item > 239) {
         fputs("The specified item is invalid. Default to nothing.\n", stderr);
         item = 0;
     }
-    convertAOKToThankYouMail(password54Integers, item);
+    convertAOkToThankYouMail(password54Integers, item);
 
     /* Bit packing */
     /* reseting variables */
@@ -66,8 +66,8 @@ int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char 
         passwordAllocated[i] = 0;
     }
     bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
-    lookupTableEncodingSOS(passwordAllocated, password54Integers);
-    realocateBytesEncodingSOS(resultThankYouMail, passwordAllocated);
+    lookupTableEncodingSos(passwordAllocated, password54Integers);
+    realocateBytesEncodingSos(resultThankYouMail, passwordAllocated);
 
     return 0;
 }
@@ -82,17 +82,17 @@ int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integ
     }
 
     char pswAllocated[54] = {0}; /* Please, initialize all data */
-    reallocateBytesDecodingSOS(SOSPassword, pswAllocated);
+    reallocateBytesDecodingSos(SOSPassword, pswAllocated);
 
     /* The password that will be converted to integers representation using the lookup table bellow */
-    if (lookupTableDecodingSOS(pswAllocated, password54Integers) == InputError) {
+    if (lookupTableDecodingSos(pswAllocated, password54Integers) == InputError) {
         return InputError;
     }
 
     return 0;
 }
 
-void convertSOSToAOKMail(char *password54Integers)
+void convertSosToAOkMail(char *password54Integers)
 {
     /*
      * One possible way to do this is decoding the mail, then change the mail type,
@@ -158,7 +158,7 @@ void convertSOSToAOKMail(char *password54Integers)
     password54Integers[52]  = (char)(0 | (rescueChances >> 1));
 }
 
-void convertAOKToThankYouMail(char *password54Integers, int item)
+void convertAOkToThankYouMail(char *password54Integers, int item)
 {
     /*
      * Similar to the procedure to convert a SOS into an A-OK Mail.

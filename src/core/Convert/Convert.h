@@ -2,9 +2,9 @@
 #define CONVERT_H
 
 /* CONVERTING SOS MAIL FUNCTIONS */
-int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail);
+int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail);
 int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers);
-void convertSOSToAOKMail(char *password54Integers);
-void convertAOKToThankYouMail(char *password54Integers, int item);
+void convertSosToAOkMail(char *password54Integers);
+void convertAOkToThankYouMail(char *password54Integers, int item);
 
 #endif /* CONVERT_H */

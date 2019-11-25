@@ -98,14 +98,14 @@ These functions are used to decode SOS Mails.
 ----------  
 
 ```c
-int decodeSOSMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
+int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
 ```  
 Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
 
 ----------  
 
 ```c
-int SOSMailIsInvalid(const char *password, char *packed34BytesPassword)
+int sosMailIsInvalid(const char *password, char *packed34BytesPassword)
 ```  
 Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
 
@@ -141,16 +141,16 @@ These functions are used to decode SOS Mails.
 ----------  
 
 ```c
-int encodeSOSMail(struct SosMail *sos, char *finalPassword)
+int encodeSosMail(struct SosMail *sos, char *finalPassword)
 ```  
 Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
 
 ----------  
 
 ```c
-int foundErrorsEntriesSOS(const struct SosMail *sos)
+int foundErrorsEntriesSos(const struct SosMail *sos)
 ```  
-This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSOSMail`, but you may want to call it to report entry errors at real-time.  
+This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSosMail`, but you may want to call it to report entry errors at real-time.  
 
 ----------  
 
@@ -160,7 +160,7 @@ This function scans the SOS Mail `sos` and return the number of errors found whi
 ----------  
 
 ```c
-int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 ```  
 This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
 
@@ -588,7 +588,7 @@ This function extract the information contained in `mail` and write it to `mailI
 ----------
 
 ```c
-void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword)
+void reallocateBytesDecodingSos(const char *unallocatedPassword, char *allocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
@@ -596,15 +596,15 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers)
+int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers)
 ```  
 **Internal function, should not be used**  
-Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingSOS` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
+Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingSos` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void bitUnpackingDecodingSOS(const char *packed14BytesPassword, struct SosMail* mail)
+void bitUnpackingDecodingSos(const char *packed14BytesPassword, struct SosMail* mail)
 ```  
 **Internal function, should not be used**  
 This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
@@ -612,7 +612,7 @@ This function takes the packed 14 bytes stored in `packed14BytesPassword`, decod
 ----------  
 
 ```c
-void setSOSInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
+void setSosInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
 ```  
 **Internal function, should not be used** 
 This function extract the information contained in `mail` and write it to `sosInfo` in a mail-style layout. This is an internal function and should not be used.  
@@ -657,7 +657,7 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SosMail* mail)
+void bitPackingEncodingSos(char* packed33BytesPassword, const struct SosMail* mail)
 ```  
 **Internal function, should not be used**  
 This function takes the content of the SOS Mail `sos`, encodes it and writes the result to `packed33BytesPassword` in the form of packed 33 bytes. This is an internal function and should not be used.  
@@ -665,7 +665,7 @@ This function takes the content of the SOS Mail `sos`, encodes it and writes the
 ----------  
 
 ```c
-void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers)
+void lookupTableEncodingSos(char* password54Chars, const char* password54Integers)
 ```  
 **Internal function, should not be used**  
 This is the inverse process of decoding. This function takes `password54Integers` and writes the resulting ASCCI buffer in `password54Chars` using a lookup table. This is an internal function and should not be used.  
@@ -673,7 +673,7 @@ This is the inverse process of decoding. This function takes `password54Integers
 ----------  
 
 ```c
-void reallocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword)
+void reallocateBytesEncodingSos(char* allocatedPassword, const char* unallocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
@@ -695,7 +695,7 @@ Tries to convert the SOS Mail. Returns the error code (check the `ErrorType` enu
 ----------  
 
 ```c
-void convertSOSToAOKMail(char *password54Integers)
+void convertSosToAOkMail(char *password54Integers)
 ```  
 **Internal function, should not be used**  
 Converts the SOS intermediate integers password into a A-OK one. The password `password54Integers` is modified directly, so the SOS password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  
@@ -703,7 +703,7 @@ Converts the SOS intermediate integers password into a A-OK one. The password `p
 ----------  
 
 ```c
-void convertAOKToThankYouMail(char *password54Integers, int item)
+void convertAOkToThankYouMail(char *password54Integers, int item)
 ```  
 **Internal function, should not be used**  
 Converts the A-OK intermediate integers password into a Thank-You one with the reward item `item`. The password `password54Integers` is modified directly, so the A-OK password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  

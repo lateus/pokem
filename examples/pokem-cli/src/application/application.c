@@ -73,11 +73,11 @@ void parseWMData(const char *argv[], struct WonderMail *wm)
 int decodeSOSM(int argc, const char *argv[])
 {
     if (argc == 1) {
-        return showHelpDecodingSOS(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
+        return showHelpDecodingSos(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
     }
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
     int errorCode;
-    errorCode = decodeSOSMail(argv[1], &sosInfo);
+    errorCode = decodeSosMail(argv[1], &sosInfo);
     if (errorCode) {
         return errorCode;
     }
@@ -91,19 +91,19 @@ int decodeSOSM(int argc, const char *argv[])
 int encodeSOSM(int argc, const char *argv[])
 {
     if (argc != 7) {
-        return showHelpEncodingSOS(argv[0]);
+        return showHelpEncodingSos(argv[0]);
     }
 
     struct SosMail sos;
     parseSOSData(argv, &sos);
     char finalPassword[55] = {0}; /* 55 because we need one more char with a NULL value (if not fprintf() will maybe print garbage and cause a segmentation fault) */
-    int errorCode = encodeSOSMail(&sos, finalPassword);
+    int errorCode = encodeSosMail(&sos, finalPassword);
     if (errorCode) {
         return errorCode;
     }
 
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
-    setSOSInfo(&sosInfo, &sos);
+    setSosInfo(&sosInfo, &sos);
     sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, finalPassword, 27), finalPassword + 27);
     printSOSData(&sosInfo);
     fflush(stdout);
@@ -136,12 +136,12 @@ int convertSOS(int argc, const char *argv[])
 
     char AOKPassword[55];
     char ThankYouPassword[55];
-    convertSOSMail(argv[1], item, AOKPassword, ThankYouPassword);
+    convertSosMail(argv[1], item, AOKPassword, ThankYouPassword);
 
     struct SosMailInfo AOKInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     struct SosMailInfo ThxInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
-    decodeSOSMail(AOKPassword, &AOKInfo);
-    decodeSOSMail(ThankYouPassword, &ThxInfo);
+    decodeSosMail(AOKPassword, &AOKInfo);
+    decodeSosMail(ThankYouPassword, &ThxInfo);
     fprintf(stdout, "============== A-OK Mail ==============");
     printSOSData(&AOKInfo);
     fprintf(stdout, "============ Thank-You Mail ===========");

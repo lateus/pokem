@@ -83,7 +83,7 @@ int showHelpEncodingWM(const char* programName)
 }
 
 
-int showHelpDecodingSOS(const char* programName)
+int showHelpDecodingSos(const char* programName)
 {
     fputs(DISCLAIMER, stdout);
 
@@ -106,7 +106,7 @@ int showHelpDecodingSOS(const char* programName)
 }
 
 
-int showHelpEncodingSOS(const char *programName)
+int showHelpEncodingSos(const char *programName)
 {
     fputs(DISCLAIMER, stdout);
 

@@ -6,11 +6,11 @@
 #include <stdio.h>
 #include <string.h>
 
-int decodeSOSMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
+int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
 {
     char packed34Bytes[34] = {0};
     int errorCode;
-    errorCode = SOSMailIsInvalid(sosPassword, packed34Bytes);
+    errorCode = sosMailIsInvalid(sosPassword, packed34Bytes);
     if (errorCode) {
         return errorCode;
     }
@@ -20,8 +20,8 @@ int decodeSOSMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
 
     /* Bit unpacking */
     struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
-    bitUnpackingDecodingSOS(psw33Bytes, &sosm);
-    setSOSInfo(sosMailInfoResult, &sosm);
+    bitUnpackingDecodingSos(psw33Bytes, &sosm);
+    setSosInfo(sosMailInfoResult, &sosm);
     sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
 
     fflush(stdout);
@@ -29,7 +29,7 @@ int decodeSOSMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
 }
 
 
-void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword)
+void reallocateBytesDecodingSos(const char *unallocatedPassword, char *allocatedPassword)
 {
     const int newPos[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
 
@@ -40,7 +40,7 @@ void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocated
 }
 
 
-int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers)
+int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers)
 {
     /* I'm worry about the performance of this algorithm. The switch was faster (but looooonger) */
     const char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
@@ -68,7 +68,7 @@ int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers
 }
 
 
-void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SosMail *mail)
+void bitUnpackingDecodingSos(const char *packed33BytesPassword, struct SosMail *mail)
 {
     /*
         As a final step, the password is converted into a Wonder Mail by
@@ -164,7 +164,7 @@ void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SosMail *
 }
 
 
-void setSOSInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
+void setSosInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
 {
     int mailType = mail->mailType;
     strcpy(sosInfo->head, mailType == 4 ? SOS_GoHelp1 : mailType == 5 ? SOS_Thanks1 : SOS_AskHelp1);
@@ -182,7 +182,7 @@ void setSOSInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
 }
 
 
-int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
+int sosMailIsInvalid(const char *password, char packed34BytesPassword[])
 {
 
     size_t pswLenght = strlen(password);
@@ -193,11 +193,11 @@ int SOSMailIsInvalid(const char *password, char packed34BytesPassword[])
     }
 
     char pswAllocated[54] = {0}; /* Please, initialize all data */
-    reallocateBytesDecodingSOS(password, pswAllocated);
+    reallocateBytesDecodingSos(password, pswAllocated);
 
     /* The password that will be converted to integers representation using the lookup table bellow */
     char passIntegers[54] = {0};
-    if (lookupTableDecodingSOS(pswAllocated, passIntegers) == InputError) {
+    if (lookupTableDecodingSos(pswAllocated, passIntegers) == InputError) {
         return InputError;
     }
 

@@ -9,7 +9,7 @@
 #include <time.h>
 
 
-int encodeSOSMail(struct SosMail *sos, char *finalPassword)
+int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
     srand((unsigned int)time(NULL));
 
@@ -23,7 +23,7 @@ int encodeSOSMail(struct SosMail *sos, char *finalPassword)
     sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
     sos->idk_last3Bits = 0;
 
-    int errors = foundErrorsEntriesSOS(sos);
+    int errors = foundErrorsEntriesSos(sos);
     if (errors) {
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
         return InputError; /* to use the NOT operator */
@@ -31,7 +31,7 @@ int encodeSOSMail(struct SosMail *sos, char *finalPassword)
 
     char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
     char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
-    bitPackingEncodingSOS(packed33BytesPassword, sos); /* bit packing while decoding are equivalent to bit unpacking while encoding */
+    bitPackingEncodingSos(packed33BytesPassword, sos); /* bit packing while decoding are equivalent to bit unpacking while encoding */
 
     packed34BytesPassword[0] = (char)computeChecksum(packed34BytesPassword, 34);
 
@@ -39,14 +39,14 @@ int encodeSOSMail(struct SosMail *sos, char *finalPassword)
     bitUnpackingEncoding(password54Integers, packed34BytesPassword, 34);
 
     char password54Chars[54] = {0};
-    lookupTableEncodingSOS(password54Chars, password54Integers);
+    lookupTableEncodingSos(password54Chars, password54Integers);
 
-    realocateBytesEncodingSOS(finalPassword, password54Chars);
+    realocateBytesEncodingSos(finalPassword, password54Chars);
 
     return 0;
 }
 
-int foundErrorsEntriesSOS(const struct SosMail *sos)
+int foundErrorsEntriesSos(const struct SosMail *sos)
 {
     int errorsFound = 0;
 
@@ -78,7 +78,7 @@ int foundErrorsEntriesSOS(const struct SosMail *sos)
     return errorsFound;
 }
 
-void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SosMail* mail)
+void bitPackingEncodingSos(char* packed33BytesPassword, const struct SosMail* mail)
 {
     /*
         The structure of the SOS Mail struct is the following (see md1global.h):
@@ -196,7 +196,7 @@ void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SosMail* ma
 }
 
 
-void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers)
+void lookupTableEncodingSos(char* password54Chars, const char* password54Integers)
 {
     const char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     int i;
@@ -206,7 +206,7 @@ void lookupTableEncodingSOS(char* password54Chars, const char* password54Integer
 }
 
 
-void realocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword)
+void realocateBytesEncodingSos(char* allocatedPassword, const char* unallocatedPassword)
 {
     const int newPos[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
 
