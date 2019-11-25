@@ -38,7 +38,12 @@ int encodeWM(int argc, const char *argv[])
         return errorCode;
     }
 
-    fprintf(stdout, "Password: %s\n", finalPassword);
+    /* Get the full Wonder Mail info */
+    struct WM_INFO wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
+    setWMInfo(&wmInfo, &wm);
+    flavorText(&wm, arePairs(wm.pkmnClient, wm.pkmnTarget), areLovers(wm.pkmnClient, wm.pkmnTarget), areParents(wm.pkmnClient, wm.pkmnTarget), &wmInfo);
+    sprintf(wmInfo.WMail, "%s\n          %s", strncat(wmInfo.WMail, finalPassword, 12), finalPassword + 12);
+    printWMData(&wmInfo);
     fflush(stdout);
 
     return 0;
