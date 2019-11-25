@@ -42,7 +42,7 @@ int showGeneralHelp(const char *programName)
 }
 
 
-int showHelpDecodingWM(const char* programName) /* argv[0] is the program path/name */
+int showHelpDecodingWonderMail(const char* programName) /* argv[0] is the program path/name */
 {
     fputs(DISCLAIMER, stdout);
 
@@ -64,7 +64,7 @@ int showHelpDecodingWM(const char* programName) /* argv[0] is the program path/n
 }
 
 
-int showHelpEncodingWM(const char* programName)
+int showHelpEncodingWonderMail(const char* programName)
 {
     fputs(DISCLAIMER, stdout);
 

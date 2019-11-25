@@ -9,9 +9,9 @@ CuSuite* DecodeWonderMailGetTestSuite(void);
 
 void decodeWonderMail_test(CuTest *tc);
 void wonderMailIsInvalid_test(CuTest *tc);
-void reallocateBytesDecodingWM_test(CuTest *tc);
-void lookupTableDecodingWM_test(CuTest *tc);
-void bitUnpackingDecodingWM_test(CuTest *tc);
+void reallocateBytesDecodingWonderMail_test(CuTest *tc);
+void lookupTableDecodingWonderMail_test(CuTest *tc);
+void bitUnpackingDecodingWonderMail_test(CuTest *tc);
 void setFlavorText_test(CuTest *tc);
 void setFlavorTextHead_test(CuTest *tc);
 void setFlavorTextBody_test(CuTest *tc);
@@ -22,10 +22,10 @@ CuSuite* DecodeWonderMailGetTestSuite()
     CuSuite *suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, decodeWonderMail_test);
     SUITE_ADD_TEST(suite, wonderMailIsInvalid_test);
-    SUITE_ADD_TEST(suite, reallocateBytesDecodingWM_test);
-    SUITE_ADD_TEST(suite, lookupTableDecodingWM_test);
-    SUITE_ADD_TEST(suite, lookupTableDecodingWM_test);
-    SUITE_ADD_TEST(suite, bitUnpackingDecodingWM_test);
+    SUITE_ADD_TEST(suite, reallocateBytesDecodingWonderMail_test);
+    SUITE_ADD_TEST(suite, lookupTableDecodingWonderMail_test);
+    SUITE_ADD_TEST(suite, lookupTableDecodingWonderMail_test);
+    SUITE_ADD_TEST(suite, bitUnpackingDecodingWonderMail_test);
     SUITE_ADD_TEST(suite, setFlavorText_test);
     SUITE_ADD_TEST(suite, setFlavorTextHead_test);
     SUITE_ADD_TEST(suite, setFlavorTextBody_test);
@@ -96,7 +96,7 @@ void wonderMailIsInvalid_test(CuTest *tc)
 #undef ARRAY_SIZE
 }
 
-void reallocateBytesDecodingWM_test(CuTest *tc)
+void reallocateBytesDecodingWonderMail_test(CuTest *tc)
 {
 #define ARRAY_SIZE 5
     char input1[ARRAY_SIZE][24 + 1] = {0};
@@ -118,13 +118,13 @@ void reallocateBytesDecodingWM_test(CuTest *tc)
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        reallocateBytesDecodingWM(input1[i], input2[i]);
+        reallocateBytesDecodingWonderMail(input1[i], input2[i]);
         CuAssertStrEquals(tc, expected[i], input1[i]);
     }
 #undef ARRAY_SIZE
 }
 
-void lookupTableDecodingWM_test(CuTest *tc)
+void lookupTableDecodingWonderMail_test(CuTest *tc)
 {
 #define ARRAY_SIZE 5
     char input1[ARRAY_SIZE][24 + 1] = {0};
@@ -146,7 +146,7 @@ void lookupTableDecodingWM_test(CuTest *tc)
 
     int i, j;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        lookupTableDecodingWM(input1[i], input2[i]);
+        lookupTableDecodingWonderMail(input1[i], input2[i]);
         for (j = 0; j < 24; ++j) {
             CuAssertIntEquals(tc, expected[i][j], input1[i][j]);
         }
@@ -154,7 +154,7 @@ void lookupTableDecodingWM_test(CuTest *tc)
 #undef ARRAY_SIZE
 }
 
-void bitUnpackingDecodingWM_test(CuTest *tc)
+void bitUnpackingDecodingWonderMail_test(CuTest *tc)
 {
 #define ARRAY_SIZE 5
     const char input1[ARRAY_SIZE][14] = {
@@ -182,7 +182,7 @@ void bitUnpackingDecodingWM_test(CuTest *tc)
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        bitUnpackingDecodingWM(input1[i], &input2[i]);
+        bitUnpackingDecodingWonderMail(input1[i], &input2[i]);
         CuAssertIntEquals(tc, expected[i].mailType, input2[i].mailType);
         CuAssertIntEquals(tc, expected[i].specialJobIndicator, input2[i].specialJobIndicator);
         CuAssertIntEquals(tc, expected[i].pkmnClient, input2[i].pkmnClient);

@@ -20,7 +20,7 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
 
     /* Bit unpacking */
     struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
-    bitUnpackingDecodingWM(psw14Bytes, &wm);
+    bitUnpackingDecodingWonderMail(psw14Bytes, &wm);
 
     /* Flavor Texts */
     setFlavorText(&wm, wonderMailInfoResult);
@@ -46,11 +46,11 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
     }
 
     char pswAllocated[24] = {0}; /* Please, initialize all data. This is done at compile time, so there isn't runtime overload */
-    reallocateBytesDecodingWM(pswAllocated, password);
+    reallocateBytesDecodingWonderMail(pswAllocated, password);
 
     /* This password will be 'integerized' using the lookup table bellow */
     char passIntegers[24] = {0};
-    if (lookupTableDecodingWM(passIntegers, pswAllocated) == InputError) {
+    if (lookupTableDecodingWonderMail(passIntegers, pswAllocated) == InputError) {
         return InputError;
     }
 
@@ -72,7 +72,7 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 
 
 
-void reallocateBytesDecodingWM(char* allocatedPassword, const char* unallocatedPassword)
+void reallocateBytesDecodingWonderMail(char* allocatedPassword, const char* unallocatedPassword)
 {
     const int newPos[24] = { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 };
 
@@ -84,7 +84,7 @@ void reallocateBytesDecodingWM(char* allocatedPassword, const char* unallocatedP
 
 
 
-int lookupTableDecodingWM(char* passwordIntegers, const char* allocatedPassword)
+int lookupTableDecodingWonderMail(char* passwordIntegers, const char* allocatedPassword)
 {
     /* I'm worry about the performance of this algorithm. The switch was faster (but looooonger) */
     const char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
@@ -115,7 +115,7 @@ int lookupTableDecodingWM(char* passwordIntegers, const char* allocatedPassword)
 
 
 
-void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WonderMail* mail)
+void bitUnpackingDecodingWonderMail(const char* packed14BytesPassword, struct WonderMail* mail)
 {
     /*
         As a final step, the password is converted into a Wonder Mail by

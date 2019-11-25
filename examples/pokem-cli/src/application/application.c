@@ -6,7 +6,7 @@
 int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
     if (argc == 1) {
-        return showHelpDecodingWM(argv[0]); /* No arguments specified. */
+        return showHelpDecodingWonderMail(argv[0]); /* No arguments specified. */
     }
 
     struct WonderMailInfo mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
@@ -27,7 +27,7 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
 int encodeWM(int argc, const char *argv[])
 {
     if (argc != 10) {
-        return showHelpEncodingWM(argv[0]);
+        return showHelpEncodingWonderMail(argv[0]);
     }
 
     struct WonderMail wm;

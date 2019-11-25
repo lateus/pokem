@@ -18,7 +18,7 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
     wm->random = rand() & 0xFF; /* same as % 256 */
     wm->idk_always0xFF = 0xFF; /* as his name suggest */
 
-    int errors = foundErrorsEntriesWM(wm);
+    int errors = foundErrorsEntriesWonderMail(wm);
     if (errors) {
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE\a\n\n", errors);
         return InputError;
@@ -44,7 +44,7 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
 
     char packed15BytesPassword[15] = {0};	/* the first byte is merely a checksum */
     char *packed14BytesPassword = packed15BytesPassword + 1;	/* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
-    bitPackingEncodingWM(packed14BytesPassword, wm);	/* bit packing while decoding are equivalent to bit unpacking while decoding */
+    bitPackingEncodingWonderMail(packed14BytesPassword, wm);	/* bit packing while decoding are equivalent to bit unpacking while decoding */
 
     packed15BytesPassword[0] = (char)computeChecksum(packed15BytesPassword, 15);
 
@@ -52,15 +52,15 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
     bitUnpackingEncoding(password24Integers, packed15BytesPassword, 15);
 
     char password24Chars[24] = {0};
-    lookupTableEncodingWM(password24Integers, password24Chars);
-    reallocateBytesEncodingWM(password24Chars, finalPassword);
+    lookupTableEncodingWonderMail(password24Integers, password24Chars);
+    reallocateBytesEncodingWonderMail(password24Chars, finalPassword);
 
     return NoError; /* means ok */
 }
 
 
 
-int foundErrorsEntriesWM(const struct WonderMail *wm)
+int foundErrorsEntriesWonderMail(const struct WonderMail *wm)
 {
     int errorsFound = 0;
 
@@ -182,7 +182,7 @@ int foundErrorsEntriesWM(const struct WonderMail *wm)
 
 
 
-void bitPackingEncodingWM(char* packed14BytesPassword, const struct WonderMail* mail)
+void bitPackingEncodingWonderMail(char* packed14BytesPassword, const struct WonderMail* mail)
 {
     /* I wrote the bits that a field must store, assign more will cause an overflow. I'm using standard C Bit Fields. */
     /* As final observation, I only will read the bits in the array, without destroying bits, instead I'll shift bits: non-destructive read is faster and safer than destructive read */
@@ -230,7 +230,7 @@ void bitPackingEncodingWM(char* packed14BytesPassword, const struct WonderMail* 
 
 
 
-void lookupTableEncodingWM(const char* password24Integers, char* password24Chars)
+void lookupTableEncodingWonderMail(const char* password24Integers, char* password24Chars)
 {
     char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     int i;
@@ -241,7 +241,7 @@ void lookupTableEncodingWM(const char* password24Integers, char* password24Chars
 
 
 
-void reallocateBytesEncodingWM(const char* unallocatedPassword, char* allocatedPassword)
+void reallocateBytesEncodingWonderMail(const char* unallocatedPassword, char* allocatedPassword)
 {
     const int newPos[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
     int i;
