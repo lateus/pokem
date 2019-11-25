@@ -135,11 +135,14 @@ int convertSOS(int argc, const char *argv[])
     char ThankYouPassword[55];
     convertSOSMail(argv[1], item, AOKPassword, ThankYouPassword);
 
-    char finalAOKPassword[100] = {0};
-    char finalThankYouPassword[100] = {0};
-    fprintf(stdout, "\nA-OK Password:      %27s\n                    %s\n", strncat(finalAOKPassword, AOKPassword, 27), AOKPassword + 27);
-    fprintf(stdout, "Thank-You Password: %27s\n                    %s\n", strncat(finalThankYouPassword, ThankYouPassword, 27), ThankYouPassword + 27);
-
+    struct SOS_INFO AOKInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    struct SOS_INFO ThxInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    decodeSOSMail(AOKPassword, &AOKInfo);
+    decodeSOSMail(ThankYouPassword, &ThxInfo);
+    fprintf(stdout, "============== A-OK Mail ==============");
+    printSOSData(&AOKInfo);
+    fprintf(stdout, "============ Thank-You Mail ===========");
+    printSOSData(&ThxInfo);
     fflush(stdout);
     return 0;
 }
