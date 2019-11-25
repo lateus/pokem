@@ -63,14 +63,14 @@ struct WM_INFO {
 
 struct SOS_INFO {
     char head[40];
-    char body[26];
+    char body[33];
     char nickname[11];
     char client[11];
     char objective[15];
     char place[26];
     char floor[7];
     char difficulty;
-    char reward[4];
+    char reward[13];
     char id[16];
     char chancesLeft[4];
     char SOSMail[100];
