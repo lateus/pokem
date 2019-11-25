@@ -10,8 +10,8 @@
 
 /* Functions prototypes */
 void printBinary(long long int n, const int bitsToPrint);    /* Print the binary representation using bitsToPrint bits to stderr */
-void printWonderWonderMailBruteData(const struct WonderMail *wm);
-void printWonderSOSMailBruteData(const struct SosMail *sosm);
+void printWonderMailBruteData(const struct WonderMail *wm);
+void printSOSMailBruteData(const struct SosMail *sosm);
 void printArray(const char* array, int size);
 
 /** Functions implementations */
@@ -31,7 +31,7 @@ void printBinary(long long int n, const int bits)
 
 
 
-void printWonderWonderMailBruteData(const struct WonderMail *wm)
+void printWonderMailBruteData(const struct WonderMail *wm)
 {
     fprintf(stderr, "=========================================================\n"
                     "Mail Type ------------- %d\n"
@@ -68,7 +68,7 @@ void printWonderWonderMailBruteData(const struct WonderMail *wm)
 
 
 
-extern void printWonderSOSMailBruteData(const struct SosMail *sosm)
+extern void printSOSMailBruteData(const struct SosMail *sosm)
 {
     char nick[11] = {0};
     strncpy(nick, sosm->pkmnNick, 10);
