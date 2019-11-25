@@ -1,6 +1,6 @@
 #include "Convert.h"
-#include "../Decode/DecodeSOS/DecodeSOS.h"
-#include "../Encode/EncodeSOS/EncodeSOS.h"
+#include "../Decode/DecodeSos/DecodeSos.h"
+#include "../Encode/EncodeSos/EncodeSos.h"
 #include "../Decode/UtilDecode/UtilDecode.h"
 #include "../Encode/UtilEncode/UtilEncode.h"
 #include "../UtilCore/UtilCore.h"

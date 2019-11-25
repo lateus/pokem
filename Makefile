@@ -7,18 +7,18 @@ CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
 BUILDDIR	:=	build
 BINLIBDIR	:=	binlib
 
-SOURCES		:=	src/core/Decode/DecodeSOS/DecodeSOS.c \
+SOURCES		:=	src/core/Decode/DecodeSos/DecodeSos.c \
 				src/core/Decode/DecodeWonderMail/DecodeWonderMail.c \
 				src/core/Decode/UtilDecode/UtilDecode.c \
-				src/core/Encode/EncodeSOS/EncodeSOS.c \
+				src/core/Encode/EncodeSos/EncodeSos.c \
 				src/core/Encode/EncodeWonderMail/EncodeWonderMail.c \
 				src/core/Encode/UtilEncode/UtilEncode.c \
 				src/core/Convert/Convert.c \
 				src/core/UtilCore/UtilCore.c \
 				src/data/md1database/md1database.c
 
-OBJECTS		:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
-				$(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
+OBJECTS		:=	$(BUILDDIR)/DecodeSos.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
+				$(BUILDDIR)/EncodeSos.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
 				$(BUILDDIR)/Convert.o \
 				$(BUILDDIR)/UtilCore.o \
 				$(BUILDDIR)/md1database.o
@@ -158,10 +158,10 @@ $(BINLIBDIR):
 	$(MKDIR) $(MKDIR_FLAGS) $(BINLIBDIR)
 
 # INTERMEDIATE OBJECTS BUILD RULES
-$(BUILDDIR)/DecodeSOS.o:        src/core/Decode/DecodeSOS/DecodeSOS.c
+$(BUILDDIR)/DecodeSos.o:        src/core/Decode/DecodeSos/DecodeSos.c
 $(BUILDDIR)/DecodeWonderMail.o: src/core/Decode/DecodeWonderMail/DecodeWonderMail.c
 $(BUILDDIR)/UtilDecode.o:       src/core/Decode/UtilDecode/UtilDecode.c
-$(BUILDDIR)/EncodeSOS.o:        src/core/Encode/EncodeSOS/EncodeSOS.c
+$(BUILDDIR)/EncodeSos.o:        src/core/Encode/EncodeSos/EncodeSos.c
 $(BUILDDIR)/EncodeWonderMail.o: src/core/Encode/EncodeWonderMail/EncodeWonderMail.c
 $(BUILDDIR)/UtilEncode.o:       src/core/Encode/UtilEncode/UtilEncode.c
 $(BUILDDIR)/Convert.o:          src/core/Convert/Convert.c
