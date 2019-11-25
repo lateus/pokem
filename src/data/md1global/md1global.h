@@ -2,11 +2,14 @@
 #define MD1GLOBAL_H
 
 /* Data definitions */
-enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };
-enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
-enum FlavorTextLocation { FlavorTextHead, FlavorTextBody };
 
-/* If not programming in C, consider use buffers objects instead of structs and bit fields, it will be slower of course, but more safe and readable (performance is not everything) */
+/* Error codes */
+enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };
+
+/* The type of a mission */
+enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
+
+/* Encapsulates a Wonder Mail */
 struct WonderMail {
     unsigned int mailType:4;              /* 4 bits: Must equal 5 for Wonder Mail */
     unsigned int missionType:3;           /* 3 bits: Mission Type: 0 (Help me), 1 (Find someone), 2 (Escort), 3 (Find item) and 4 (Deliver item) */
@@ -24,6 +27,7 @@ struct WonderMail {
     unsigned int floor:7;                 /* 7 bits: Floor (e.g. set to 2 for 2nd floor). The game will turn the floor negative if necesary */
 };
 
+/* Encapsulates a SOS, A-OK or Thank-You Mail */
 struct SosMail {
     unsigned int mailType:4;              /*  4 bits: Must equal 1 for SOS Mail, 4 for A-OK Mail, and 5 for Thank-You Mail */
     unsigned int dungeon:7;               /*  7 bits: Dungeon */
@@ -42,12 +46,7 @@ struct SosMail {
     unsigned int idk_last3Bits:3;         /*  3 bits: Three bits for unknown. Safe to set to 0 */
 };
 
-/*
-    WARNING: Be careful with the size of arrays while translating!
-             If not C, consider use dynamic string objects instead of pure and neutral C-style arrays (pointers to have direct low-level access to RAM memory).
-             It will be slower of course, but safer (performance is not everything).
-             Note: Only a few languages implements arrays as pointers to have fast access to volatile RAM memory, the rest are slow objects and you don't have choice: you can't use pointers.
-*/
+/* Contains the human-readable information of a Wonder Mail */
 struct WonderMailInfo {
     char head[26];
     char body1[100];
@@ -61,6 +60,7 @@ struct WonderMailInfo {
     char WMail[50];
 };
 
+/* Contains the human-readable information of a SOS, A-OK or Thank-You Mail */
 struct SosMailInfo {
     char head[40];
     char body[33];
