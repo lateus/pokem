@@ -512,10 +512,10 @@ const int pairs[] = {
     172, 172
 };
 
-const char* friendsHead  = "Please save my friend!"; /* first 33 */
-const char* loversHead   = "Please save my love!";   /* next 7 */
-const char* rivalsHead   = "Rescue my rival!";   /* next 4 */
-const char* brothersHead = "Please help my brother!";    /* last one */
+const char* friendsHead  = "Please save my friend!";  /* first 33 */
+const char* loversHead   = "Please save my love!";    /* next 7 */
+const char* rivalsHead   = "Rescue my rival!";        /* next 4 */
+const char* brothersHead = "Please help my brother!"; /* last one */
 
 const char* pairsBody1Of2[] = {
     "This precious friend can chat separately",

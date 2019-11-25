@@ -9,15 +9,11 @@
 #include <time.h>
 
 
-int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword)
+int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
 {
     srand((unsigned int)time(NULL));
 
-    int pairsIndex   = arePairs(wm->pkmnClient, wm->pkmnTarget);
-    int loversIndex  = areLovers(wm->pkmnClient, wm->pkmnTarget);
-    int parentsIndex = areParents(wm->pkmnClient, wm->pkmnTarget);
-
-    wm->specialJobIndicator = getSpecialJobIndicator(pairsIndex, loversIndex, parentsIndex);
+    wm->specialJobIndicator = getSpecialJobIndicator(wm->pkmnClient, wm->pkmnTarget, wm->missionType);
     wm->flavorText = (15 - (wm->dungeon % 15)) % 15; /* obtained empirically */
     wm->random = rand() & 0xFF; /* same as % 256 */
     wm->idk_always0xFF = 0xFF; /* as his name suggest */
@@ -64,7 +60,7 @@ int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword)
 
 
 
-int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
+int foundErrorsEntriesWM(const struct WonderMail *wm)
 {
     int errorsFound = 0;
 
@@ -106,9 +102,9 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
 
     /* item to deliver/find check (limits) */
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
-        if (wm->itemDeliverFind > 232) {
+        if (wm->itemDeliverFind < 1 || wm->itemDeliverFind > 232) {
             fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
-                            "      Items to find or deliver must be numbers between 1 and 232.\n\n", ++errorsFound);
+                            "      Invalid item index %d. Items to find or deliver must be numbers between 1 and 232.\n\n", wm->itemDeliverFind, ++errorsFound);
         }
 
         /* item to deliver/find check (existence) */
@@ -186,7 +182,7 @@ int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
 
 
 
-void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* mail)
+void bitPackingEncodingWM(char* packed14BytesPassword, const struct WonderMail* mail)
 {
     /* I wrote the bits that a field must store, assign more will cause an overflow. I'm using standard C Bit Fields. */
     /* As final observation, I only will read the bits in the array, without destroying bits, instead I'll shift bits: non-destructive read is faster and safer than destructive read */

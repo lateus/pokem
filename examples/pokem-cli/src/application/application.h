@@ -8,9 +8,9 @@
 
 int decodeWM(int argc, const char *argv[]);
 int encodeWM(int argc, const char *argv[]);
-void parseWMData(const char *argv[], struct WONDERMAIL *wm);
+void parseWMData(const char *argv[], struct WonderMail *wm);
 int decodeSOSM(int argc, const char *argv[]);
-void parseSOSData(const char *argv[], struct SOSMAIL *sos);
+void parseSOSData(const char *argv[], struct SosMail *sos);
 int encodeSOSM(int argc, const char *argv[]);
 int convertSOS(int argc, const char *argv[]);
 

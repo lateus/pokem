@@ -1,17 +1,17 @@
-#ifndef DECODEWONDERMAIL_H
-#define DECODEWONDERMAIL_H
+#ifndef DECODEWonderMail_H
+#define DECODEWonderMail_H
 
 #include "../../../data/md1global/md1global.h"
 
 /* DECODING WONDER MAIL FUNCTIONS */
-int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult);
+int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult);
 int wonderMailIsInvalid(const char *password, char *packed15BytesPassword);
 void reallocateBytesDecodingWM(char *allocatePassword, const char *unallocatedPassword);
 int lookupTableDecodingWM(char *passwordIntegers, const char *allocatedPassword);
-void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WONDERMAIL* mail);
-void flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo);
-void flavorTextHead(const struct WONDERMAIL *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo);
-void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo);
-void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail);
+void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WonderMail* mail);
+void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo);
+void setFlavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo);
+void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo);
+void setWMInfo(struct WonderMailInfo *mailInfo, const struct WonderMail *mail);
 
-#endif /* DECODEWONDERMAIL_H */
+#endif /* DECODEWonderMail_H */

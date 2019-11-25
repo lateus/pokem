@@ -7,7 +7,7 @@
 #include <string.h>
 
 
-int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
+int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult)
 {
     char packed15Bytes[15] = {0};
     int errorCodeWM = wonderMailIsInvalid(password, packed15Bytes);
@@ -19,14 +19,11 @@ int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
     char* psw14Bytes = packed15Bytes + 1; /* You must be firm in pointer's arithmetic to handle this effectively, so take care doing this things */
 
     /* Bit unpacking */
-    struct WONDERMAIL wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
+    struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
     bitUnpackingDecodingWM(psw14Bytes, &wm);
 
     /* Flavor Texts */
-    int pairsIndex   = arePairs(wm.pkmnClient, wm.pkmnTarget);
-    int loversIndex  = areLovers(wm.pkmnClient, wm.pkmnTarget);
-    int parentsIndex = areParents(wm.pkmnClient, wm.pkmnTarget);
-    flavorText(&wm, pairsIndex, loversIndex, parentsIndex, wonderMailInfoResult);
+    setFlavorText(&wm, wonderMailInfoResult);
 
     /* Bulking the mail's data... */
     setWMInfo(wonderMailInfoResult, &wm);
@@ -118,7 +115,7 @@ int lookupTableDecodingWM(char* passwordIntegers, const char* allocatedPassword)
 
 
 
-void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WONDERMAIL* mail)
+void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WonderMail* mail)
 {
     /*
         As a final step, the password is converted into a Wonder Mail by
@@ -174,9 +171,14 @@ void bitUnpackingDecodingWM(const char* packed14BytesPassword, struct WONDERMAIL
 
 
 
-void flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo)
+void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo)
 {
-    int headIndicator, bodyIndicator;
+    int headIndicator =  8 + wm->missionType;
+    int bodyIndicator = 12 + wm->missionType;
+
+    int pairsIndex   = arePairs(wm->pkmnClient, wm->pkmnTarget);
+    int loversIndex  = areLovers(wm->pkmnClient, wm->pkmnTarget);
+    int parentsIndex = areParents(wm->pkmnClient, wm->pkmnTarget);
 
     switch (wm->specialJobIndicator) {
     case 0x09:
@@ -196,19 +198,15 @@ void flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, in
             headIndicator = 4;
             bodyIndicator = 6;
         }
-        break;
-    default: /* Most of the cases will go here directly */
-        headIndicator =  8 + wm->missionType;
-        bodyIndicator = 12 + wm->missionType;
     }
 
-    flavorTextHead(wm, headIndicator, pairsIndex, loversIndex, parentsIndex, mailInfo);
-    flavorTextBody(wm, bodyIndicator, pairsIndex, loversIndex, parentsIndex, mailInfo);
+    setFlavorTextHead(wm, headIndicator, pairsIndex, loversIndex, parentsIndex, mailInfo);
+    setFlavorTextBody(wm, bodyIndicator, pairsIndex, loversIndex, parentsIndex, mailInfo);
 }
 
 
 
-void flavorTextHead(const struct WONDERMAIL *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo)
+void setFlavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo)
 {
     int dungeonID = (wm->flavorText + wm->dungeon) & 0xFF;
 
@@ -268,7 +266,7 @@ void flavorTextHead(const struct WONDERMAIL *wm, int headIndicator, int pairsInd
 
 
 
-void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo)
+void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo)
 {
     int dungeonID = (wm->flavorText + wm->dungeon) & 0xFF;
     int floorID = (wm->flavorText + wm->floor) & 0xFF;
@@ -339,7 +337,7 @@ void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsInd
     }
 }
 
-void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail)
+void setWMInfo(struct WonderMailInfo *mailInfo, const struct WonderMail *mail)
 {
     strcpy(mailInfo->client, pkmnSpeciesStr[mail->pkmnClient]);
 

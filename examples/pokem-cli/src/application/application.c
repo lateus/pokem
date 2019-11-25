@@ -9,7 +9,7 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
         return showHelpDecodingWM(argv[0]); /* No arguments specified. */
     }
 
-    struct WM_INFO mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
+    struct WonderMailInfo mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
     /* This loop will allow to decode all entered wonder mails one by one. */
     int errorCode;
     errorCode = decodeWonderMail(argv[1], &mailInfo);
@@ -30,7 +30,7 @@ int encodeWM(int argc, const char *argv[])
         return showHelpEncodingWM(argv[0]);
     }
 
-    struct WONDERMAIL wm;
+    struct WonderMail wm;
     parseWMData(argv, &wm);
     char finalPassword[25] = {0};
     int errorCode = encodeWonderMail(&wm, finalPassword);
@@ -39,11 +39,14 @@ int encodeWM(int argc, const char *argv[])
     }
 
     /* Get the full Wonder Mail info */
-    struct WM_INFO wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
+    struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
     setWMInfo(&wmInfo, &wm);
-    flavorText(&wm, arePairs(wm.pkmnClient, wm.pkmnTarget), areLovers(wm.pkmnClient, wm.pkmnTarget), areParents(wm.pkmnClient, wm.pkmnTarget), &wmInfo);
+    setFlavorText(&wm, &wmInfo);
     sprintf(wmInfo.WMail, "%s\n          %s", strncat(wmInfo.WMail, finalPassword, 12), finalPassword + 12);
     printWMData(&wmInfo);
+    if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
+        fprintf(stderr, "* Warning: You will not be able to accept the above mission.\n");
+    }
     fflush(stdout);
 
     return 0;
@@ -51,7 +54,7 @@ int encodeWM(int argc, const char *argv[])
 
 
 
-void parseWMData(const char *argv[], struct WONDERMAIL *wm)
+void parseWMData(const char *argv[], struct WonderMail *wm)
 {
     wm->mailType         = 5; /* Wonder Mail */
     wm->missionType      = (unsigned int)atoi(argv[1]);
@@ -72,7 +75,7 @@ int decodeSOSM(int argc, const char *argv[])
     if (argc == 1) {
         return showHelpDecodingSOS(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
     }
-    struct SOS_INFO sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
+    struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
     int errorCode;
     errorCode = decodeSOSMail(argv[1], &sosInfo);
     if (errorCode) {
@@ -91,7 +94,7 @@ int encodeSOSM(int argc, const char *argv[])
         return showHelpEncodingSOS(argv[0]);
     }
 
-    struct SOSMAIL sos;
+    struct SosMail sos;
     parseSOSData(argv, &sos);
     char finalPassword[55] = {0}; /* 55 because we need one more char with a NULL value (if not fprintf() will maybe print garbage and cause a segmentation fault) */
     int errorCode = encodeSOSMail(&sos, finalPassword);
@@ -99,7 +102,7 @@ int encodeSOSM(int argc, const char *argv[])
         return errorCode;
     }
 
-    struct SOS_INFO sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     setSOSInfo(&sosInfo, &sos);
     sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, finalPassword, 27), finalPassword + 27);
     printSOSData(&sosInfo);
@@ -108,7 +111,7 @@ int encodeSOSM(int argc, const char *argv[])
     return 0;
 }
 
-void parseSOSData(const char *argv[], struct SOSMAIL *sos)
+void parseSOSData(const char *argv[], struct SosMail *sos)
 {
     sos->pkmnToRescue = (unsigned int)atoi(argv[1]);
     sos->dungeon = (unsigned int)atoi(argv[3]);
@@ -135,8 +138,8 @@ int convertSOS(int argc, const char *argv[])
     char ThankYouPassword[55];
     convertSOSMail(argv[1], item, AOKPassword, ThankYouPassword);
 
-    struct SOS_INFO AOKInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
-    struct SOS_INFO ThxInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    struct SosMailInfo AOKInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    struct SosMailInfo ThxInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     decodeSOSMail(AOKPassword, &AOKInfo);
     decodeSOSMail(ThankYouPassword, &ThxInfo);
     fprintf(stdout, "============== A-OK Mail ==============");

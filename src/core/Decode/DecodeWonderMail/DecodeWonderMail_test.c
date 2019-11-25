@@ -12,6 +12,7 @@ void wonderMailIsInvalid_test(CuTest *tc);
 void reallocateBytesDecodingWM_test(CuTest *tc);
 void lookupTableDecodingWM_test(CuTest *tc);
 void bitUnpackingDecodingWM_test(CuTest *tc);
+void setFlavorText_test(CuTest *tc);
 
 
 CuSuite* DecodeWonderMailGetTestSuite()
@@ -23,6 +24,7 @@ CuSuite* DecodeWonderMailGetTestSuite()
     SUITE_ADD_TEST(suite, lookupTableDecodingWM_test);
     SUITE_ADD_TEST(suite, lookupTableDecodingWM_test);
     SUITE_ADD_TEST(suite, bitUnpackingDecodingWM_test);
+    SUITE_ADD_TEST(suite, setFlavorText_test);
     return suite;
 }
 
@@ -36,9 +38,9 @@ void decodeWonderMail_test(CuTest *tc)
         { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
         { "F??CR/0?4/+!*3?7TP?T?7?W" }  /* (WM - VALID) */
     };
-    struct WM_INFO input2[ARRAY_SIZE] = {};
+    struct WonderMailInfo input2[ARRAY_SIZE] = {};
 
-    const struct WM_INFO expected[ARRAY_SIZE] = {
+    const struct WonderMailInfo expected[ARRAY_SIZE] = {
         { "Take me!",               "I can't go by myself...",              "Please take me to see Wartortle!",        "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                     "1?J9N/X?4P?3\n          4??764?0P??W" },
         { "Take me!",               "Lapras is waiting for me!",            "Please take me to see Lapras!",           "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]", "4?6F7M+?4JNR\n          J*??K??0+9??" },
         { "Escort me!",             "I have to go!",                        "Someone, please escort me!",              "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",   "S62*S40?4P5H\n          8S?869H0!N?W" },
@@ -158,7 +160,7 @@ void bitUnpackingDecodingWM_test(CuTest *tc)
         { 0x45, 0xA8, 0x54, 0x09, 0x0E, 0x00, 0x00, 0x00, 0x9B, 0x7F, 0xC0, 0x00, 0x00, 0x00 }, /* (WM - VALID) */
         { 0x35, 0x58, 0xB8, 0xF0, 0x0D, 0x00, 0x80, 0x84, 0xF6, 0x7F, 0x12, 0x05, 0x00, 0x00 }  /* (WM - VALID) */
     };
-    struct WONDERMAIL input2[ARRAY_SIZE] = {
+    struct WonderMail input2[ARRAY_SIZE] = {
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -166,7 +168,7 @@ void bitUnpackingDecodingWM_test(CuTest *tc)
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     };
 
-    const struct WONDERMAIL expected[ARRAY_SIZE] = {
+    const struct WonderMail expected[ARRAY_SIZE] = {
         { 5, 2, 0, 7, 8, 9, 5, 9, 0, 3, 238, 255, 1, 1 },
         { 5, 2, 0, 197, 131, 189, 1, 20, 0, 158, 34, 1, 2, 6 },
         { 5, 2, 0, 281, 25, 9, 9, 53, 37, 13, 10, 255, 62, 98 },
@@ -190,6 +192,49 @@ void bitUnpackingDecodingWM_test(CuTest *tc)
         CuAssertIntEquals(tc, expected[i].idk_always0xFF, input2[i].idk_always0xFF);
         CuAssertIntEquals(tc, expected[i].dungeon, input2[i].dungeon);
         CuAssertIntEquals(tc, expected[i].floor, input2[i].floor);
+    }
+#undef ARRAY_SIZE
+}
+
+void setFlavorText_test(CuTest *tc)
+{
+#define ARRAY_SIZE 5
+    const struct WonderMail input1[ARRAY_SIZE] = {
+        { 5, 1,  9, 172, 172, 9, 1,  22, 0,  9, 120, 255, 21, 12 },
+        { 5, 1,  9,  32,  29, 9, 2, 221, 0, 14, 189, 255, 31, 18 },
+        { 5, 2, 10, 336, 337, 9, 3,  46, 0, 12, 192, 255, 33, 24 },
+        { 9, 1,  9, 138, 140, 9, 5,  55, 0,  2,  64, 255, 43,  7 },
+        { 5, 1,  9, 374, 129, 9, 6,  49, 0,  3, 211, 255, 57,  1 }
+    };
+    struct WonderMailInfo input2[ARRAY_SIZE] = {
+        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",         "Meteor Cave",   "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
+        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",      "Desert Region", " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
+        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",    "Wyvern Hill",   " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
+        { {0}, {0}, {0}, "Omanyte",   "Fond Kabuto.",        "Oddity Cave",   "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",      "Unown Relic",   "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+    };
+
+    const struct WonderMailInfo expected[ARRAY_SIZE] = {
+        { "Please help my brother!", "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",         "Meteor Cave",   "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
+        { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",      "Desert Region", " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
+        { "Escort me to my love!",   "I really want to meet Minun!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",    "Wyvern Hill",   " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
+        { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Fond Kabuto.",        "Oddity Cave",   "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
+        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",      "Unown Relic",   "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+    };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        setFlavorText(&input1[i], &input2[i]);
+        CuAssertStrEquals(tc, expected[i].head, input2[i].head);
+        CuAssertStrEquals(tc, expected[i].body1, input2[i].body1);
+        CuAssertStrEquals(tc, expected[i].body2, input2[i].body2);
+        CuAssertStrEquals(tc, expected[i].client, input2[i].client);
+        CuAssertStrEquals(tc, expected[i].objective, input2[i].objective);
+        CuAssertStrEquals(tc, expected[i].place, input2[i].place);
+        CuAssertStrEquals(tc, expected[i].floor, input2[i].floor);
+        CuAssertIntEquals(tc, (int)expected[i].difficulty, (int)input2[i].difficulty);
+        CuAssertStrEquals(tc, expected[i].reward, input2[i].reward);
+        CuAssertStrEquals(tc, expected[i].WMail, input2[i].WMail);
     }
 #undef ARRAY_SIZE
 }

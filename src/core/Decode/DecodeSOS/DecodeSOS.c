@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult)
+int decodeSOSMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
 {
     char packed34Bytes[34] = {0};
     int errorCode;
@@ -19,7 +19,7 @@ int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult)
     char* psw33Bytes = packed34Bytes + 1; /* You must be firm in pointer's arithmetic to handle this */
 
     /* Bit unpacking */
-    struct SOSMAIL sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
+    struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
     bitUnpackingDecodingSOS(psw33Bytes, &sosm);
     setSOSInfo(sosMailInfoResult, &sosm);
     sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
@@ -68,7 +68,7 @@ int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers
 }
 
 
-void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SOSMAIL *mail)
+void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SosMail *mail)
 {
     /*
         As a final step, the password is converted into a Wonder Mail by
@@ -164,7 +164,7 @@ void bitUnpackingDecodingSOS(const char *packed33BytesPassword, struct SOSMAIL *
 }
 
 
-void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
+void setSOSInfo(struct SosMailInfo *sosInfo, const struct SosMail *mail)
 {
     int mailType = mail->mailType;
     strcpy(sosInfo->head, mailType == 4 ? SOS_GoHelp1 : mailType == 5 ? SOS_Thanks1 : SOS_AskHelp1);

@@ -7,7 +7,7 @@ enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
 enum FlavorTextLocation { FlavorTextHead, FlavorTextBody };
 
 /* If not programming in C, consider use buffers objects instead of structs and bit fields, it will be slower of course, but more safe and readable (performance is not everything) */
-struct WONDERMAIL {
+struct WonderMail {
     unsigned int mailType:4;              /* 4 bits: Must equal 5 for Wonder Mail */
     unsigned int missionType:3;           /* 3 bits: Mission Type: 0 (Help me), 1 (Find someone), 2 (Escort), 3 (Find item) and 4 (Deliver item) */
     unsigned int specialJobIndicator:4;   /* 4 bits: Usually 0, except in a few cases, mainly in special jobs */
@@ -24,7 +24,7 @@ struct WONDERMAIL {
     unsigned int floor:7;                 /* 7 bits: Floor (e.g. set to 2 for 2nd floor). The game will turn the floor negative if necesary */
 };
 
-struct SOSMAIL {
+struct SosMail {
     unsigned int mailType:4;              /*  4 bits: Must equal 1 for SOS Mail, 4 for A-OK Mail, and 5 for Thank-You Mail */
     unsigned int dungeon:7;               /*  7 bits: Dungeon */
     unsigned int floor:7;                 /*  7 bits: Floor (e.g. set to 2 for 2nd floor). The game will turn the floor negative if necesary */
@@ -48,7 +48,7 @@ struct SOSMAIL {
              It will be slower of course, but safer (performance is not everything).
              Note: Only a few languages implements arrays as pointers to have fast access to volatile RAM memory, the rest are slow objects and you don't have choice: you can't use pointers.
 */
-struct WM_INFO {
+struct WonderMailInfo {
     char head[26];
     char body1[100];
     char body2[100];
@@ -61,7 +61,7 @@ struct WM_INFO {
     char WMail[50];
 };
 
-struct SOS_INFO {
+struct SosMailInfo {
     char head[40];
     char body[33];
     char nickname[11];

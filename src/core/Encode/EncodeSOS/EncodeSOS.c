@@ -9,7 +9,7 @@
 #include <time.h>
 
 
-int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
+int encodeSOSMail(struct SosMail *sos, char *finalPassword)
 {
     srand((unsigned int)time(NULL));
 
@@ -46,7 +46,7 @@ int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
     return 0;
 }
 
-int foundErrorsEntriesSOS(const struct SOSMAIL *sos)
+int foundErrorsEntriesSOS(const struct SosMail *sos)
 {
     int errorsFound = 0;
 
@@ -78,7 +78,7 @@ int foundErrorsEntriesSOS(const struct SOSMAIL *sos)
     return errorsFound;
 }
 
-void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SOSMAIL* mail)
+void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SosMail* mail)
 {
     /*
         The structure of the SOS Mail struct is the following (see md1global.h):

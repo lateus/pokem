@@ -44,14 +44,18 @@ int areLovers(int pkmnClient, int pkmnTarget)
 
 
 
-unsigned int getSpecialJobIndicator(int pairsIndex, int loversIndex, int parentsIndex)
+unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionType)
 {
-    if (pairsIndex >= 0) {
-        return 0x09;
-    } else if (loversIndex >= 0) {
+    int pairsIndex   = arePairs(pkmnClient, pkmnTarget);
+    int loversIndex  = areLovers(pkmnClient, pkmnTarget);
+    int parentsIndex = areParents(pkmnClient, pkmnTarget);
+
+    if (loversIndex >= 0 && missionType == Escort) {
         return 0x0A;
     } else if (parentsIndex >= 0) {
         return 0x0F;
+    } else if (pairsIndex >= 0) {
+        return 0x09;
     } else {
         return 0;
     }
