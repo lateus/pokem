@@ -22,9 +22,6 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
     struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
     bitUnpackingDecodingWonderMail(psw14Bytes, &wm);
 
-    /* Flavor Texts */
-    setFlavorText(&wm, wonderMailInfoResult);
-
     /* Bulking the mail's data... */
     setWonderMailInfo(&wm, wonderMailInfoResult);
     sprintf(wonderMailInfoResult->WMail, "%s\n          %s", strncat(wonderMailInfoResult->WMail, password, 12), password + 12);
@@ -340,6 +337,8 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
 
 void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo)
 {
+    setFlavorText(mail, mailInfo);
+
     strcpy(mailInfo->client, pkmnSpeciesStr[mail->pkmnClient]);
 
     switch (mail->missionType) {

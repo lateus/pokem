@@ -41,7 +41,6 @@ int encodeWM(int argc, const char *argv[])
     /* Get the full Wonder Mail info */
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
     setWonderMailInfo(&wm, &wmInfo);
-    setFlavorText(&wm, &wmInfo);
     sprintf(wmInfo.WMail, "%s\n          %s", strncat(wmInfo.WMail, finalPassword, 12), finalPassword + 12);
     printWonderMailData(&wmInfo);
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
