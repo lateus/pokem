@@ -1,5 +1,5 @@
-#ifndef ENCODEWonderMail_H
-#define ENCODEWonderMail_H
+#ifndef ENCODEWONDERMAIL_H
+#define ENCODEWONDERMAIL_H
 
 #include "../../../data/md1global/md1global.h"
 
@@ -10,4 +10,4 @@ void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14B
 void lookupTableEncodingWonderMail(const char* password24Integers, char* password24Chars);
 void reallocateBytesEncodingWonderMail(const char* unallocatedPassword, char* allocatedPassword);
 
-#endif /* ENCODEWonderMail_H */
+#endif /* ENCODEWONDERMAIL_H */
