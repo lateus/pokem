@@ -2,6 +2,6 @@
 #define UTILENCODE_H
 
 /* ENCODING COMMON FUNCTIONS */
-void bitUnpackingEncoding(char* unpackedIntegers, const char* packedPassword, int bytesToUnpack);
+void bitUnpackingEncoding(const char* packedPassword, char* unpackedIntegers, int bytesToUnpack);
 
 #endif /* UTILENCODE_H */

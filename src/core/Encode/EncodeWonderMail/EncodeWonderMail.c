@@ -44,12 +44,12 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
 
     char packed15BytesPassword[15] = {0};	/* the first byte is merely a checksum */
     char *packed14BytesPassword = packed15BytesPassword + 1;	/* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
-    bitPackingEncodingWonderMail(packed14BytesPassword, wm);	/* bit packing while decoding are equivalent to bit unpacking while decoding */
+    bitPackingEncodingWonderMail(wm, packed14BytesPassword);	/* bit packing while decoding are equivalent to bit unpacking while decoding */
 
     packed15BytesPassword[0] = (char)computeChecksum(packed15BytesPassword, 15);
 
     char password24Integers[24] = {0};
-    bitUnpackingEncoding(password24Integers, packed15BytesPassword, 15);
+    bitUnpackingEncoding(packed15BytesPassword, password24Integers, 15);
 
     char password24Chars[24] = {0};
     lookupTableEncodingWonderMail(password24Integers, password24Chars);
@@ -182,7 +182,7 @@ int foundErrorsEntriesWonderMail(const struct WonderMail *wm)
 
 
 
-void bitPackingEncodingWonderMail(char* packed14BytesPassword, const struct WonderMail* mail)
+void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14BytesPassword)
 {
     /* I wrote the bits that a field must store, assign more will cause an overflow. I'm using standard C Bit Fields. */
     /* As final observation, I only will read the bits in the array, without destroying bits, instead I'll shift bits: non-destructive read is faster and safer than destructive read */

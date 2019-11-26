@@ -99,14 +99,14 @@ void wonderMailIsInvalid_test(CuTest *tc)
 void reallocateBytesDecodingWonderMail_test(CuTest *tc)
 {
 #define ARRAY_SIZE 5
-    char input1[ARRAY_SIZE][24 + 1] = {0};
-    const char input2[ARRAY_SIZE][24 + 1] = {
+    const char input1[ARRAY_SIZE][24 + 1] = {
         { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
         { "4?6F7M+?4JNRJ*??K??0+9??" }, /* (WM - VALID) */
         { "S62*S40?4P5H8S?869H0!N?W" }, /* (WM - VALID) */
         { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
         { "F??CR/0?4/+!*3?7TP?T?7?W" }  /* (WM - VALID) */
     };
+    char input2[ARRAY_SIZE][24 + 1] = {0};
 
     const char expected[ARRAY_SIZE][24 + 1] = {
         { "4X04N?7P6JP?1?3/W94?????" },
@@ -119,7 +119,7 @@ void reallocateBytesDecodingWonderMail_test(CuTest *tc)
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         reallocateBytesDecodingWonderMail(input1[i], input2[i]);
-        CuAssertStrEquals(tc, expected[i], input1[i]);
+        CuAssertStrEquals(tc, expected[i], input2[i]);
     }
 #undef ARRAY_SIZE
 }
@@ -127,14 +127,14 @@ void reallocateBytesDecodingWonderMail_test(CuTest *tc)
 void lookupTableDecodingWonderMail_test(CuTest *tc)
 {
 #define ARRAY_SIZE 5
-    char input1[ARRAY_SIZE][24 + 1] = {0};
-    const char input2[ARRAY_SIZE][24 + 1] = {
+    const char input1[ARRAY_SIZE][24 + 1] = {
         { "4X04N?7P6JP?1?3/W94?????" }, /* (WM - VALID) */
         { "J+047*?JK6+?49RM?F?N????" }, /* (WM - VALID) */
         { "8004SS8P62!HSNH4W*956???" }, /* (WM - VALID) */
         { "*S54++R6X?????SCWN46????" }, /* (WM - VALID) */
         { "*0T4R37/T???F7!/WCP+????" }  /* (WM - VALID) */
     };
+    char input2[ARRAY_SIZE][24 + 1] = {0};
 
     const int expected[ARRAY_SIZE][24] = {
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 24,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
@@ -148,7 +148,7 @@ void lookupTableDecodingWonderMail_test(CuTest *tc)
     for (i = 0; i < ARRAY_SIZE; ++i) {
         lookupTableDecodingWonderMail(input1[i], input2[i]);
         for (j = 0; j < 24; ++j) {
-            CuAssertIntEquals(tc, expected[i][j], input1[i][j]);
+            CuAssertIntEquals(tc, expected[i][j], input2[i][j]);
         }
     }
 #undef ARRAY_SIZE

@@ -1,7 +1,7 @@
 #include "UtilEncode.h"
 
 /* see the equivalent in "decode.c" if you are looking for details about how this function works */
-void bitUnpackingEncoding(char* unpackedIntegers, const char *packedPassword, int bytesToUnpack)
+void bitUnpackingEncoding(const char *packedPassword, char* unpackedIntegers, int bytesToUnpack)
 {
     int cnt = 0, row, col, val;
     int i, j;

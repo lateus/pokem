@@ -527,15 +527,15 @@ In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPa
 ----------  
 
 ```c
-void reallocateBytesDecodingWonderMail(char *allocatePassword, const char *unallocatedPassword)
+void reallocateBytesDecodingWonderMail(const char *unallocatedPassword, char *allocatedPassword)
 ```  
 **Internal function, should not be used**  
-Returns in `allocatePassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
+Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-int lookupTableDecodingWonderMail(char *passwordIntegers, const char *allocatedPassword)
+int lookupTableDecodingWonderMail(const char *allocatedPassword, char *passwordIntegers)
 ```  
 **Internal function, should not be used**  
 Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingWonderMail` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
@@ -628,7 +628,7 @@ This function extract the information contained in `mail` and write it to `sosIn
 ----------  
 
 ```c
-void bitPackingEncodingWonderMail(char* packed14BytesPassword, const struct WonderMail* mail)
+void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14BytesPassword)
 ```  
 **Internal function, should not be used**  
 This function takes the content of the Wonder Mail `wm`, encodes it and writes the result to `packed14BytesPassword` in the form of packed 14 bytes. This is an internal function and should not be used.  
@@ -657,7 +657,7 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-void bitPackingEncodingSos(char* packed33BytesPassword, const struct SosMail* mail)
+void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPassword)
 ```  
 **Internal function, should not be used**  
 This function takes the content of the SOS Mail `sos`, encodes it and writes the result to `packed33BytesPassword` in the form of packed 33 bytes. This is an internal function and should not be used.  
@@ -665,7 +665,7 @@ This function takes the content of the SOS Mail `sos`, encodes it and writes the
 ----------  
 
 ```c
-void lookupTableEncodingSos(char* password54Chars, const char* password54Integers)
+void lookupTableEncodingSos(const char* password54Integers, char* password54Chars)
 ```  
 **Internal function, should not be used**  
 This is the inverse process of decoding. This function takes `password54Integers` and writes the resulting ASCCI buffer in `password54Chars` using a lookup table. This is an internal function and should not be used.  
@@ -673,7 +673,7 @@ This is the inverse process of decoding. This function takes `password54Integers
 ----------  
 
 ```c
-void reallocateBytesEncodingSos(char* allocatedPassword, const char* unallocatedPassword)
+void reallocateBytesEncodingSos(const char* unallocatedPassword, char* allocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  

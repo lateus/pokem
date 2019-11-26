@@ -40,9 +40,9 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     for (i = 0; i < 54; ++i) {
         password54Integers[i] = 0;
     }
-    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
+    bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
     char passwordAllocated[54] = {0};
-    lookupTableEncodingSos(passwordAllocated, password54Integers);
+    lookupTableEncodingSos(password54Integers, passwordAllocated);
     realocateBytesEncodingSos(resultAOKMail, passwordAllocated);
 
     /* SECOND: THANK-YOU MAIL */
@@ -65,8 +65,8 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
         password54Integers[i] = 0;
         passwordAllocated[i] = 0;
     }
-    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
-    lookupTableEncodingSos(passwordAllocated, password54Integers);
+    bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
+    lookupTableEncodingSos(password54Integers, passwordAllocated);
     realocateBytesEncodingSos(resultThankYouMail, passwordAllocated);
 
     return NoError;

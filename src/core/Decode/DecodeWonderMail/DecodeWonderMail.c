@@ -46,12 +46,13 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
     }
 
     char pswAllocated[24] = {0}; /* Please, initialize all data. This is done at compile time, so there isn't runtime overload */
-    reallocateBytesDecodingWonderMail(pswAllocated, password);
+    reallocateBytesDecodingWonderMail(password, pswAllocated);
 
     /* This password will be 'integerized' using the lookup table bellow */
     char passIntegers[24] = {0};
-    if (lookupTableDecodingWonderMail(passIntegers, pswAllocated) == InputError) {
-        return InputError;
+    int errorCode = lookupTableDecodingWonderMail(pswAllocated, passIntegers);
+    if (errorCode != NoError) {
+        return errorCode;
     }
 
     /* Bit packing */
@@ -72,7 +73,7 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 
 
 
-void reallocateBytesDecodingWonderMail(char* allocatedPassword, const char* unallocatedPassword)
+void reallocateBytesDecodingWonderMail(const char* unallocatedPassword, char* allocatedPassword)
 {
     const int newPos[24] = { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 };
 
@@ -84,7 +85,7 @@ void reallocateBytesDecodingWonderMail(char* allocatedPassword, const char* unal
 
 
 
-int lookupTableDecodingWonderMail(char* passwordIntegers, const char* allocatedPassword)
+int lookupTableDecodingWonderMail(const char* allocatedPassword, char* passwordIntegers)
 {
     /* I'm worry about the performance of this algorithm. The switch was faster (but looooonger) */
     const char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";

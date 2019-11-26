@@ -6,8 +6,8 @@
 /* ENCODING SOS MAIL FUNCTIONS */
 int encodeSosMail(struct SosMail *sos, char *finalPassword);
 int foundErrorsEntriesSos(const struct SosMail *sos);
-void bitPackingEncodingSos(char* packed33BytesPassword, const struct SosMail* mail);
-void lookupTableEncodingSos(char* password54Chars, const char* password54Integers);
-void realocateBytesEncodingSos(char* allocatedPassword, const char* unallocatedPassword);
+void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPassword);
+void lookupTableEncodingSos(const char* password54Integers, char* password54Chars);
+void realocateBytesEncodingSos(const char* unallocatedPassword, char* allocatedPassword);
 
 #endif /* ENCODESOS_H */
