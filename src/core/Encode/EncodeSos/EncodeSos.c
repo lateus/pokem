@@ -41,7 +41,7 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     char password54Chars[54] = {0};
     lookupTableEncodingSos(password54Integers, password54Chars);
 
-    realocateBytesEncodingSos(finalPassword, password54Chars);
+    realocateBytesEncodingSos(password54Chars, finalPassword);
 
     return NoError;
 }
