@@ -1015,7 +1015,7 @@ const char* pkmnSpeciesStr[] = {
     "Electrike",
     "Manectric",
     "Plusle",
-    "Minun",
+    "Minum",
     "Volbeat",
     "Illumise",
     "Roselia", /* 340 */
