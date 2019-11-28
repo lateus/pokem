@@ -21,6 +21,13 @@ int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
     /* Bit unpacking */
     struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
     bitUnpackingDecodingSos(psw33Bytes, &sosm);
+    int errors = entryErrorsSosMail(&sosm);
+    if (errors) {
+#if DEBUG
+        fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+#endif
+        return InputError; /* to use the NOT operator */
+    }
     setSosInfo(&sosm, sosMailInfoResult);
     sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
 
@@ -53,12 +60,14 @@ int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers
             }
         }
         if (j == 32) { /* If there is some way to avoid this comparison... (without using goto statement) */
+#if DEBUG
             fprintf(stderr, "ERROR: INVALID character: '%c' found in index [%d].\n"
                             "Valid characters are:\n"
                             "    > Numbers: '0' to '9'.\n"
                             "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
                             "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
                             "THE PASSWORD CAN'T BE DECODED.\n\n", allocatedPassword[i], i);
+#endif
             return InputError;
         }
 
@@ -109,7 +118,7 @@ void bitUnpackingDecodingSos(const char *packed33BytesPassword, struct SosMail *
     mail->mailID  = (packed33BytesPassword[6] >> 3) & 0x1F; /* get 5 bits, 0 remaining */
     mail->mailID |= (packed33BytesPassword[7] & 0xFF) << 5; /* get the full byte */
     mail->mailID |= (packed33BytesPassword[8] & 0x07) << 13; /* get 3 bits, 5 remaining */
-    mail->mailID %= 10000; /** REVIEW THIS IF THERE ARE PROBLEMS WITH THE MAIL ID */
+    mail->mailID &= 0xFFFF; /** REVIEW THIS IF THERE ARE PROBLEMS WITH THE MAIL ID */
 
     mail->idk_random2 = (packed33BytesPassword[8] >> 3) & 0x1F; /* get 5 bits, 0 remaining */
     mail->idk_random2 |= (packed33BytesPassword[9] & 0xFF) << 5; /* get the full byte */
@@ -178,17 +187,18 @@ void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
     sosInfo->difficulty = difficultiesChars[diffValue];
     strcpy(sosInfo->reward, mailType != 5 ? "???" : itemsStr[mail->itemReward]);
     sprintf(sosInfo->id, "%d", mail->mailID);
-    sprintf(sosInfo->chancesLeft, "%d", mail->chancesLeft);
+    sprintf(sosInfo->chancesLeft, "%u", (char)mail->chancesLeft);
 }
 
 
 int sosMailIsInvalid(const char *password, char packed34BytesPassword[])
 {
-
     size_t pswLenght = strlen(password);
     if (pswLenght != 54) {
+#ifdef DEBUG
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+#endif
         return InputError;
     }
 
@@ -208,8 +218,10 @@ int sosMailIsInvalid(const char *password, char packed34BytesPassword[])
     int checksum = computeChecksum(packed34BytesPassword, 34);
 
     if ( checksum != (packed34BytesPassword[0] & 0xFF) ) {
+#if DEBUG
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n");
+#endif
         return ChecksumError;
     }
 

@@ -2,6 +2,8 @@
 #include "view/view.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int autodetect(int argc, const char *argv[]);
 
@@ -16,6 +18,9 @@ int main(int argc, const char *argv[])
         showGeneralHelp(argv[0]);
         return 0;
     }
+
+    /* A seed to generate random numbers */
+    srand((unsigned int)time(NULL));
 
     int selection;
     int autodetectResult = autodetect(argc, argv);

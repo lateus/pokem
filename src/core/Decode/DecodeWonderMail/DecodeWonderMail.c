@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
 int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult)
 {
     char packed15Bytes[15] = {0};

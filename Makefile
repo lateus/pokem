@@ -27,7 +27,8 @@ TEST_SUITE	:=	test/CuTest.c test/allTests.c
 TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
 				src/core/Decode/UtilDecode/UtilDecode_test.c \
 				src/core/Encode/UtilEncode/UtilEncode_test.c \
-				src/core/Decode/DecodeWonderMail/DecodeWonderMail_test.c
+				src/core/Decode/DecodeWonderMail/DecodeWonderMail_test.c \
+				src/core/Decode/DecodeSos/DecodeSos_test.c
 
 LIB_HEADER_NAME		:=	pokem.h
 
@@ -91,7 +92,7 @@ WHITE		:=	\033[1;37m
 .DEFAULT_GOAL := all
 .PHONY: all staticlib examples clean help
 
-all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library and examples (default)
+all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests (default)
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
@@ -139,7 +140,7 @@ $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
 	$(CP) $(CP_FLAGS) $(LIB_HEADER_DEPLOY_FILEPATH) $@/lib/$(LIB_HEADER_NAME)
 	@$(MAKE) --directory $@
 
-$(TEST_RESULT): $(BUILDDIR)
+$(TEST_RESULT): $(BUILDDIR) $(TEST_FILES)
 	@$(MSG) "$(LIGHTGREEN)Building tests...$(NOCOLOR)\n"
 	$(CC) -o $@ $(TEST_SUITE) $(TEST_FILES) $(SOURCES)
 	@$(MSG) "$(LIGHTGREEN)Running tests...$(NOCOLOR)\n"

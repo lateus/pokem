@@ -128,7 +128,7 @@ Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the
 ----------  
 
 ```c
-int foundErrorsEntriesWonderMail(const struct WonderMail *wm)
+int entryErrorsWonderMail(const struct WonderMail *wm)
 ```  
 This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
 
@@ -148,7 +148,7 @@ Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns t
 ----------  
 
 ```c
-int foundErrorsEntriesSos(const struct SosMail *sos)
+int entryErrorsSosMail(const struct SosMail *sos)
 ```  
 This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSosMail`, but you may want to call it to report entry errors at real-time.  
 

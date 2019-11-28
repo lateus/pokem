@@ -6,16 +6,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-
+#define DEBUG 1
 
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
-    srand((unsigned int)time(NULL));
-
-    sos->idk_random2 = rand() & 0xFFFF;
     sos->mailType = 1;                                 /* must be 1 for SOS Mail */
     sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */
+    sos->idk_random2 = rand() & 0xFFFF;                /* same as % 65536 */
     sos->idk_0Or1 = 0;                                 /* 1 if Thank-You Mail, otherwise 0 */
     sos->itemReward = 0;                               /* 0 if not Thank-You Mail */
     sos->idk_0 = 0;                                    /* as his name suggest */
@@ -23,9 +20,11 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
     sos->idk_last3Bits = 0;
 
-    int errors = foundErrorsEntriesSos(sos);
+    int errors = entryErrorsSosMail(sos);
     if (errors) {
-        fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+#if DEBUG
+        fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE.\a\n\n", errors);
+#endif
         return InputError; /* to use the NOT operator */
     }
 
@@ -44,38 +43,6 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     realocateBytesEncodingSos(password54Chars, finalPassword);
 
     return NoError;
-}
-
-int foundErrorsEntriesSos(const struct SosMail *sos)
-{
-    int errorsFound = 0;
-
-    /* pkmn to rescue check (limits) */
-    if (sos->pkmnToRescue == 0 || sos->pkmnToRescue > 404) {
-        fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
-                        "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", ++errorsFound);
-    }
-
-    /* dungeon check */
-    if (sos->dungeon > 63) {
-        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
-                        "      The dungeon must be a number between 0 and 63.\n\n", ++errorsFound);
-    } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
-        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
-                        "      The dungeon with index %u isn't a valid dungeon.\n\n", ++errorsFound, sos->dungeon);
-    } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
-        fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
-                        "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
-                                    ++errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
-    }
-
-    /* rescue chances left */
-    if (sos->chancesLeft < 1 || sos->chancesLeft > 10) {
-        fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
-                        "      The chances left value must be between 1 and 10.\n\n", ++errorsFound);
-    }
-
-    return errorsFound;
 }
 
 void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPassword)

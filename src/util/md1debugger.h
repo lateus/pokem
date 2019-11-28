@@ -63,6 +63,10 @@ void printWonderMailBruteData(const struct WonderMail *wm)
                     wm->idk_always0xFF,
                     wm->dungeon,
                     wm->floor);
+    fprintf(stderr, "\nHead indicator: %d"
+                    "\nBody indicator: %d\n",
+                    8 + wm->missionType,
+                    12 + wm->missionType);
     fflush(stderr);
 }
 

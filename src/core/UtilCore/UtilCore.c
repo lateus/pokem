@@ -2,6 +2,8 @@
 #include "../../data/md1database/md1database.h"
 #include "../../data/md1global/md1global.h"
 
+#include <string.h>
+
 int areParents(int pkmnClient, int pkmnTarget)
 {
     int i;
@@ -119,4 +121,232 @@ int computeChecksum(const char* packedPassword, int bytes)
     }
 
     return checksum;
+}
+
+
+
+int entryErrorsWonderMail(const struct WonderMail *wm)
+{
+    int errorsFound = 0;
+
+    /* mission type check */
+    if (wm->missionType > 4) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 1 (Mission type).\n"
+                        "      The mission type must be a number between 0 and 4.\n\n", errorsFound);
+#endif
+    }
+
+    /* pkmn client check (limits) */
+    if (wm->pkmnClient == 0 || wm->pkmnClient > 404) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn client).\n"
+                        "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
+#endif
+    }
+    /* pkmn client check (legendaries) */
+    else if ( (wm->pkmnClient >= 144 && wm->pkmnClient <= 146) /* birds */ || (wm->pkmnClient >= 150 && wm->pkmnClient <= 151) /* mewtwo and mew */ ||
+              (wm->pkmnClient >= 201 && wm->pkmnClient <= 226) /* unown */ || (wm->pkmnClient >= 268 && wm->pkmnClient <= 270) /* dogs */ ||
+              (wm->pkmnClient >= 274 && wm->pkmnClient <= 276) /* lugia and ho-oh */ ) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn client).\n"
+                        "      Legendaries are not valid values.\n\n", errorsFound);
+#endif
+    }
+
+    if (wm->missionType == Find || wm->missionType == Escort) {
+        /* pkmn target check (limits) */
+        if (wm->pkmnTarget == 0 || wm->pkmnTarget > 404) {
+            ++errorsFound;
+#if DEBUG
+            fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
+                            "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
+#endif
+        }
+
+        /* pkmn target check (legendaries) */
+        if ( (wm->pkmnTarget >= 144 && wm->pkmnTarget <= 146) /* birds */ || (wm->pkmnTarget >= 150 && wm->pkmnTarget <= 151) /* mewtwo and mew */ ||
+             (wm->pkmnTarget >= 201 && wm->pkmnTarget <= 226) /* unown */ || (wm->pkmnTarget >= 268 && wm->pkmnTarget <= 270) /* dogs */ ||
+             (wm->pkmnTarget >= 274 && wm->pkmnTarget <= 276) /* lugia and ho-oh */ ) {
+            ++errorsFound;
+#if DEBUG
+            fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
+                            "      Legendaries are not valid values.\n\n", errorsFound);
+#endif
+        }
+    }
+
+
+    /* item to deliver/find check (limits) */
+    if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
+        if (wm->itemDeliverFind < 1 || wm->itemDeliverFind > 232) {
+            ++errorsFound;
+#if DEBUG
+            fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
+                            "      Invalid item index %d. Items to find or deliver must be numbers between 1 and 232.\n\n", wm->itemDeliverFind, errorsFound);
+#endif
+        }
+
+        /* item to deliver/find check (existence) */
+        if (wm->missionType == FindItem) {
+            if (!findItemByDungeon(wm->itemDeliverFind, wm->dungeon)) {
+            ++errorsFound;
+#if DEBUG
+                fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
+                                "      The item %s (index %d) can't be found in the dungeon %s (index %d).\n"
+                                "      To accept a job about find an item inside a dungeon, the item must exist on it.\n"
+                                "      The items that can be found in that dungeon are listed bellow:\n",
+                        errorsFound, itemsStr[wm->itemDeliverFind], wm->itemDeliverFind, dungeonsStr[wm->dungeon], wm->dungeon);
+                unsigned short i;
+                for (i = 1; i < itemsInDungeons[wm->dungeon][0]; ++i) {
+                    fprintf(stderr, "[%d] ", itemsInDungeons[wm->dungeon][i]);
+                }
+                fprintf(stderr, "\n\n");
+#endif
+            }
+        }
+    }
+
+
+    /* dungeon check */
+    if (wm->dungeon > 62) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 5 (Dungeon).\n"
+                        "      The dungeon must be a number between 0 and 62.\n\n", errorsFound);
+#endif
+    } else if (!strcmp(dungeonsStr[wm->dungeon], "[INVALID]")) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 5 (Dungeon).\n"
+                        "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, wm->dungeon);
+#endif
+    }
+
+
+    /* floor check (floor 0) */
+    if (wm->floor == 0) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                        "      Floor 0 does not exists.\n\n",
+                errorsFound);
+#endif
+    }
+    /* floor check (limit) */
+    if (wm->floor > difficulties[wm->dungeon][0]) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                        "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
+                errorsFound, dungeonsStr[wm->dungeon], wm->dungeon, difficulties[wm->dungeon][0]);
+#endif
+    }
+
+
+    /* reward type check */
+    if (wm->rewardType > 9) {
+        ++errorsFound;
+#if DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
+                        "      The reward type must be a number between 0 and 9.\n\n", errorsFound);
+#endif
+        if (!computeDifficulty(wm->dungeon, wm->floor, wm->missionType)) { /* 0 means 'E' difficulty */
+            ++errorsFound;
+#if DEBUG
+            fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
+                            "      To receive a friend area reward, the mission must have at least 'D' difficulty.\n\n", errorsFound);
+#endif
+        }
+    }
+
+
+    /* reward item check */
+    if ( (wm->rewardType >= 1 && wm->rewardType <= 3) || (wm->rewardType >= 6 && wm->rewardType <= 8) ) {
+        if (wm->itemReward > 239) {
+            ++errorsFound;
+#if DEBUG
+            fprintf(stderr, "ERROR No. %d in argument 8 (Reward item).\n"
+                            "      Reward item must be a number between 0 and 239.\n\n", errorsFound);
+#endif
+        }
+    }
+
+
+    /* friend area reward check */
+    if (wm->rewardType == 9) {
+        if (wm->friendAreaReward > 3) {
+            ++errorsFound;
+#if DEBUG
+            fprintf(stderr, "ERROR No. %d in argument 9 (Friend area reward).\n"
+                            "      The friend area must be a number between 0 and 3.\n\n", errorsFound);
+#endif
+        }
+    }
+
+    return errorsFound;
+}
+
+
+
+int entryErrorsSosMail(const struct SosMail *sos)
+{
+    int errorsFound = 0;
+
+    /* pkmn to rescue check (limits) */
+    if (sos->pkmnToRescue == 0 || sos->pkmnToRescue > 414) {
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
+                        "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
+#endif
+    }
+
+
+    /* nickname check */
+    if (!strlen(sos->pkmnNick)) {
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn nickname).\n"
+                        "      The nickname cannot be empty.\n\n", errorsFound);
+#endif
+    }
+
+
+    /* dungeon check */
+    if (sos->dungeon > 62) {
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
+                        "      The dungeon must be a number between 0 and 62.\n\n", errorsFound);
+#endif
+    } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
+                        "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, sos->dungeon);
+#endif
+    } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
+                        "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
+                                    errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
+#endif
+    }
+
+
+    /* rescue chances left check */
+    if (sos->chancesLeft < 1 || sos->chancesLeft > 10) {
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
+                        "      The chances left value must be between 1 and 10.\n\n", errorsFound);
+#endif
+    }
+
+    return errorsFound;
 }

@@ -44,7 +44,7 @@ int encodeWM(int argc, const char *argv[])
     sprintf(wmInfo.WMail, "%s\n          %s", strncat(wmInfo.WMail, finalPassword, 12), finalPassword + 12);
     printWonderMailData(&wmInfo);
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
-        fprintf(stderr, "* Warning: You will not be able to accept the above mission.\n");
+        fputs("* Warning: You will not be able to accept the above mission.\n", stderr);
     }
     fflush(stdout);
 
@@ -117,7 +117,11 @@ void parseSOSData(const char *argv[], struct SosMail *sos)
     sos->floor = (unsigned int)atoi(argv[4]);
     sos->mailID = (unsigned int)atoi(argv[5]);
     sos->chancesLeft = (unsigned int)atoi(argv[6]);
-    strncpy(sos->pkmnNick, argv[2], 10);
+    if (strlen(argv[2])) {
+        strncpy(sos->pkmnNick, argv[2], 10);
+    } else {
+        sos->pkmnNick[0] = '\0';
+    }
 }
 
 int convertSOS(int argc, const char *argv[])
