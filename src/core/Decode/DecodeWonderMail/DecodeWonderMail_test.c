@@ -41,10 +41,10 @@ void decodeWonderMail_test(CuTest *tc)
         { "2?J9N/X?4P?34??764?0P??W" }, /* (WM - INVALID CHECKSUM) */
         { "4?6F7M+?4JNRJ*??K??0+9??" }, /* (WM - VALID) */
         { "16?WR3T 48MX13?767?6?6?W" }, /* (WM - INVALID INPUT) */
-        { "S62*S40?4P5H8S?869H0!N?W" }, /* (WM - VALID) */
+        { "S60*SW0?4P5HHS?869H0?N?W" }, /* (WM - VALID) */
         { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
         { "???Y0KS?4PR8**?-6??0?N?W" }, /* (WM - INVALID CHECKSUM) */
-        { "F??CR/0?4/+!*3?7TP?T?7?W" },  /* (WM - VALID) */
+        { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
         { "A??CR/0?4/+!*3?7TP?T?7?W" }  /* (WM - INVALID INPUT) */
     };
     struct WonderMailInfo input2[ARRAY_SIZE];
@@ -57,7 +57,7 @@ void decodeWonderMail_test(CuTest *tc)
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
         { "Take me!",               "Lapras is waiting for me!",            "Please take me to see Lapras!",           "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]", "4?6F7M+?4JNR\n          J*??K??0+9??" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Escort me!",             "I have to go!",                        "Someone, please escort me!",              "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",   "S62*S40?4P5H\n          8S?869H0!N?W" },
+        { "Escort me!",             "I have to go!",                        "Someone, please escort me!",              "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",   "S60*SW0?4P5H\n          HS?869H0?N?W" },
         { "Deliver one Moon Stone", "Having one Moon Stone is reassuring.", "Please give me one!",                     "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                     "???N+CS?466S\n          *+?RX4?5???W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
         { "One Sun Stone wanted!",  "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!", "Blissey",   "Find Sun Stone.",      "Solar Cave",       "B20F", 'A', "500 poke",                     "F??CR/0?4/+!\n          *3?7TP?T?7?W" },

@@ -25,6 +25,7 @@ int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
     if (errors) {
 #if DEBUG
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+        fflush(stderr);
 #endif
         return InputError; /* to use the NOT operator */
     }
@@ -67,6 +68,7 @@ int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers
                             "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
                             "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
                             "THE PASSWORD CAN'T BE DECODED.\n\n", allocatedPassword[i], i);
+        fflush(stderr);
 #endif
             return InputError;
         }
@@ -221,6 +223,7 @@ int sosMailIsInvalid(const char *password, char packed34BytesPassword[])
 #if DEBUG
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n");
+        fflush(stderr);
 #endif
         return ChecksumError;
     }

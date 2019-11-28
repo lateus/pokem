@@ -2,6 +2,7 @@
 #include "../../data/md1database/md1database.h"
 #include "../../data/md1global/md1global.h"
 
+#include <stdio.h>
 #include <string.h>
 
 int areParents(int pkmnClient, int pkmnTarget)
@@ -232,8 +233,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
         ++errorsFound;
 #if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
-                        "      Floor 0 does not exists.\n\n",
-                errorsFound);
+                        "      Floor 0 does not exists.\n\n", errorsFound);
 #endif
     }
     /* floor check (limit) */
@@ -242,7 +242,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 #if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
                         "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
-                errorsFound, dungeonsStr[wm->dungeon], wm->dungeon, difficulties[wm->dungeon][0]);
+                        errorsFound, dungeonsStr[wm->dungeon], wm->dungeon, difficulties[wm->dungeon][0]);
 #endif
     }
 
@@ -270,7 +270,8 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             ++errorsFound;
 #if DEBUG
             fprintf(stderr, "ERROR No. %d in argument 8 (Reward item).\n"
-                            "      Reward item must be a number between 0 and 239.\n\n", errorsFound);
+                            "      Reward item must be a number between 0 and 239.\n"
+                            "      Current value: %d\n\n", errorsFound, wm->itemReward);
 #endif
         }
     }
@@ -278,15 +279,17 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 
     /* friend area reward check */
     if (wm->rewardType == 9) {
-        if (wm->friendAreaReward > 3) {
+        if (wm->friendAreaReward != 9 && wm->friendAreaReward != 10 && wm->friendAreaReward != 15 && wm->friendAreaReward != 37) {
             ++errorsFound;
 #if DEBUG
             fprintf(stderr, "ERROR No. %d in argument 9 (Friend area reward).\n"
-                            "      The friend area must be a number between 0 and 3.\n\n", errorsFound);
+                            "      Valid friend area values are: [9, 10, 15, 37].\n"
+                            "      Current value: %d\n\n", errorsFound, wm->friendAreaReward);
 #endif
         }
     }
 
+    fflush(stderr);
     return errorsFound;
 }
 
@@ -302,6 +305,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
 #ifdef DEBUG
         fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
                         "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
+        fflush(stderr);
 #endif
     }
 
@@ -312,6 +316,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
 #ifdef DEBUG
         fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn nickname).\n"
                         "      The nickname cannot be empty.\n\n", errorsFound);
+        fflush(stderr);
 #endif
     }
 
@@ -322,12 +327,14 @@ int entryErrorsSosMail(const struct SosMail *sos)
 #ifdef DEBUG
         fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
                         "      The dungeon must be a number between 0 and 62.\n\n", errorsFound);
+        fflush(stderr);
 #endif
     } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
         ++errorsFound;
 #ifdef DEBUG
         fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
                         "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, sos->dungeon);
+        fflush(stderr);
 #endif
     } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
         ++errorsFound;
@@ -335,6 +342,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
         fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
                         "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
                                     errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
+        fflush(stderr);
 #endif
     }
 
@@ -345,6 +353,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
 #ifdef DEBUG
         fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
                         "      The chances left value must be between 1 and 10.\n\n", errorsFound);
+        fflush(stderr);
 #endif
     }
 

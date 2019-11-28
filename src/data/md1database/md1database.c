@@ -645,25 +645,28 @@ const char* loversBody2Of2[] = {
 };
 
 
+/* Special missions */
 /*
     The following flavors texts are programmed in the game, provided just to complete the database.
     However, only the game can generate the respective Wonder Mail,
-    and it also make invalid a Wonder Mail that contains the following special missions, rejecting that mail.
-
-    So you can uncomment the code bellow, but it is useless, and only increase the size of the binary executable.
+    and it also rejects any mail containing the following special missions.
 */
-/* Special missions */
-/*
-const char* MankeyTitle   = "Punish bad Mankey!";
-const char* SmeargleTitle = "Smeargle's desperate plea!";
-const char* MedichamTitle = "Medicham: Help me!";
+const char* mankeyTitle   = "Punish bad Mankey!";
+const char* smeargleTitle = "Smeargle's desperate plea!";
+const char* medichamTitle = "Medicham: Help me!";
 
-const char* Mankey   = "Please punish bad Mankey's gang.";
-const char* Smeargle = "I didn't want to become a grown-up, so I \nfled, but now I've lost my way! Help!";
-const char* Medicham = "This is Medicham. Rescue me, please! \nThe reward is a secret...";
-const char* Special1 = "With the item %s, I can \nevolve! I'm yearning to evolve! Help!";
-const char* Special2 = "The %s! What I love to eat \nand can't live without! Please get one!";
-*/
+const char* mankeyBody1Of2   = "Please punish bad Mankey's gang.";
+const char* mankeyBody2Of2   = "";
+const char* smeargleBody1Of2 = "I didn't want to become a grown-up, so I";
+const char* smeargleBody2Of2 = "fled, but now I've lost my way! Help!";
+const char* medichamBody1Of2 = "This is Medicham. Rescue me, please!";
+const char* medichamBody2Of2 = "The reward is a secret...";
+
+/* Semi-special missions */
+const char* evolutionBody1Of2 = "With the item %s, I can";
+const char* evolutionBody2Of2 = "evolve! I'm yearning to evolve! Help!";
+const char* foodBody1Of2 = "The %s! What I love to eat";
+const char* foodBody2Of2 = "and can't live without! Please get one!";
 
 
 /* Rescue communication (SOS) */
@@ -1410,23 +1413,8 @@ const char* dungeonsStr[] = {
 
 
 /* Friend areas */
-/*
-    For efficence, I just want to include into the binary the info that really will be used.
-    Bellow are the friend areas that can be obtained using wonder mails. Others friend areas
-    rewards will be rejected by the game.
-    Next to it, is commented the full database of friend areas, most of them useless as rewards (except
-    the four listed bellow). Update the application code if you uncomment the full database.
-*/
 const char* friendAreasStr[] = {
-    "Dragon Cave",
-    "Mt. Moonview",
-    "Sky Blue Plains",
-    "Boulder Cave"
-};
-
-/*
-const char* friendAreasStr[] = {
-    "[Nothing]",
+    "[Nothing]", /* 0 */
     "Bountiful Sea",
     "Treasure Sea",
     "Serene Sea",
@@ -1435,18 +1423,18 @@ const char* friendAreasStr[] = {
     "Seafloor Cave",
     "Shallow Beach",
     "Mt. Deepgreen",
-    "Dragon Cave",
-    "Mt. Moonview",
+    "Dragon Cave", /* 9 - Obtainable in missions */
+    "Mt. Moonview", /* 10 - Obtainable in missions */
     "Mt. Cleft",
     "Rainbow Peak",
     "Wild Plains",
     "Beau Plains",
-    "Sky Blue Plains",
+    "Sky Blue Plains", /* 15 - Obtainable in missions */
     "Safari",
     "Scorched Plains",
     "Sacred Field",
     "Mist-Rise Forest",
-    "Flyaway Forest",
+    "Flyaway Forest", /* 20 */
     "Overgrown Forest",
     "Energetic Forest",
     "Mushroom Forest",
@@ -1456,17 +1444,17 @@ const char* friendAreasStr[] = {
     "Rub-a-Dub River",
     "Tadpole Pond",
     "Turtleshell Pond",
-    "Mystic Lake",
+    "Mystic Lake", /* 30 */
     "Waterfall Lake",
     "Peanut Swamp",
     "Poison Swamp",
     "Echo Cave",
     "Cryptic Cave",
     "Jungle",
-    "Boulder Cave",
+    "Boulder Cave", /* 37 - Obtainable in missions */
     "Decrepit Lab",
     "Mt. Discipline",
-    "Thunder Meadow",
+    "Thunder Meadow", /* 40 */
     "Power Plant",
     "Crater",
     "Furnace Desert",
@@ -1476,7 +1464,7 @@ const char* friendAreasStr[] = {
     "Darkness Ridge",
     "Frigid Cavern",
     "Ice Floe Beach",
-    "Volcanic Pit",
+    "Volcanic Pit", /* 50 */
     "Stratos Lookout",
     "Ravaged Field",
     "Magnetic Quarry",
@@ -1485,4 +1473,3 @@ const char* friendAreasStr[] = {
     "Enclosed Island",
     "Final Island"
 };
-*/

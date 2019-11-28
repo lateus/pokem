@@ -75,25 +75,29 @@ extern const char* loversEscortHead;
 extern const char* loversBody1Of2[];
 extern const char* loversBody2Of2[];
 
+
+/* Special missions */
 /*
     The following flavors texts are programmed in the game, provided just to complete the database.
     However, only the game can generate the respective Wonder Mail,
-    and it also make invalid a Wonder Mail that contains the following special missions, rejecting that mail.
-
-    So you can uncomment the code bellow, but it is useless, and only increase the size of the binary executable.
+    and it also rejects any mail containing the following special missions.
 */
-/* Special missions */
-/*
-extern const char* MankeyTitle;
-extern const char* SmeargleTitle;
-extern const char* MedichamTitle;
+extern const char* mankeyTitle;
+extern const char* smeargleTitle;
+extern const char* medichamTitle;
 
-extern const char* Mankey;
-extern const char* Smeargle;
-extern const char* Medicham;
-extern const char* Special1;
-extern const char* Special2;
-*/
+extern const char* mankeyBody1Of2;
+extern const char* mankeyBody2Of2;
+extern const char* smeargleBody1Of2;
+extern const char* smeargleBody2Of2;
+extern const char* medichamBody1Of2;
+extern const char* medichamBody2Of2;
+
+/* Semi-special missions */
+extern const char* evolutionBody1Of2;
+extern const char* evolutionBody2Of2;
+extern const char* foodBody1Of2;
+extern const char* foodBody2Of2;
 
 /* Rescue communication (SOS) */
 extern const char* SOS_AskHelp1;

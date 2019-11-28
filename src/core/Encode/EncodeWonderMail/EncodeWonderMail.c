@@ -19,26 +19,9 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
     if (errors) {
 #if DEBUG
         fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE\a\n\n", errors);
+        fflush(stderr);
 #endif
         return InputError;
-    }
-
-    /* now adjust the friend area reward values if necessary */
-    if (wm->friendAreaReward) {
-        switch (wm->friendAreaReward) {
-        case 0:
-            wm->friendAreaReward = 9;
-            break;
-        case 1:
-            wm->friendAreaReward = 10;
-            break;
-        case 2:
-            wm->friendAreaReward = 15;
-            break;
-        case 3:
-            wm->friendAreaReward = 37;
-            break;
-        }
     }
 
     char packed15BytesPassword[15] = {0};	/* the first byte is merely a checksum */

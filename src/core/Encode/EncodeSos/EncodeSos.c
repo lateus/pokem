@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define DEBUG 1
 
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
@@ -24,6 +23,7 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     if (errors) {
 #if DEBUG
         fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE.\a\n\n", errors);
+        fflush(stderr);
 #endif
         return InputError; /* to use the NOT operator */
     }

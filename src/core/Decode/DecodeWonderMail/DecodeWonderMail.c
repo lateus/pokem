@@ -20,6 +20,16 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
     /* Bit unpacking */
     struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
     bitUnpackingDecodingWonderMail(psw14Bytes, &wm);
+    
+    /* Checking errors */
+    int errors = entryErrorsWonderMail(&wm);
+    if (errors) {
+#if DEBUG
+        fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+        fflush(stderr);
+#endif
+        return InputError; /* to use the NOT operator */
+    }
 
     /* Bulking the mail's data... */
     setWonderMailInfo(&wm, wonderMailInfoResult);
@@ -37,6 +47,7 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 #if DEBUG
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+        fflush(stderr);
 #endif
         return InputError;
     }
@@ -60,6 +71,7 @@ int wonderMailIsInvalid(const char *password, char packed15BytesPassword[]) /* i
 #if DEBUG
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n");
+        fflush(stderr);
 #endif
         return ChecksumError;
     }
@@ -101,6 +113,7 @@ int lookupTableDecodingWonderMail(const char* allocatedPassword, char* passwordI
                             "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
                             "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
                             "THE PASSWORD CAN'T BE DECODED.\n\n", allocatedPassword[i], i);
+            fflush(stderr);
 #endif
             return InputError;
         }
@@ -365,15 +378,7 @@ void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mai
 
     int money = computeMoneyReward(diffValue, mail->rewardType);
     if (mail->rewardType == 9) {   /* Friend Area reward */
-        int friendArea = mail->friendAreaReward;
-        /* This section of code must be commented if you uncomment the full database of friend areas in the database header (not recommended). */
-        if (mail->friendAreaReward == 15) { /* Sky Blue Plains (in database) */
-            friendArea = 2;
-        } else {
-            friendArea /= 10; /* It's not so difficult to follow, just see the database */
-        }
-        /* End of the section */
-        sprintf(mailInfo->reward, "Friend Zone [%s]", friendAreasStr[friendArea]);
+        sprintf(mailInfo->reward, "Friend Zone [%s]", friendAreasStr[mail->friendAreaReward]);
     } else if (money != 0) {
         sprintf(mailInfo->reward, "%d poke", money);
         if (mail->rewardType == 1 || mail->rewardType == 6) {
