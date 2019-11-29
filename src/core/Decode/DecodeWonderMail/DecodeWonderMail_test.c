@@ -77,7 +77,7 @@ void decodeWonderMail_test(CuTest *tc)
         CuAssertStrEquals(tc, expected2[i].floor, input2[i].floor);
         CuAssertIntEquals(tc, (int)expected2[i].difficulty, (int)input2[i].difficulty);
         CuAssertStrEquals(tc, expected2[i].reward, input2[i].reward);
-        CuAssertStrEquals(tc, expected2[i].WMail, input2[i].WMail);
+        CuAssertStrEquals(tc, expected2[i].password, input2[i].password);
     }
 #undef ARRAY_SIZE
 }
@@ -281,7 +281,7 @@ void setFlavorText_test(CuTest *tc)
         CuAssertStrEquals(tc, expected[i].floor, input2[i].floor);
         CuAssertIntEquals(tc, (int)expected[i].difficulty, (int)input2[i].difficulty);
         CuAssertStrEquals(tc, expected[i].reward, input2[i].reward);
-        CuAssertStrEquals(tc, expected[i].WMail, input2[i].WMail);
+        CuAssertStrEquals(tc, expected[i].password, input2[i].password);
     }
 #undef ARRAY_SIZE
 }
@@ -343,7 +343,7 @@ void setFlavorTextHead_test(CuTest *tc)
         CuAssertStrEquals(tc, expected[i].floor, input6[i].floor);
         CuAssertIntEquals(tc, (int)expected[i].difficulty, (int)input6[i].difficulty);
         CuAssertStrEquals(tc, expected[i].reward, input6[i].reward);
-        CuAssertStrEquals(tc, expected[i].WMail, input6[i].WMail);
+        CuAssertStrEquals(tc, expected[i].password, input6[i].password);
     }
 #undef ARRAY_SIZE
 }
@@ -405,7 +405,7 @@ void setFlavorTextBody_test(CuTest *tc)
         CuAssertStrEquals(tc, expected[i].floor, input6[i].floor);
         CuAssertIntEquals(tc, (int)expected[i].difficulty, (int)input6[i].difficulty);
         CuAssertStrEquals(tc, expected[i].reward, input6[i].reward);
-        CuAssertStrEquals(tc, expected[i].WMail, input6[i].WMail);
+        CuAssertStrEquals(tc, expected[i].password, input6[i].password);
     }
 #undef ARRAY_SIZE
 }
@@ -463,7 +463,7 @@ void setWonderMailInfo_test(CuTest *tc)
         CuAssertStrEquals(tc, expected[i].floor, input2[i].floor);
         CuAssertIntEquals(tc, (int)expected[i].difficulty, (int)input2[i].difficulty);
         CuAssertStrEquals(tc, expected[i].reward, input2[i].reward);
-        CuAssertStrEquals(tc, expected[i].WMail, input2[i].WMail);
+        CuAssertStrEquals(tc, expected[i].password, input2[i].password);
     }
 #undef ARRAY_SIZE
 }

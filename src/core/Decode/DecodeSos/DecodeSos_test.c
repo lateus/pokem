@@ -63,7 +63,7 @@ void decodeSosMail_test(CuTest *tc)
         CuAssertIntEquals(tc, (int)expected2[i].difficulty, (int)input2[i].difficulty);
         CuAssertStrEquals(tc, expected2[i].reward, input2[i].reward);
         CuAssertStrEquals(tc, expected2[i].id, input2[i].id);
-        CuAssertStrEquals(tc, expected2[i].SOSMail, input2[i].SOSMail);
+        CuAssertStrEquals(tc, expected2[i].password, input2[i].password);
     }
 #undef ARRAY_SIZE
 }

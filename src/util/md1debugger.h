@@ -11,7 +11,7 @@
 /* Functions prototypes */
 void printBinary(long long int n, const int bitsToPrint);    /* Print the binary representation using bitsToPrint bits to stderr */
 void printWonderMailBruteData(const struct WonderMail *wm);
-void printSOSMailBruteData(const struct SosMail *sosm);
+void printpasswordBruteData(const struct SosMail *sosm);
 void printArray(const char* array, int size);
 
 /** Functions implementations */
@@ -72,7 +72,7 @@ void printWonderMailBruteData(const struct WonderMail *wm)
 
 
 
-extern void printSOSMailBruteData(const struct SosMail *sosm)
+extern void printpasswordBruteData(const struct SosMail *sosm)
 {
     char nick[11] = {0};
     strncpy(nick, sosm->pkmnNick, 10);

@@ -57,7 +57,7 @@ struct WonderMailInfo {
     char floor[7];
     char difficulty;
     char reward[35];
-    char WMail[50];
+    char password[50];
 };
 
 /* Contains the human-readable information of a SOS, A-OK or Thank-You Mail */
@@ -73,7 +73,7 @@ struct SosMailInfo {
     char reward[13];
     char id[6];
     char chancesLeft[3];
-    char SOSMail[100];
+    char password[100];
 };
 
 #endif /* MD1GLOBAL_H */

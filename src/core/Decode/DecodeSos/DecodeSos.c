@@ -30,7 +30,7 @@ int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
         return InputError; /* to use the NOT operator */
     }
     setSosInfo(&sosm, sosMailInfoResult);
-    sprintf(sosMailInfoResult->SOSMail, "%s\n          %s", strncat(sosMailInfoResult->SOSMail, sosPassword, 27), sosPassword + 27);
+    sprintf(sosMailInfoResult->password, "%s\n          %s", strncat(sosMailInfoResult->password, sosPassword, 27), sosPassword + 27);
 
     fflush(stdout);
     return NoError;

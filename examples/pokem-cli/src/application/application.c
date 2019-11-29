@@ -41,7 +41,7 @@ int encodeWM(int argc, const char *argv[])
     /* Get the full Wonder Mail info */
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
     setWonderMailInfo(&wm, &wmInfo);
-    sprintf(wmInfo.WMail, "%s\n          %s", strncat(wmInfo.WMail, finalPassword, 12), finalPassword + 12);
+    sprintf(wmInfo.password, "%s\n          %s", strncat(wmInfo.password, finalPassword, 12), finalPassword + 12);
     printWonderMailData(&wmInfo);
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
         fputs("* Warning: You will not be able to accept the above mission.\n", stderr);
@@ -103,7 +103,7 @@ int encodeSOSM(int argc, const char *argv[])
 
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     setSosInfo(&sos, &sosInfo);
-    sprintf(sosInfo.SOSMail, "%s\n          %s", strncat(sosInfo.SOSMail, finalPassword, 27), finalPassword + 27);
+    sprintf(sosInfo.password, "%s\n          %s", strncat(sosInfo.password, finalPassword, 27), finalPassword + 27);
     printSOSData(&sosInfo);
     fflush(stdout);
 

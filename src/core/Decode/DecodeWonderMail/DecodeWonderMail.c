@@ -33,7 +33,7 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
 
     /* Bulking the mail's data... */
     setWonderMailInfo(&wm, wonderMailInfoResult);
-    sprintf(wonderMailInfoResult->WMail, "%s\n          %s", strncat(wonderMailInfoResult->WMail, password, 12), password + 12);
+    sprintf(wonderMailInfoResult->password, "%s\n          %s", strncat(wonderMailInfoResult->password, password, 12), password + 12);
 
     return NoError; /* means ok */
 }

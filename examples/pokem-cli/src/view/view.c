@@ -227,7 +227,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo)
                     "Reward: %s\n"
                     "Password: %s\n"
                     ". . . . . . . . . . . . . . . . . . . . . . .\n\n",
-            mailInfo->head, mailInfo->body1, mailInfo->body2, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->WMail);
+            mailInfo->head, mailInfo->body1, mailInfo->body2, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->password);
 }
 
 
@@ -243,5 +243,5 @@ void printSOSData(const struct SosMailInfo *mailInfo)
                     "Chances left: %s\n"
                     "Password: %s\n"
                     ". . . . . . . . . . . . . . . . . . . . . . .\n\n",
-            mailInfo->head, mailInfo->body, mailInfo->nickname, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->id, mailInfo->chancesLeft, mailInfo->SOSMail);
+            mailInfo->head, mailInfo->body, mailInfo->nickname, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->id, mailInfo->chancesLeft, mailInfo->password);
 }
