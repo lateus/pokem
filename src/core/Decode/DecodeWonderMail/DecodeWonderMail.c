@@ -191,6 +191,10 @@ void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo)
     int parentsIndex = areParents(wm->pkmnClient, wm->pkmnTarget);
 
     switch (wm->specialJobIndicator) {
+    case 0x05:
+        headIndicator = 11;
+        bodyIndicator = 15;
+        break;
     case 0x09:
         if (pairsIndex >= 0) {
             headIndicator = 5;
@@ -309,15 +313,15 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
                 strcpy(mailInfo->body2, "[UNKNOWN BODY]");
             }
             break;
-        case 9:
+        case 9: /* Should never happen, but we still support it */
             strcpy(mailInfo->body1, SOS_AskHelp1);
             strcpy(mailInfo->body2, SOS_AskHelp2);
             break;
-        case 10:
+        case 10: /* Should never happen, but we still support it */
             strcpy(mailInfo->body1, SOS_GoHelp1);
             strcpy(mailInfo->body2, SOS_GoHelp2);
             break;
-        case 11:
+        case 11: /* Should never happen, but we still support it */
             strcpy(mailInfo->body1, SOS_Thanks1);
             strcpy(mailInfo->body2, SOS_Thanks2);
             break;
@@ -334,8 +338,13 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
             sprintf(mailInfo->body1, msgBodyStandard_1Of2_Escort[dungeonID % 20], pkmnSpeciesStr[wm->pkmnTarget]);  /* Because the desired array has 20 elements */
             break;
         case 15:
-            sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
-            strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
+            if (wm->specialJobIndicator == 0x05) {
+                sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
+                strcpy(mailInfo->body2, evolutionBody2Of2);
+            } else {
+                sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
+                strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
+            }
             break;
         case 16:
             sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */

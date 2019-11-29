@@ -32,5 +32,5 @@ int RunAllTests()
     CuSuiteDetails(suite, output);
     printf("%s\n", output->buffer);
 
-    return strstr(output->buffer, "!!!FAILURES!!!") ? 1 : 0;
+    return strstr(output->buffer, "[FAILURES]") ? 1 : 0;
 }

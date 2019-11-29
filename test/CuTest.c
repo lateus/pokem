@@ -149,7 +149,7 @@ static void CuFailInternal(CuTest* tc, const char* file, int line, CuString* str
 {
 	char buf[HUGE_STRING_LEN];
 
-	sprintf(buf, "%s:%d: ", file, line);
+	sprintf(buf, "\033[1;34m%s\033[0m:\033[1;34m%d\033[0m: ", file, line);
 	CuStringInsert(string, buf, 0);
 
 	tc->failed = 1;
@@ -297,7 +297,7 @@ void CuSuiteSummary(CuSuite* testSuite, CuString* summary)
 	for (i = 0 ; i < testSuite->count ; ++i)
 	{
 		CuTest* testCase = testSuite->list[i];
-		CuStringAppend(summary, testCase->failed ? "F" : ".");
+		CuStringAppend(summary, testCase->failed ? "\033[1;31mF\033[0m" : "\033[1;32m.\033[0m");
 	}
 	CuStringAppend(summary, "\n\n");
 }
@@ -311,14 +311,16 @@ void CuSuiteDetails(CuSuite* testSuite, CuString* details)
 	{
 		int passCount = testSuite->count - testSuite->failCount;
 		const char* testWord = passCount == 1 ? "test" : "tests";
-		CuStringAppendFormat(details, "OK (%d %s)\n", passCount, testWord);
+		CuStringAppendFormat(details, "\033[1;32m[OK]\033[0m \033[;1mRuns: %d  ",   testSuite->count);
+		CuStringAppendFormat(details, "Passes: %d  ", testSuite->count - testSuite->failCount);
+		CuStringAppendFormat(details, "Fails: %d\033[0m\n",  testSuite->failCount);
 	}
 	else
 	{
 		if (testSuite->failCount == 1)
-			CuStringAppend(details, "There was 1 failure:\n");
+			CuStringAppend(details, "\033[31;1mThere was 1 failure:\033[0m\n");
 		else
-			CuStringAppendFormat(details, "There were %d failures:\n", testSuite->failCount);
+			CuStringAppendFormat(details, "\033[31;1mThere were %d failures:\033[0m\n", testSuite->failCount);
 
 		for (i = 0 ; i < testSuite->count ; ++i)
 		{
@@ -326,14 +328,12 @@ void CuSuiteDetails(CuSuite* testSuite, CuString* details)
 			if (testCase->failed)
 			{
 				failCount++;
-				CuStringAppendFormat(details, "%d) %s: %s\n",
+				CuStringAppendFormat(details, "\033[;1m%d) %s:\033[0m %s\n",
 					failCount, testCase->name, testCase->message);
 			}
 		}
-		CuStringAppend(details, "\n!!!FAILURES!!!\n");
-
-		CuStringAppendFormat(details, "Runs: %d ",   testSuite->count);
-		CuStringAppendFormat(details, "Passes: %d ", testSuite->count - testSuite->failCount);
-		CuStringAppendFormat(details, "Fails: %d\n",  testSuite->failCount);
+		CuStringAppendFormat(details, "\n\033[1;31m[FAILURES]\033[0m \033[;1mRuns: %d  ",   testSuite->count);
+		CuStringAppendFormat(details, "Passes: %d  ", testSuite->count - testSuite->failCount);
+		CuStringAppendFormat(details, "Fails: %d\033[0m\n",  testSuite->failCount);
 	}
 }

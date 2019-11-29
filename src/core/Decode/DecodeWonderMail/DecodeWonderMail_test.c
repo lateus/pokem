@@ -35,7 +35,7 @@ CuSuite* DecodeWonderMailGetTestSuite()
 
 void decodeWonderMail_test(CuTest *tc)
 {
-#define ARRAY_SIZE 9
+#define ARRAY_SIZE 10
     const char input1[ARRAY_SIZE][24 + 1] = {
         { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
         { "2?J9N/X?4P?34??764?0P??W" }, /* (WM - INVALID CHECKSUM) */
@@ -45,7 +45,8 @@ void decodeWonderMail_test(CuTest *tc)
         { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
         { "???Y0KS?4PR8**?-6??0?N?W" }, /* (WM - INVALID CHECKSUM) */
         { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
-        { "A??CR/0?4/+!*3?7TP?T?7?W" }  /* (WM - INVALID INPUT) */
+        { "A??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - INVALID INPUT) */
+        { "1?C.MWY?JPS3.F?0XP?5!2?W" }  /* (WM - VALID - SPECIAL EVOLVE) */
     };
     struct WonderMailInfo input2[ARRAY_SIZE];
 
@@ -61,7 +62,8 @@ void decodeWonderMail_test(CuTest *tc)
         { "Deliver one Moon Stone", "Having one Moon Stone is reassuring.", "Please give me one!",                     "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                     "???N+CS?466S\n          *+?RX4?5???W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
         { "One Sun Stone wanted!",  "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!", "Blissey",   "Find Sun Stone.",      "Solar Cave",       "B20F", 'A', "500 poke",                     "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} }
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
+        { "One Fire Stone wanted!", "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",   "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",              "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     int i;
@@ -84,7 +86,7 @@ void decodeWonderMail_test(CuTest *tc)
 
 void wonderMailIsInvalid_test(CuTest *tc)
 {
-#define ARRAY_SIZE 9
+#define ARRAY_SIZE 10
     const char input1[ARRAY_SIZE][24 + 1] = {
         { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
         { "2?J9N/X?4P?34??764?0P??W" }, /* (WM - INVALID CHECKSUM) */
@@ -94,12 +96,13 @@ void wonderMailIsInvalid_test(CuTest *tc)
         { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
         { "???Y0KS?4PR8**?-6??0?N?W" }, /* (WM - INVALID CHECKSUM) */
         { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
-        { "A??CR/0?4/+!*3?7TP?T?7?W" }  /* (WM - INVALID INPUT) */
+        { "A??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - INVALID INPUT) */
+        { "1?C.MWY?JPS3.F?0XP?5!2?W" }  /* (WM - VALID - SPECIAL EVOLVE) */
     };
     char input2[ARRAY_SIZE][15] = {0};
 
     int actualResults[ARRAY_SIZE];
-    const int expected[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError };
+    const int expected[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError, NoError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -111,13 +114,14 @@ void wonderMailIsInvalid_test(CuTest *tc)
 
 void reallocateBytesDecodingWonderMail_test(CuTest *tc)
 {
-#define ARRAY_SIZE 5
+#define ARRAY_SIZE 6
     const char input1[ARRAY_SIZE][24 + 1] = {
         { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
         { "4?6F7M+?4JNRJ*??K??0+9??" }, /* (WM - VALID) */
         { "S62*S40?4P5H8S?869H0!N?W" }, /* (WM - VALID) */
         { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
-        { "F??CR/0?4/+!*3?7TP?T?7?W" }  /* (WM - VALID) */
+        { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
+        { "1?C.MWY?JPS3.F?0XP?5!2?W" }  /* (WM - VALID - SPECIAL EVOLVE) */
     };
     char input2[ARRAY_SIZE][24 + 1] = {0};
 
@@ -126,7 +130,8 @@ void reallocateBytesDecodingWonderMail_test(CuTest *tc)
         { "J+047*?JK6+?49RM?F?N????" },
         { "8004SS8P62!HSNH4W*956???" },
         { "*S54++R6X?????SCWN46????" },
-        { "*0T4R37/T???F7!/WCP+????" }
+        { "*0T4R37/T???F7!/WCP+????" },
+        { ".Y5JMF0PXC!?123WW.PS????" }
     };
 
     int i;
@@ -139,7 +144,7 @@ void reallocateBytesDecodingWonderMail_test(CuTest *tc)
 
 void lookupTableDecodingWonderMail_test(CuTest *tc)
 {
-#define ARRAY_SIZE 9
+#define ARRAY_SIZE 10
     const char input1[ARRAY_SIZE][24 + 1] = {
         { "4X04N?7P6JP?1?3/W94?????" }, /* (WM - VALID) */
         { "4X04N?7P6JP?2?3/W94?????" }, /* (WM - INVALID CHECKSUM - shall pass) */
@@ -149,13 +154,14 @@ void lookupTableDecodingWonderMail_test(CuTest *tc)
         { "*S54++R6X?????SCWN46????" }, /* (WM - VALID) */
         { "*S040*-P6????N8KWY?R????" }, /* (WM - INVALID CHECKSUM - shall pass) */
         { "*0T4R37/T???F7!/WCP+????" }, /* (WM - VALID) */
-        { "*0T4R37/T???A7!/WCP+????" }  /* (WM - INVALID INPUT - shall not pass) */
+        { "*0T4R37/T???A7!/WCP+????" }, /* (WM - INVALID INPUT - shall not pass) */
+        { "1?C.MWY?JPS3.F?0XP?5!2?W" }  /* (WM - VALID - SPECIAL EVOLVE) */
     };
     char input2[ARRAY_SIZE][24 + 1] = {0};
 
     int actualResults[ARRAY_SIZE];
 
-    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError };
+    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError, NoError };
     const int expected2[ARRAY_SIZE][24] = {
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 24,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 25,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
@@ -165,14 +171,15 @@ void lookupTableDecodingWonderMail_test(CuTest *tc)
         { 27, 12, 17, 16, 10, 10,  5,  1, 14,  0,  0,  0,  0,  0, 12, 19, 31,  3, 16,  1,  0,  0,  0,  0 },
         { 27, 12,  9, 16,  9, 27, 22,  4,  1,  0,  0,  0,  0,  3,  6, 23, 31, 15,  0,  5,  0,  0,  0,  0 },
         { 27,  9, 13, 16,  5, 28,  2, 30, 13,  0,  0,  0,  8,  2, 26, 30, 31, 19,  4, 10,  0,  0,  0,  0 },
-        {}
+        {},
+        { 24,  0, 19, 11, 18, 31, 15,  0, 21,  4, 12, 28, 11,  8,  0,  9, 14,  4,  0, 17, 26, 25,  0, 31 }
     };
 
     int i, j;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         actualResults[i] = lookupTableDecodingWonderMail(input1[i], input2[i]);
         CuAssertIntEquals(tc, expected1[i], actualResults[i]);
-        if (actualResults != NoError) {
+        if (actualResults[i] != NoError) {
             continue;
         }
         for (j = 0; j < 24; ++j) {
@@ -184,15 +191,17 @@ void lookupTableDecodingWonderMail_test(CuTest *tc)
 
 void bitUnpackingDecodingWonderMail_test(CuTest *tc)
 {
-#define ARRAY_SIZE 5
+#define ARRAY_SIZE 6
     const char input1[ARRAY_SIZE][14] = {
         { 0x25, 0x38, 0x80, 0x20, 0xA1, 0x12, 0x80, 0x01, 0xF7, 0xFF, 0x40, 0x00, 0x00, 0x00 }, /* (WM - VALID) */
         { 0x25, 0x28, 0x36, 0xA8, 0x37, 0x28, 0x00, 0x4F, 0x91, 0x00, 0x81, 0x01, 0x00, 0x00 }, /* (WM - VALID) */
         { 0x25, 0xC8, 0x98, 0x21, 0x21, 0x6B, 0xCA, 0x06, 0x85, 0x7F, 0x9F, 0x18, 0x00, 0x00 }, /* (WM - VALID) */
         { 0x45, 0xA8, 0x54, 0x09, 0x0E, 0x00, 0x00, 0x00, 0x9B, 0x7F, 0xC0, 0x00, 0x00, 0x00 }, /* (WM - VALID) */
-        { 0x35, 0x58, 0xB8, 0xF0, 0x0D, 0x00, 0x80, 0x84, 0xF6, 0x7F, 0x12, 0x05, 0x00, 0x00 }  /* (WM - VALID) */
+        { 0x35, 0x58, 0xB8, 0xF0, 0x0D, 0x00, 0x80, 0x84, 0xF6, 0x7F, 0x12, 0x05, 0x00, 0x00 }, /* (WM - VALID) */
+        { 0xC5, 0x2A, 0x51, 0x22, 0x6E, 0x6A, 0x80, 0x33, 0xFF, 0x7F, 0x11, 0x06, 0x00, 0x00 }  /* (WM - VALID - SPECIAL EVOLVE) */
     };
     struct WonderMail input2[ARRAY_SIZE] = {
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -201,11 +210,12 @@ void bitUnpackingDecodingWonderMail_test(CuTest *tc)
     };
 
     const struct WonderMail expected[ARRAY_SIZE] = {
-        { 5, 2, 0, 7, 8, 9, 5, 9, 0, 3, 238, 255, 1, 1 },
-        { 5, 2, 0, 197, 131, 189, 1, 20, 0, 158, 34, 1, 2, 6 },
-        { 5, 2, 0, 281, 25, 9, 9, 53, 37, 13, 10, 255, 62, 98 },
-        { 5, 4, 0, 149, 149, 112, 0, 0, 0, 0, 54, 255, 0, 3 },
-        { 5, 3, 0, 267, 267, 111, 0, 0, 0, 9, 237, 255, 36, 20 }
+        { 5, 2, 0,   7,   8,   9, 5,  9,  0,   3, 238, 255,  1,  1 },
+        { 5, 2, 0, 197, 131, 189, 1, 20,  0, 158,  34,   1,  2,  6 },
+        { 5, 2, 0, 281,  25,   9, 9, 53, 37,  13,  10, 255, 62, 98 },
+        { 5, 4, 0, 149, 149, 112, 0,  0,  0,   0,  54, 255,  0,  3 },
+        { 5, 3, 0, 267, 267, 111, 0,  0,  0,   9, 237, 255, 36, 20 },
+        { 5, 4, 5,  37,  37, 113, 3, 53,  0, 103, 254, 255, 34, 24 }
     };
 
     int i;
@@ -230,7 +240,7 @@ void bitUnpackingDecodingWonderMail_test(CuTest *tc)
 
 void setFlavorText_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10
+#define ARRAY_SIZE 11
     const struct WonderMail input1[ARRAY_SIZE] = {
         { 5, 2,  0,   7,   8,   9,  5,   9,  0,   3, 238, 255,  1,  1 },
         { 5, 2,  0, 197, 131, 189,  1,  20,  0, 158,  34,   1,  2,  6 }, /* 1 instead of 255??? */
@@ -241,7 +251,8 @@ void setFlavorText_test(CuTest *tc)
         { 5, 1,  9,  32,  29,   9,  2, 221,  0,  14, 189, 255, 31, 18 },
         { 5, 2, 10, 336, 337,   9,  3,  46,  0,  12, 192, 255, 33, 24 },
         { 9, 1,  9, 138, 140,   9,  5,  55,  0,   2,  64, 255, 43,  7 },
-        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 }
+        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 },
+        { 5, 4,  5,  37,  37, 113,  3,  53,  0, 103, 254, 255, 34, 24 }
     };
     struct WonderMailInfo input2[ARRAY_SIZE] = {
         { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
@@ -253,7 +264,8 @@ void setFlavorText_test(CuTest *tc)
         { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
@@ -266,7 +278,8 @@ void setFlavorText_test(CuTest *tc)
         { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { "Escort me to my love!",   "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { "One Fire Stone wanted!",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     int i;
@@ -288,7 +301,7 @@ void setFlavorText_test(CuTest *tc)
 
 void setFlavorTextHead_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10
+#define ARRAY_SIZE 11
     const struct WonderMail input1[ARRAY_SIZE] = {
         { 5, 2,  0,   7,   8,   9,  5,   9,  0,   3, 238, 255,  1,  1 },
         { 5, 2,  0, 197, 131, 189,  1,  20,  0, 158,  34,   1,  2,  6 }, /* 1 instead of 255??? */
@@ -299,12 +312,13 @@ void setFlavorTextHead_test(CuTest *tc)
         { 5, 1,  9,  32,  29,   9,  2, 221,  0,  14, 189, 255, 31, 18 },
         { 5, 2, 10, 336, 337,   9,  3,  46,  0,  12, 192, 255, 33, 24 },
         { 9, 1,  9, 138, 140,   9,  5,  55,  0,   2,  64, 255, 43,  7 },
-        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 }
+        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 },
+        { 5, 4,  5,  37,  37, 113,  3,  53,  0, 103, 254, 255, 34, 24 }
     };
-    int input2[ARRAY_SIZE] = { 10, 10, 10, 12, 11,  5,  5,  6,  5,  5 };
-    int input3[ARRAY_SIZE] = { -1, -1, -1, -1, -1, 44, 33, 38, 42,  5 };
-    int input4[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1,  0,  5, -1, -1 };
-    int input5[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+    int input2[ARRAY_SIZE] = { 10, 10, 10, 12, 11,  5,  5,  6,  5,  5, 11 };
+    int input3[ARRAY_SIZE] = { -1, -1, -1, -1, -1, 44, 33, 38, 42,  5, -1 };
+    int input4[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1,  0,  5, -1, -1, -1 };
+    int input5[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
     struct WonderMailInfo input6[ARRAY_SIZE] = {
         { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
         { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
@@ -315,7 +329,8 @@ void setFlavorTextHead_test(CuTest *tc)
         { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
@@ -328,7 +343,8 @@ void setFlavorTextHead_test(CuTest *tc)
         { "Please save my love!",    {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { "Escort me to my love!",   {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { "Rescue my rival!",        {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { "Please save my friend!",  {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { "Please save my friend!",  {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { "One Fire Stone wanted!",  {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     int i;
@@ -350,7 +366,7 @@ void setFlavorTextHead_test(CuTest *tc)
 
 void setFlavorTextBody_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10
+#define ARRAY_SIZE 11
     const struct WonderMail input1[ARRAY_SIZE] = {
         { 5, 2,  0,   7,   8,   9,  5,   9,  0,   3, 238, 255,  1,  1 },
         { 5, 2,  0, 197, 131, 189,  1,  20,  0, 158,  34,   1,  2,  6 }, /* 1 instead of 255??? */
@@ -361,12 +377,13 @@ void setFlavorTextBody_test(CuTest *tc)
         { 5, 1,  9,  32,  29,   9,  2, 221,  0,  14, 189, 255, 31, 18 },
         { 5, 2, 10, 336, 337,   9,  3,  46,  0,  12, 192, 255, 33, 24 },
         { 9, 1,  9, 138, 140,   9,  5,  55,  0,   2,  64, 255, 43,  7 },
-        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 }
+        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 },
+        { 5, 4,  5,  37,  37, 113,  3,  53,  0, 103, 254, 255, 34, 24 }
     };
-    int input2[ARRAY_SIZE] = { 14, 14, 14, 16, 15,  7,  7,  8,  7,  7 };
-    int input3[ARRAY_SIZE] = { -1, -1, -1, -1, -1, 44, 33, 38, 42,  5 };
-    int input4[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1,  0,  5, -1, -1 };
-    int input5[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+    int input2[ARRAY_SIZE] = { 14, 14, 14, 16, 15,  7,  7,  8,  7,  7, 15 };
+    int input3[ARRAY_SIZE] = { -1, -1, -1, -1, -1, 44, 33, 38, 42,  5, -1 };
+    int input4[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1,  0,  5, -1, -1, -1 };
+    int input5[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
     struct WonderMailInfo input6[ARRAY_SIZE] = {
         { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
         { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
@@ -377,7 +394,8 @@ void setFlavorTextBody_test(CuTest *tc)
         { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
@@ -390,7 +408,8 @@ void setFlavorTextBody_test(CuTest *tc)
         { {0}, "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { {0}, "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { {0}, "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { {0}, "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { {0}, "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     int i;
@@ -412,7 +431,7 @@ void setFlavorTextBody_test(CuTest *tc)
 
 void setWonderMailInfo_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10
+#define ARRAY_SIZE 11
     const struct WonderMail input1[ARRAY_SIZE] = {
         { 5, 2,  0,   7,   8,   9,  5,   9,  0,   3, 238, 255,  1,  1 },
         { 5, 2,  0, 197, 131, 189,  1,  20,  0, 158,  34,   1,  2,  6 }, /* 1 instead of 255??? */
@@ -423,7 +442,8 @@ void setWonderMailInfo_test(CuTest *tc)
         { 5, 1,  9,  32,  29,   9,  2, 221,  0,  14, 189, 255, 31, 18 },
         { 5, 2, 10, 336, 337,   9,  3,  46,  0,  12, 192, 255, 33, 24 },
         { 9, 1,  9, 138, 140,   9,  5,  55,  0,   2,  64, 255, 43,  7 },
-        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 }
+        { 5, 1,  9, 374, 129,   9,  6,  49,  0,   3, 211, 255, 57,  1 },
+        { 5, 4,  5,  37,  37, 113,  3,  53,  0, 103, 254, 255, 34, 24 }
     };
     struct WonderMailInfo input2[ARRAY_SIZE] = {
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?J9N/X?4P?3\n          4??764?0P??W" },
@@ -435,7 +455,8 @@ void setWonderMailInfo_test(CuTest *tc)
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
@@ -448,7 +469,8 @@ void setWonderMailInfo_test(CuTest *tc)
         { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
         { "Escort me to my love!",   "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
         { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" }
+        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
+        { "One Fire Stone wanted!",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" }
     };
 
     int i;
