@@ -27,10 +27,10 @@ int RunAllTests()
     CuSuiteAddSuite(suite, DecodeWonderMailGetTestSuite());
     CuSuiteAddSuite(suite, DecodeSosMailGetTestSuite());
 
-    CuSuiteRun(suite);
+    int failedTests = CuSuiteRun(suite);
     CuSuiteSummary(suite, output);
     CuSuiteDetails(suite, output);
     printf("%s\n", output->buffer);
 
-    return strstr(output->buffer, "[FAILURES]") ? 1 : 0;
+    return failedTests ? 1 : 0;
 }

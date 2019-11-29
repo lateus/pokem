@@ -192,8 +192,12 @@ void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo)
 
     switch (wm->specialJobIndicator) {
     case 0x05:
-        headIndicator = 11;
+        headIndicator = wm->missionType == FindItem ? 11 : 12;
         bodyIndicator = 15;
+        break;
+    case 0x06:
+        headIndicator = wm->missionType == FindItem ? 11 : 12;
+        bodyIndicator = 16;
         break;
     case 0x09:
         if (pairsIndex >= 0) {
@@ -341,14 +345,25 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
             if (wm->specialJobIndicator == 0x05) {
                 sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
                 strcpy(mailInfo->body2, evolutionBody2Of2);
+            } else if (wm->specialJobIndicator == 0x06) {
+                sprintf(mailInfo->body1, foodBody1Of2, itemsStr[wm->itemDeliverFind]);
+                strcpy(mailInfo->body2, foodBody2Of2);
             } else {
                 sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
                 strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
             }
             break;
         case 16:
-            sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
-            strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
+            if (wm->specialJobIndicator == 0x05) {
+                sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
+                strcpy(mailInfo->body2, evolutionBody2Of2);
+            } else if (wm->specialJobIndicator == 0x06) {
+                sprintf(mailInfo->body1, foodBody1Of2, itemsStr[wm->itemDeliverFind]);
+                strcpy(mailInfo->body2, foodBody2Of2);
+            } else {
+                sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
+                strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
+            }
             break;
         default:
             strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please report to me if you encounter a case */
@@ -379,7 +394,7 @@ void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mai
         strcpy(mailInfo->objective, missionTypeObjectiveStr[mail->missionType]);
     }
 
-    strcpy(mailInfo->place, dungeonsStr[mail->dungeon]);
+    sprintf(mailInfo->place, "%s%s%s", mail->missionType == FindItem ? nearPlaceText : "", mail->missionType == FindItem ? " " : "", dungeonsStr[mail->dungeon]);
     sprintf(mailInfo->floor, "%c%dF", dungeonUpOrDown[mail->dungeon], mail->floor);
 
     int diffValue = computeDifficulty(mail->dungeon, mail->floor, mail->missionType);
@@ -387,7 +402,7 @@ void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mai
 
     int money = computeMoneyReward(diffValue, mail->rewardType);
     if (mail->rewardType == 9) {   /* Friend Area reward */
-        sprintf(mailInfo->reward, "Friend Zone [%s]", friendAreasStr[mail->friendAreaReward]);
+        sprintf(mailInfo->reward, "%s [%s]", friendZoneText, friendAreasStr[mail->friendAreaReward]);
     } else if (money != 0) {
         sprintf(mailInfo->reward, "%d poke", money);
         if (mail->rewardType == 1 || mail->rewardType == 6) {

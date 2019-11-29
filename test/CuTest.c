@@ -280,7 +280,7 @@ void CuSuiteAddSuite(CuSuite* testSuite, CuSuite* testSuite2)
 	}
 }
 
-void CuSuiteRun(CuSuite* testSuite)
+int CuSuiteRun(CuSuite* testSuite)
 {
 	int i;
 	for (i = 0 ; i < testSuite->count ; ++i)
@@ -289,6 +289,7 @@ void CuSuiteRun(CuSuite* testSuite)
 		CuTestRun(testCase);
 		if (testCase->failed) { testSuite->failCount += 1; }
 	}
+	return testSuite->failCount;
 }
 
 void CuSuiteSummary(CuSuite* testSuite, CuString* summary)

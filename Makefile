@@ -101,6 +101,7 @@ examples: $(EXAMPLES) ## Build examples
 tests: $(TEST_RESULT) ## Build and run tests
 
 clean: ## Remove all leftovers from the previous build
+	@$(MSG) "$(YELLOW)Cleaning Pokem...$(NOCOLOR)\n\n"
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJECTS) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
@@ -112,7 +113,7 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
 	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
 	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
-	@$(MSG) "\n$(ORANGE)Cleaning examples...$(NOCOLOR)\n"
+	@$(MSG) "\n$(YELLOW)Cleaning examples...$(NOCOLOR)\n"
 	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
 	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
 	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)Pokem$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
@@ -147,7 +148,7 @@ $(TEST_RESULT): $(BUILDDIR) $(TEST_FILES)
 	@$@
 
 $(OBJECTS):
-	@$(MSG) "$(GREEN)Compiling $(LIGHTBLUE)$<$(GREEN)...$(NOCOLOR)\n"
+	@$(MSG) "$(GREEN)Compiling $(BLUE)$<$(GREEN)...$(NOCOLOR)\n"
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILDDIR):

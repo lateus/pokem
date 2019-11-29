@@ -86,9 +86,10 @@ help:
 $(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS) $(BINDIR)
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
 	$(CC) -o $@ $(CFLAGS) $(CC_LFLAGS) $(RC_OBJ) $(OBJS) -L$(LIBDIR) -l$(LIBS)
-	@$(MSG) "$(LIGHTGREEN)Done. The example $(WHITE)pokem-cli$(LIGHTGREEN) was built in the $(LIGHTBLUE)$(BINDIR)$(GREEN) directory. Enjoy.$(NOCOLOR)\n"
+	@$(MSG) "$(LIGHTGREEN)Done. The example $(WHITE)pokem-cli$(LIGHTGREEN) was built in the $(LIGHTBLUE)$(BINDIR)$(LIGHTGREEN) directory. Enjoy.$(NOCOLOR)\n"
 
 $(OBJS):
+	@$(MSG) "$(GREEN)Compiling $(BLUE)$<$(GREEN)...$(NOCOLOR)\n"
 	$(CC) -c $(CFLAGS) $< -o $@
 
 $(RC_OBJ):

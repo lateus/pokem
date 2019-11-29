@@ -122,4 +122,8 @@ extern const char* dungeonsStr[];
 /* Friend areas */
 extern const char* friendAreasStr[];
 
+/* Helper texts */
+extern const char* friendZoneText;
+extern const char* nearPlaceText;
+
 #endif /* MD1DATABASE_H */

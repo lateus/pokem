@@ -1473,3 +1473,7 @@ const char* friendAreasStr[] = {
     "Enclosed Island",
     "Final Island"
 };
+
+/* Helper texts */
+const char* friendZoneText = "Friend Zone";
+const char* nearPlaceText  = "Near";
