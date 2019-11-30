@@ -8,13 +8,8 @@
 #include <string.h>
 
 
-int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
+int encodeWonderMail(struct WonderMail *wm, char *finalPassword, int trySpecialWonderMail)
 {
-    wm->specialJobIndicator = getSpecialJobIndicator(wm->pkmnClient, wm->pkmnTarget, wm->missionType);
-    wm->flavorText = (15 - (wm->dungeon % 15)) % 15; /* obtained empirically */
-    wm->random = rand() & 0xFF; /* same as % 256 */
-    wm->idk_always0xFF = 0xFF; /* as his name suggest */
-
     int errors = entryErrorsWonderMail(wm);
     if (errors) {
 #if DEBUG
@@ -24,9 +19,14 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
         return InputError;
     }
 
-    char packed15BytesPassword[15] = {0};	/* the first byte is merely a checksum */
-    char *packed14BytesPassword = packed15BytesPassword + 1;	/* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
-    bitPackingEncodingWonderMail(wm, packed14BytesPassword);	/* bit packing while decoding are equivalent to bit unpacking while decoding */
+    wm->specialJobIndicator = getSpecialJobIndicator(wm->pkmnClient, wm->pkmnTarget, wm->missionType, trySpecialWonderMail, wm->itemDeliverFind);
+    wm->flavorText = (15 - (wm->dungeon % 15)) % 15; /* obtained empirically */
+    wm->random = rand() & 0xFF; /* same as % 256 */
+    wm->idk_always0xFF = 0xFF; /* as his name suggest */
+
+    char packed15BytesPassword[15] = {0}; /* the first byte is merely a checksum */
+    char *packed14BytesPassword = packed15BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
+    bitPackingEncodingWonderMail(wm, packed14BytesPassword); /* bit packing while decoding are equivalent to bit unpacking while decoding */
 
     packed15BytesPassword[0] = (char)computeChecksum(packed15BytesPassword, 15);
 

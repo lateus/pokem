@@ -151,6 +151,25 @@ const int itemsInDungeons[][145] = {
     { 144,  1,2,3,7,8,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,27,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,45,53,55,56,57,59,60,61,62,63,64,65,66,67,68,69,71,72,73,74,75,76,77,82,83,84,105,125,128,129,130,131,133,134,135,136,137,140,142,143,144,145,146,148,150,151,152,153,154,155,156,157,158,159,161,162,163,164,165,166,167,168,169,170,173,178,179,180,181,182,183,184,185,186,187,188,189,190,191,192,193,195,196,197,198,199,200,201,202,203,204,205,206,207,208,211,212,213,214,215,217,218,219,221,222,223,232 } /* Purity Forest */
 };
 
+/*
+    Evolution checking - The first element is the size
+
+    Truly speaking, the game does not have any restriction over
+    any pkmn/item combination that can be used to generate a mail
+    with a special flavor text about evolution or feed. However,
+    we apply limitations for abvious reasons: we do not want a
+    Charizard evolving with a Gravelerock, or a Pikachu eating an
+    Insomniscope.
+    We want as much consistence as the real game has, but we will
+    also add the rest of evolution-related items.
+*/
+const int thunderStonePkmn[] = { 1, 25, 133 };
+const int fireStonePkmn[]    = { 4, 37, 58, 133, 253 };
+const int waterStonePkmn[]   = { 5, 61, 90, 120, 133, 296 };
+const int leafStonePkmn[]    = { 4, 44, 70, 102, 299 };
+const int sunStonePkmn[]     = { 2, 90, 191 };
+const int moonStonePkmn[]    = { 2, 35, 39 };
+
 
 /* Mission type */
 const char* missionTypeObjectiveStr[] = {

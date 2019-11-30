@@ -33,7 +33,7 @@ int encodeWM(int argc, const char *argv[])
     struct WonderMail wm;
     parseWMData(argv, &wm);
     char finalPassword[25] = {0};
-    int errorCode = encodeWonderMail(&wm, finalPassword);
+    int errorCode = encodeWonderMail(&wm, finalPassword, 1); /* "1": Try special missions */
     if (errorCode) {
         return errorCode;
     }

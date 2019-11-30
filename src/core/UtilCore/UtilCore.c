@@ -47,21 +47,90 @@ int areLovers(int pkmnClient, int pkmnTarget)
 
 
 
-unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionType)
+int canEvolve(int pkmn, int item)
+{
+    int i;
+    switch(item) {
+    case 108: /* Thunderstone */
+        for (i = 1; i < thunderStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == thunderStonePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 111: /* Sun Stone */
+        for (i = 1; i < sunStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == sunStonePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 112: /* Moon Stone */
+        for (i = 1; i < moonStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == moonStonePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 13: /* Fire Stone */
+        for (i = 1; i < fireStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == fireStonePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 114: /* Water Stone */
+        for (i = 1; i < waterStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == waterStonePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 116: /* Leaf Stone */
+        for (i = 1; i < leafStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == leafStonePkmn[i]) {
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+
+int isFood(int item)
+{
+    return item == 82  || /* Apple */
+           item == 83  || /* Big Apple */
+           item == 85  || /* Huge Apple */
+           item == 103 || /* Banana */
+           (item >= 86 && item <= 102); /* Gummis */
+}
+
+
+
+unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionType, int trySpecialJobIndicator, int itemToFindDeliver)
 {
     int pairsIndex   = arePairs(pkmnClient, pkmnTarget);
     int loversIndex  = areLovers(pkmnClient, pkmnTarget);
     int parentsIndex = areParents(pkmnClient, pkmnTarget);
 
-    if (loversIndex >= 0 && missionType == Escort) {
+    if (trySpecialJobIndicator && (missionType == FindItem || missionType == DeliverItem)) {
+        if (canEvolve(pkmnClient, itemToFindDeliver)) { /* Evolution special missions */
+            return 0x05;
+        } else if (isFood(itemToFindDeliver)) { /* Food special missions */
+            return 0x06;
+        }
+    } else if (loversIndex >= 0 && missionType == Escort) { /* Lovers special missions */
         return 0x0A;
-    } else if (parentsIndex >= 0) {
+    } else if (parentsIndex >= 0) { /* Lovers special missions */
         return 0x0F;
-    } else if (pairsIndex >= 0) {
+    } else if (pairsIndex >= 0) { /* Pairs special missions */
         return 0x09;
-    } else {
-        return NoError;
     }
+
+    return 0; /* No special */
 }
 
 

@@ -29,6 +29,14 @@ extern const char* dungeonUpOrDown;
 /* Items in dungeons */
 extern const int itemsInDungeons[][145];
 
+/* Evolution checking */
+extern const int thunderStonePkmn[];
+extern const int fireStonePkmn[];
+extern const int waterStonePkmn[];
+extern const int leafStonePkmn[];
+extern const int sunStonePkmn[];
+extern const int moonStonePkmn[];
+
 /* Mission type */
 extern const char* missionTypeObjectiveStr[];
 
