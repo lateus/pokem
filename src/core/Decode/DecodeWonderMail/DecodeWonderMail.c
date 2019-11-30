@@ -191,6 +191,14 @@ void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo)
     int parentsIndex = areParents(wm->pkmnClient, wm->pkmnTarget);
 
     switch (wm->specialJobIndicator) {
+    case 0x01:
+        break;
+    case 0x02:
+        break;
+    case 0x03:
+        break;
+    case 0x04:
+        break;
     case 0x05:
         headIndicator = wm->missionType == FindItem ? 11 : 12;
         bodyIndicator = 15;
@@ -229,55 +237,64 @@ void setFlavorTextHead(const struct WonderMail *wm, int headIndicator, int pairs
     int dungeonID = (wm->flavorText + wm->dungeon) & 0xFF;
 
     switch(headIndicator) {
-        case 4:
-            if (parentsIndex >= 0) {
-                strcpy(mailInfo->head, parentsHead);
+    case 0: /* Should never happen, but we still support it */
+        strcpy(mailInfo->head, mankeyTitle);
+        break;
+    case 1: /* Should never happen, but we still support it */
+        strcpy(mailInfo->head, smeargleTitle);
+        break;
+    case 2: /* Should never happen, but we still support it */
+        strcpy(mailInfo->head, medichamTitle);
+        break;
+    case 4:
+        if (parentsIndex >= 0) {
+            strcpy(mailInfo->head, parentsHead);
+        } else {
+            strcpy(mailInfo->head, "[UNKNOWN HEAD]"); /* This should never happen. Please fill a bug report if you encounter a case */
+        }
+        break;
+    case 5:
+        if(pairsIndex >= 0) {
+            if (pairsIndex < 33) {
+                strcpy(mailInfo->head, friendsHead);
+            } else if (pairsIndex < 40) {
+                strcpy(mailInfo->head, loversHead);
+            } else if (pairsIndex < 44) {
+                strcpy(mailInfo->head, rivalsHead);
             } else {
-                strcpy(mailInfo->head, "[UNKNOWN HEAD]");
+                strcpy(mailInfo->head, brothersHead);
             }
-            break;
-        case 5:
-            if(pairsIndex >= 0) {
-                if (pairsIndex < 33) {
-                    strcpy(mailInfo->head, friendsHead);
-                } else if (pairsIndex < 40) {
-                    strcpy(mailInfo->head, loversHead);
-                } else if (pairsIndex < 44) {
-                    strcpy(mailInfo->head, rivalsHead);
-                } else {
-                    strcpy(mailInfo->head, brothersHead);
-                }
-            } else {
-                strcpy(mailInfo->head, "[UNKNOWN HEAD]");  /* This should never happen. Please report to me if you encounter a case */
-            }
-            break;
-        case 6:
-            if (loversIndex >= 0) {
-                strcpy(mailInfo->head, loversEscortHead);
-            } else {
-                strcpy(mailInfo->head, "[UNKNOWN HEAD]");
-            }
-            break;
-        case 7:
-            sprintf(mailInfo->head, msgTitleStandard_DeliverItem, itemsStr[wm->itemDeliverFind]);
-            break;
-        case 8:
-            strcpy(mailInfo->head, msgTitleStandard_HelpMe[dungeonID % 15]);   /* Because the desired array has 15 elements */
-            break;
-        case 9:
-            sprintf(mailInfo->head, msgTitleStandard_FindSomeone[dungeonID % 10], pkmnSpeciesStr[wm->pkmnTarget]);  /* Because the desired array has 10 elements */
-            break;
-        case 10:
-            sprintf(mailInfo->head, msgTitleStandard_Escort[dungeonID % 4], pkmnSpeciesStr[wm->pkmnTarget]);    /* Because the desired array has 4 elements */
-            break;
-        case 11:
-            sprintf(mailInfo->head, msgTitleStandard_FindItem, itemsStr[wm->itemDeliverFind]);
-            break;
-        case 12:
-            sprintf(mailInfo->head, msgTitleStandard_DeliverItem, itemsStr[wm->itemDeliverFind]);
-            break;
-        default:
-            sprintf(mailInfo->head, "[UNKNOWN HEAD]");  /* This should never happen. Please report to me if you encounter a case */
+        } else {
+            strcpy(mailInfo->head, "[UNKNOWN HEAD]"); /* This should never happen. Please fill a bug report if you encounter a case */
+        }
+        break;
+    case 6:
+        if (loversIndex >= 0) {
+            strcpy(mailInfo->head, loversEscortHead);
+        } else {
+            strcpy(mailInfo->head, "[UNKNOWN HEAD]"); /* This should never happen. Please fill a bug report if you encounter a case */
+        }
+        break;
+    case 7:
+        sprintf(mailInfo->head, msgTitleStandard_DeliverItem, itemsStr[wm->itemDeliverFind]);
+        break;
+    case 8:
+        strcpy(mailInfo->head, msgTitleStandard_HelpMe[dungeonID % 15]); /* Because the desired array has 15 elements */
+        break;
+    case 9:
+        sprintf(mailInfo->head, msgTitleStandard_FindSomeone[dungeonID % 10], pkmnSpeciesStr[wm->pkmnTarget]); /* Because the desired array has 10 elements */
+        break;
+    case 10:
+        sprintf(mailInfo->head, msgTitleStandard_Escort[dungeonID % 4], pkmnSpeciesStr[wm->pkmnTarget]); /* Because the desired array has 4 elements */
+        break;
+    case 11:
+        sprintf(mailInfo->head, msgTitleStandard_FindItem, itemsStr[wm->itemDeliverFind]);
+        break;
+    case 12:
+        sprintf(mailInfo->head, msgTitleStandard_DeliverItem, itemsStr[wm->itemDeliverFind]);
+        break;
+    default:  /* Should never happen, but we still support it */
+        sprintf(mailInfo->head, "[UNKNOWN HEAD]");
     }
 
 }
@@ -290,84 +307,96 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
     int floorID = (wm->flavorText + wm->floor) & 0xFF;
 
     switch(bodyIndicator) {
-        case 6:
-            if(parentsIndex >= 0) {
-                strcpy(mailInfo->body1, parentsBody1Of2[parentsIndex]);
-                strcpy(mailInfo->body2, parentsBody2Of2[parentsIndex]);
-            } else {
-                strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please report to me if you encounter a case */
-                strcpy(mailInfo->body2, "[UNKNOWN BODY]");
-            }
-            break;
-        case 7:
-            if(pairsIndex >= 0) {
-                sprintf(mailInfo->body2, pairsBody2Of2[pairsIndex], pkmnSpeciesStr[wm->pkmnTarget]);
-                sprintf(mailInfo->body1, pairsBody1Of2[pairsIndex], pkmnSpeciesStr[wm->pkmnTarget]);
-            } else {
-                strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please report to me if you encounter a case */
-                strcpy(mailInfo->body2, "[UNKNOWN BODY]");
-            }
-            break;
-        case 8:
-            if (loversIndex >= 0) {
-                sprintf(mailInfo->body1, loversBody1Of2[dungeonID % 6], pkmnSpeciesStr[wm->pkmnTarget]);    /* Because the desired array has 6 elements */
-                strcpy(mailInfo->body2, loversBody2Of2[floorID % 6]);   /* Because the desired array has 6 elements */
-            } else {
-                strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please report to me if you encounter a case */
-                strcpy(mailInfo->body2, "[UNKNOWN BODY]");
-            }
-            break;
-        case 9: /* Should never happen, but we still support it */
-            strcpy(mailInfo->body1, SOS_AskHelp1);
-            strcpy(mailInfo->body2, SOS_AskHelp2);
-            break;
-        case 10: /* Should never happen, but we still support it */
-            strcpy(mailInfo->body1, SOS_GoHelp1);
-            strcpy(mailInfo->body2, SOS_GoHelp2);
-            break;
-        case 11: /* Should never happen, but we still support it */
-            strcpy(mailInfo->body1, SOS_Thanks1);
-            strcpy(mailInfo->body2, SOS_Thanks2);
-            break;
-        case 12:
-            strcpy(mailInfo->body1, msgBodyStandard_1Of2_Help[dungeonID % 13]); /* Because the desired array has 13 elements */
-            strcpy(mailInfo->body2, msgBodyStandard_2Of2_Help[floorID % 13]);   /* Because the desired array has 13 elements */
-            break;
-        case 13:
-            sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindSomeone[dungeonID % 45], pkmnSpeciesStr[wm->pkmnTarget]); /* Because the desired array has 45 elements */
-            strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindSomeone[floorID % 10]);    /* Because the desired array has 10 elements */
-            break;
-        case 14:
-            sprintf(mailInfo->body2, msgBodyStandard_2Of2_Escort[floorID % 4], pkmnSpeciesStr[wm->pkmnTarget]);
-            sprintf(mailInfo->body1, msgBodyStandard_1Of2_Escort[dungeonID % 20], pkmnSpeciesStr[wm->pkmnTarget]);  /* Because the desired array has 20 elements */
-            break;
-        case 15:
-            if (wm->specialJobIndicator == 0x05) {
-                sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
-                strcpy(mailInfo->body2, evolutionBody2Of2);
-            } else if (wm->specialJobIndicator == 0x06) {
-                sprintf(mailInfo->body1, foodBody1Of2, itemsStr[wm->itemDeliverFind]);
-                strcpy(mailInfo->body2, foodBody2Of2);
-            } else {
-                sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
-                strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
-            }
-            break;
-        case 16:
-            if (wm->specialJobIndicator == 0x05) {
-                sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
-                strcpy(mailInfo->body2, evolutionBody2Of2);
-            } else if (wm->specialJobIndicator == 0x06) {
-                sprintf(mailInfo->body1, foodBody1Of2, itemsStr[wm->itemDeliverFind]);
-                strcpy(mailInfo->body2, foodBody2Of2);
-            } else {
-                sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
-                strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
-            }
-            break;
-        default:
-            strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please report to me if you encounter a case */
+    case 0:  /* Should never happen, but we still support it */
+        strcpy(mailInfo->body1, mankeyBody1Of2);
+        strcpy(mailInfo->body2, mankeyBody2Of2);
+        break;
+    case 1:  /* Should never happen, but we still support it */
+        strcpy(mailInfo->body1, smeargleBody1Of2);
+        strcpy(mailInfo->body2, smeargleBody2Of2);
+        break;
+    case 2:  /* Should never happen, but we still support it */
+        strcpy(mailInfo->body1, medichamBody1Of2);
+        strcpy(mailInfo->body2, medichamBody2Of2);
+        break;
+    case 6:
+        if(parentsIndex >= 0) {
+            strcpy(mailInfo->body1, parentsBody1Of2[parentsIndex]);
+            strcpy(mailInfo->body2, parentsBody2Of2[parentsIndex]);
+        } else {
+            strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please fill a bug report if you encounter a case */
             strcpy(mailInfo->body2, "[UNKNOWN BODY]");
+        }
+        break;
+    case 7:
+        if(pairsIndex >= 0) {
+            sprintf(mailInfo->body2, pairsBody2Of2[pairsIndex], pkmnSpeciesStr[wm->pkmnTarget]);
+            sprintf(mailInfo->body1, pairsBody1Of2[pairsIndex], pkmnSpeciesStr[wm->pkmnTarget]);
+        } else {
+            strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please fill a bug report if you encounter a case */
+            strcpy(mailInfo->body2, "[UNKNOWN BODY]");
+        }
+        break;
+    case 8:
+        if (loversIndex >= 0) {
+            sprintf(mailInfo->body1, loversBody1Of2[dungeonID % 6], pkmnSpeciesStr[wm->pkmnTarget]);    /* Because the desired array has 6 elements */
+            strcpy(mailInfo->body2, loversBody2Of2[floorID % 6]);   /* Because the desired array has 6 elements */
+        } else {
+            strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please fill a bug report if you encounter a case */
+            strcpy(mailInfo->body2, "[UNKNOWN BODY]");
+        }
+        break;
+    case 9: /* Should never happen, but we still support it */
+        strcpy(mailInfo->body1, SOS_AskHelp1);
+        strcpy(mailInfo->body2, SOS_AskHelp2);
+        break;
+    case 10: /* Should never happen, but we still support it */
+        strcpy(mailInfo->body1, SOS_GoHelp1);
+        strcpy(mailInfo->body2, SOS_GoHelp2);
+        break;
+    case 11: /* Should never happen, but we still support it */
+        strcpy(mailInfo->body1, SOS_Thanks1);
+        strcpy(mailInfo->body2, SOS_Thanks2);
+        break;
+    case 12:
+        strcpy(mailInfo->body1, msgBodyStandard_1Of2_Help[dungeonID % 13]); /* Because the desired array has 13 elements */
+        strcpy(mailInfo->body2, msgBodyStandard_2Of2_Help[floorID % 13]);   /* Because the desired array has 13 elements */
+        break;
+    case 13:
+        sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindSomeone[dungeonID % 45], pkmnSpeciesStr[wm->pkmnTarget]); /* Because the desired array has 45 elements */
+        strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindSomeone[floorID % 10]);    /* Because the desired array has 10 elements */
+        break;
+    case 14:
+        sprintf(mailInfo->body2, msgBodyStandard_2Of2_Escort[floorID % 4], pkmnSpeciesStr[wm->pkmnTarget]);
+        sprintf(mailInfo->body1, msgBodyStandard_1Of2_Escort[dungeonID % 20], pkmnSpeciesStr[wm->pkmnTarget]);  /* Because the desired array has 20 elements */
+        break;
+    case 15:
+        if (wm->specialJobIndicator == 0x05) {
+            sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
+            strcpy(mailInfo->body2, evolutionBody2Of2);
+        } else if (wm->specialJobIndicator == 0x06) {
+            sprintf(mailInfo->body1, foodBody1Of2, itemsStr[wm->itemDeliverFind]);
+            strcpy(mailInfo->body2, foodBody2Of2);
+        } else {
+            sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
+            strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
+        }
+        break;
+    case 16:
+        if (wm->specialJobIndicator == 0x05) {
+            sprintf(mailInfo->body1, evolutionBody1Of2, itemsStr[wm->itemDeliverFind]);
+            strcpy(mailInfo->body2, evolutionBody2Of2);
+        } else if (wm->specialJobIndicator == 0x06) {
+            sprintf(mailInfo->body1, foodBody1Of2, itemsStr[wm->itemDeliverFind]);
+            strcpy(mailInfo->body2, foodBody2Of2);
+        } else {
+            sprintf(mailInfo->body1, msgBodyStandard_1Of2_FindDeliverItem[dungeonID % 22], itemsStr[wm->itemDeliverFind]);  /* Because the desired array has 22 elements */
+            strcpy(mailInfo->body2, msgBodyStandard_2Of2_FindDeliverItem[floorID % 22]);    /* Because the desired array has 22 elements */
+        }
+        break;
+    default:
+        strcpy(mailInfo->body1, "[UNKNOWN BODY]");  /* This should never happen. Please fill a bug report if you encounter a case */
+        strcpy(mailInfo->body2, "[UNKNOWN BODY]");
     }
 }
 
