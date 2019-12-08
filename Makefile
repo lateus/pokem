@@ -1,9 +1,21 @@
+# Compiler flags
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
 CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
+AR_FLAGS	:=	rcs
 
-# DIRECTORIES
+# Tools
+RMDIR		:=	$(RM)
+FIND		:=	find
+CP			:=	cp
+CP_FLAGS	:=	-f
+RM_FLAGS	:=
+RMDIR_FLAGS	:=	-frd
+MKDIR		:=	mkdir
+MKDIR_FLAGS	:=	-p
+
+# Directories
 BUILDDIR	:=	build
 BINLIBDIR	:=	binlib
 
@@ -29,7 +41,9 @@ TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
 				src/core/Encode/UtilEncode/UtilEncode_test.c \
 				src/core/Decode/DecodeWonderMail/DecodeWonderMail_test.c \
 				src/core/Decode/DecodeSos/DecodeSos_test.c
+TEST_RESULT	:=	$(BUILDDIR)/tests
 
+# Library header
 LIB_HEADER_NAME		:=	pokem.h
 
 # Examples
@@ -42,35 +56,9 @@ STATIC_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(STATIC_LIB_NAME)
 
 LIB_HEADER_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(LIB_HEADER_NAME)
 
-AR_FLAGS	:=	rcs
-
-# Platform-specific switches
-ifeq ($(OS),Windows_NT)
-	SHELL		:=	cmd
-	RM			:=	del
-	CP			:=	cp
-	CC			:=	gcc
-	RMDIR		:=	rd
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=
-	TEST_RESULT	:=	$(BUILDDIR)/tests.exe
-else
-	RMDIR		:=	$(RM)
-	FIND		:=	find
-	CP			:=	cp
-	CP_FLAGS	:=	-f
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=	-frd
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=	-p
-	TEST_RESULT	:=	$(BUILDDIR)/tests
-endif
-
-# MESSAGES
+# Messages
 MSG			:=	printf
-# COLORS
+# Colors
 NOCOLOR		:=	\033[0m
 BLACK		:=	\033[0;30m
 DARKGRAY	:=	\033[1;30m
@@ -89,8 +77,10 @@ LIGHTCYAN	:=	\033[1;36m
 LIGHTGRAY	:=	\033[0;37m
 WHITE		:=	\033[1;37m
 
+# ----------------------------------------------------------------------------------------------------
+
 .DEFAULT_GOAL := all
-.PHONY: all staticlib examples clean help
+.PHONY: all staticlib examples tests clean help
 
 all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests (default)
 
@@ -121,6 +111,7 @@ clean: ## Remove all leftovers from the previous build
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
 
+# Static library deployment
 $(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
@@ -159,7 +150,7 @@ $(BINLIBDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BINLIBDIR)
 
-# INTERMEDIATE OBJECTS BUILD RULES
+# Intermediate objects build rules
 $(BUILDDIR)/DecodeSos.o:        src/core/Decode/DecodeSos/DecodeSos.c
 $(BUILDDIR)/DecodeWonderMail.o: src/core/Decode/DecodeWonderMail/DecodeWonderMail.c
 $(BUILDDIR)/UtilDecode.o:       src/core/Decode/UtilDecode/UtilDecode.c
