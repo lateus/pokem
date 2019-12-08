@@ -36,6 +36,16 @@ extern const int waterStonePkmn[];
 extern const int leafStonePkmn[];
 extern const int sunStonePkmn[];
 extern const int moonStonePkmn[];
+extern const int linkCablePkmn[];
+extern const int deepSeaScalePkmn[];
+extern const int deepSeaToothPkmn[];
+extern const int dragonScalePkmn[];
+extern const int kingsRockPkmn[];
+extern const int metalCoatPkmn[];
+extern const int upgradePkmn[];
+extern const int sunRibbonPkmn[];
+extern const int lunarRibbonPkmn[];
+extern const int beautyScarfPkmn[];
 
 /* Mission type */
 extern const char* missionTypeObjectiveStr[];

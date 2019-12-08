@@ -7,7 +7,7 @@
 int areParents(int pkmnClient, int pkmnTarget);
 int arePairs(int pkmnClient, int pkmnTarget);
 int areLovers(int pkmnClient, int pkmnTarget);
-int canEvolve(int pkmn, int item);
+int canEvolveWithItem(int pkmn, int item);
 int isFood(int item);
 unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionType, int trySpecialJobIndicator, int itemToFindDeliver);
 int findItemByDungeon(int item, int dungeon);

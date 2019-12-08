@@ -47,7 +47,7 @@ int areLovers(int pkmnClient, int pkmnTarget)
 
 
 
-int canEvolve(int pkmn, int item)
+int canEvolveWithItem(int pkmn, int item)
 {
     int i;
     switch(item) {
@@ -72,7 +72,7 @@ int canEvolve(int pkmn, int item)
             }
         }
         break;
-    case 13: /* Fire Stone */
+    case 113: /* Fire Stone */
         for (i = 1; i < fireStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
             if (pkmn == fireStonePkmn[i]) {
                 return 1;
@@ -89,6 +89,76 @@ int canEvolve(int pkmn, int item)
     case 116: /* Leaf Stone */
         for (i = 1; i < leafStonePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
             if (pkmn == leafStonePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 118: /* Link Cable */
+        for (i = 1; i < linkCablePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == linkCablePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 109: /* Deepseascale */
+        for (i = 1; i < deepSeaScalePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == deepSeaScalePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 110: /* Deepseatooth */
+        for (i = 1; i < deepSeaToothPkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == deepSeaToothPkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 117: /* Dragon scale */
+        for (i = 1; i < dragonScalePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == dragonScalePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 107: /* King's Rock */
+        for (i = 1; i < kingsRockPkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == kingsRockPkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 115: /* Metal Coat */
+        for (i = 1; i < metalCoatPkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == metalCoatPkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 106: /* Upgrade */
+        for (i = 1; i < upgradePkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == upgradePkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 48: /* Sun Ribbon */
+        for (i = 1; i < sunRibbonPkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == sunRibbonPkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 49: /* Lunar Ribbon */
+        for (i = 1; i < lunarRibbonPkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == lunarRibbonPkmn[i]) {
+                return 1;
+            }
+        }
+        break;
+    case 47: /* Beauty Scarf */
+        for (i = 1; i < beautyScarfPkmn[0]; ++i) { /* Start at [1] because [0] contains the size */
+            if (pkmn == beautyScarfPkmn[i]) {
                 return 1;
             }
         }
@@ -117,7 +187,7 @@ unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionT
     int parentsIndex = areParents(pkmnClient, pkmnTarget);
 
     if (trySpecialJobIndicator && (missionType == FindItem || missionType == DeliverItem)) {
-        if (canEvolve(pkmnClient, itemToFindDeliver)) { /* Evolution special missions */
+        if (canEvolveWithItem(pkmnClient, itemToFindDeliver)) { /* Evolution special missions */
             return 0x05;
         } else if (isFood(itemToFindDeliver)) { /* Food special missions */
             return 0x06;

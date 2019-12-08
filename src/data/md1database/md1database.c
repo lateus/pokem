@@ -163,12 +163,22 @@ const int itemsInDungeons[][145] = {
     We want as much consistence as the real game has, but we will
     also add the rest of evolution-related items.
 */
-const int thunderStonePkmn[] = { 1, 25, 133 };
-const int fireStonePkmn[]    = { 4, 37, 58, 133, 253 };
-const int waterStonePkmn[]   = { 5, 61, 90, 120, 133, 296 };
-const int leafStonePkmn[]    = { 4, 44, 70, 102, 299 };
-const int sunStonePkmn[]     = { 2, 90, 191 };
-const int moonStonePkmn[]    = { 2, 35, 39 };
+const int thunderStonePkmn[] = { 2, 25, 133 }; /* Pikachu and Eevee */
+const int fireStonePkmn[]    = { 3, 37, 58, 133 }; /* Vulpix, Growlithe and Eevee */
+const int waterStonePkmn[]   = { 5, 61, 90, 120, 133, 296 }; /* Poliwhirl, Shellder, Staryu, Eevee and Lombre */
+const int leafStonePkmn[]    = { 4, 44, 70, 102, 299 }; /* Gloom, Weepinbell, Exeggcute and Nuzleaf */
+const int sunStonePkmn[]     = { 2, 90, 191 }; /* Gloom and Sunkern */
+const int moonStonePkmn[]    = { 5, 30, 33, 35, 39, 325 }; /* Nidorina, Nidorino, Clefairy, Jigglypuff and Skitty */
+const int linkCablePkmn[]    = { 4, 64, 67, 75, 93 }; /* Kadabra, Machoke, Graveler and Haunter */
+const int deepSeaScalePkmn[] = { 1, 394 }; /* Clamperl */
+const int deepSeaToothPkmn[] = { 1, 394 }; /* Same as `deepSeaScalePkmn`: Clamperl */
+const int dragonScalePkmn[]  = { 1, 117 }; /* Seadra */
+const int kingsRockPkmn[]    = { 1, 80 }; /* Slowbro */
+const int metalCoatPkmn[]    = { 2, 95, 123 }; /* Onix and Scyther */
+const int upgradePkmn[]      = { 1, 137 }; /* Porygon */
+const int sunRibbonPkmn[]    = { 1, 133 }; /* Eevee */
+const int lunarRibbonPkmn[]  = { 1, 133 }; /* Same as `sunRibbonPkmn`: Eevee */
+const int beautyScarfPkmn[]  = { 1, 374 }; /* Feebas */
 
 
 /* Mission type */
