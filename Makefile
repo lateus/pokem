@@ -1,19 +1,18 @@
 # Compiler flags
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
-CC_LFLAGS	:=	-Wl,-s -static
-CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
+CC_LFLAGS	:=
+CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS)
 AR_FLAGS	:=	rcs
 
 # Tools
-RMDIR		:=	$(RM)
-FIND		:=	find
-CP			:=	cp
-CP_FLAGS	:=	-f
-RM_FLAGS	:=
-RMDIR_FLAGS	:=	-frd
+RM			:=	rm
+RM_FLAGS	:=	-rf
 MKDIR		:=	mkdir
 MKDIR_FLAGS	:=	-p
+CP			:=	cp
+CP_FLAGS	:=	-f
+FIND		:=	find
 
 # Directories
 BUILDDIR	:=	build
@@ -44,7 +43,7 @@ TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
 TEST_RESULT	:=	$(BUILDDIR)/tests
 
 # Library header
-LIB_HEADER_NAME		:=	pokem.h
+LIB_HEADER_NAME	:=	pokem.h
 
 # Examples
 EXAMPLES_DIR	:=	examples
@@ -93,16 +92,16 @@ tests: $(TEST_RESULT) ## Build and run tests
 clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(YELLOW)Cleaning Pokem...$(NOCOLOR)\n\n"
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJECTS) $(OBJS)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(RC_OBJ) $(OBJECTS) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(ORANGE)Removing headers...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(STATIC_H)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(STATIC_H)
 	@$(MSG) "$(ORANGE)Removing tests...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(TEST_RESULT)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(TEST_RESULT)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
-	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
-	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
+	$(RM) $(RM_FLAGS) $(BUILDDIR)
+	$(RM) $(RM_FLAGS) $(BINLIBDIR)
 	@$(MSG) "\n$(YELLOW)Cleaning examples...$(NOCOLOR)\n"
 	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
 	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
@@ -111,18 +110,21 @@ clean: ## Remove all leftovers from the previous build
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
 
-# Static library deployment
-$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS)
+# Static library header
+$(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
+	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
+	@$(MSG) "#ifndef POKEM_H\n" > $@
+	@$(MSG) "#define POKEM_H\n" >> $@
+	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $@
+	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $@
+	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(MSG) "\n#endif /* POKEM_H */" >> $@
+
+# Static library
+$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS) $(LIB_HEADER_DEPLOY_FILEPATH)
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
-	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
-	@$(MSG) "#ifndef POKEM_H\n" > $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "#define POKEM_H\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $(LIB_HEADER_DEPLOY_FILEPATH)
-	@$(MSG) "\n#endif /* POKEM_H */" >> $(LIB_HEADER_DEPLOY_FILEPATH)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
 
 $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)

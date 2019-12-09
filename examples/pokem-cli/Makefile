@@ -3,7 +3,14 @@ CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
 CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
 
-# DIRECTORIES
+# Tools
+RM			:=	rm
+RM_FLAGS	:=	-rf
+MKDIR		:=	mkdir
+MKDIR_FLAGS	:=	-p
+WINDRES		:=	$(shell which windres)
+
+# Directories
 LIBDIR		:=	lib
 BUILDDIR	:=	build
 BINDIR		:=	bin
@@ -14,11 +21,23 @@ SOURCES		:=	src/view/view.c \
 
 LIBS		:=	pokem
 
-OBJS		:=	$(BUILDDIR)/main.o $(BUILDDIR)/application.o $(BUILDDIR)/view.o
+OBJS		:=	$(BUILDDIR)/view.o \
+				$(BUILDDIR)/application.o \
+				$(BUILDDIR)/main.o
 
-# MESSAGES
-MSG			:=	printf
-# COLORS
+RC_FILE		:=	res/manifest.rc
+RC_OBJ		:=	$(BUILDDIR)/res.o
+
+# If no `windres` tool available, the RC object file must be skipped
+ifeq ($(WINDRES),)
+	RC_OBJ	=
+endif
+
+EXECUTABLE	:=	$(BINDIR)/pokeM
+
+# Messages
+MSG			:=	echo -n
+# Colors
 NOCOLOR		:=	\033[0m
 BLACK		:=	\033[0;30m
 DARKGRAY	:=	\033[1;30m
@@ -37,38 +56,12 @@ LIGHTCYAN	:=	\033[1;36m
 LIGHTGRAY	:=	\033[0;37m
 WHITE		:=	\033[1;37m
 
-# Platform-specific switches
-ifeq ($(OS),Windows_NT)
-	SHELL		:=	cmd
-	RM			:=	del
-	CP			:=	cp
-	CC			:=	gcc
-	RMDIR		:=	rd
-	WINRES		:=	windres
-	EXECUTABLE	:=	$(BINDIR)/pokeM.exe
-	RC_FILE		:=	res/manifest.rc
-	RC_OBJ		:=	$(BUILDDIR)/res.o
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=
-else
-	RMDIR		:=	$(RM)
-	CP			:=	cp
-	WINRES		:=
-	EXECUTABLE	:=	$(BINDIR)/pokeM
-	RC_FILE		:=
-	RC_OBJ		:=
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=	-frd
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=	-p
-endif
+# ----------------------------------------------------------------------------------------------------
 
-.DEFAULT_GOAL := executable
-.PHONY: executable clean help
+.DEFAULT_GOAL := all
+.PHONY: all clean help
 
-executable: $(BUILDDIR) $(EXECUTABLE) ## Build Pokem CLI executable (default)
+all: $(EXECUTABLE) ## Build Pokem CLI executable (default)
 
 clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
@@ -76,16 +69,17 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(EXECUTABLE)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
-	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
-	$(RMDIR) $(RMDIR_FLAGS) $(BINDIR)
+	$(RM) $(RM_FLAGS) $(BUILDDIR)
+	$(RM) $(RM_FLAGS) $(BINDIR)
 	@$(MSG) "$(LIGHTGREEN)Example $(WHITE)pokem-cli$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
 
-$(EXECUTABLE): $(BUILDDIR) $(RC_OBJ) $(OBJS) $(BINDIR)
+$(EXECUTABLE): $(BUILDDIR) $(OBJS) $(RC_OBJ) $(BINDIR)
+	@$(MSG) "Object files: $(OBJS)\n"
 	@$(MSG) "$(YELLOW)Building and linking executable file...$(NOCOLOR)\n"
-	$(CC) -o $@ $(CFLAGS) $(CC_LFLAGS) $(RC_OBJ) $(OBJS) -L$(LIBDIR) -l$(LIBS)
+	$(CC) -o $@ $(CFLAGS) $(CC_LFLAGS) $(OBJS) $(RC_OBJ) -L$(LIBDIR) -l$(LIBS)
 	@$(MSG) "$(LIGHTGREEN)Done. The example $(WHITE)pokem-cli$(LIGHTGREEN) was built in the $(LIGHTBLUE)$(BINDIR)$(LIGHTGREEN) directory. Enjoy.$(NOCOLOR)\n"
 
 $(OBJS):
@@ -94,7 +88,7 @@ $(OBJS):
 
 $(RC_OBJ):
 	@$(MSG) "$(YELLOW)Building MS Windows's RC file...$(NOCOLOR)\n"
-	$(WINRES) -i $(RC_FILE) -o $@
+	$(WINDRES) -i $(RC_FILE) -o $@
 	@$(MSG) "$(YELLOW)Building intermediate objects files...$(NOCOLOR)\n"
 
 $(BUILDDIR):
@@ -105,7 +99,7 @@ $(BINDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BINDIR)
 
-# INTERMEDIATE OBJECTS BUILD RULES
+# Intermediate objects build rules
 $(BUILDDIR)/main.o:        		src/main.c
 $(BUILDDIR)/application.o:		src/application/application.c
 $(BUILDDIR)/view.o:				src/view/view.c
