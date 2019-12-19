@@ -189,7 +189,7 @@ void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
     sosInfo->difficulty = difficultiesChars[diffValue];
     strcpy(sosInfo->reward, mailType != 5 ? "???" : itemsStr[mail->itemReward]);
     sprintf(sosInfo->id, "%d", mail->mailID);
-    sprintf(sosInfo->chancesLeft, "%u", (char)mail->chancesLeft);
+    sprintf(sosInfo->chancesLeft, "%d", mail->chancesLeft % 11); /* ensure not buffer overflow */
 }
 
 
