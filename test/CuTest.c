@@ -310,8 +310,6 @@ void CuSuiteDetails(CuSuite* testSuite, CuString* details)
 
 	if (testSuite->failCount == 0)
 	{
-		int passCount = testSuite->count - testSuite->failCount;
-		const char* testWord = passCount == 1 ? "test" : "tests";
 		CuStringAppendFormat(details, "\033[1;32m[OK]\033[0m \033[;1mRuns: %d  ",   testSuite->count);
 		CuStringAppendFormat(details, "Passes: %d  ", testSuite->count - testSuite->failCount);
 		CuStringAppendFormat(details, "Fails: %d\033[0m\n",  testSuite->failCount);
