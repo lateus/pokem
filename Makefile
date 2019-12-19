@@ -110,6 +110,12 @@ clean: ## Remove all leftovers from the previous build
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(WHITE)%-10s$(NOCOLOR) %s\n", $$1, $$2}'
 
+# More platforms:
+platform-3ds:
+	@$(MSG) "$(YELLOW)Building and linking static library file for 3DS platform...$(NOCOLOR)\n"
+	$(MAKE) -f Makefile.3DS
+	$(MAKE) $(LIB_HEADER_DEPLOY_FILEPATH)
+
 # Static library header
 $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
