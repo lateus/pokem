@@ -74,7 +74,7 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(LIGHTGREEN)Example $(WHITE)pokem-cli$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(WHITE)%-10s$(NOCOLOR) %s\n", $$1, $$2}'
 
 $(EXECUTABLE): $(BUILDDIR) $(OBJS) $(RC_OBJ) $(BINDIR)
 	@$(MSG) "Object files: $(OBJS)\n"
