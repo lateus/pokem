@@ -8,7 +8,7 @@
 
 int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
-    char psw[24] = {0};
+    char psw[25] = {0};
 
     if (argc <= 1 || argv == NULL) {
         requestWonderMailPassword(psw);
@@ -63,9 +63,10 @@ int encodeWM(int argc, const char *argv[])
     sprintf(wmInfo.password, "%s\n          %s", strncat(wmInfo.password, finalPassword, 12), finalPassword + 12);
     printWonderMailData(&wmInfo);
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
-        fputs("* Warning: You will not be able to accept the above mission.\n", stderr);
+        fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n", stderr);
     }
     fflush(stdout);
+    fflush(stderr);
 
     return NoError;
 }
@@ -74,7 +75,7 @@ int encodeWM(int argc, const char *argv[])
 
 int parseWMData(const char *argv[], struct WonderMail *wm)
 {
-    int i;
+    unsigned int i;
     int mostSimilarIndex = 0;
 
     wm->mailType         = 5; /* Wonder Mail */
@@ -236,46 +237,71 @@ int parseWMData(const char *argv[], struct WonderMail *wm)
 
 int decodeSOSM(int argc, const char *argv[])
 {
+    char psw[55] = {0};
+
     if (argc == 1) {
-        return showHelpDecodingSos(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
+        requestSOSMailPassword(psw);
     }
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
+    int i;
     int errorCode;
-    errorCode = decodeSosMail(argv[1], &sosInfo);
-    if (errorCode) {
-        return errorCode;
-    }
-    printSOSData(&sosInfo); /* Finally, print the sos mail info */
 
+    if (argc > 1) {
+        /* This loop will allow to decode all entered wonder mails one by one. */
+        for (i = 1; i < argc; ++i) {
+            errorCode = decodeSosMail(argv[i], &sosInfo);
+            if (errorCode) {
+                return errorCode;
+            }
+            printSOSData(&sosInfo);   /* Finally, print the wonder mail info */
+        }
+    } else {
+        errorCode = decodeSosMail(psw, &sosInfo);
+        if (errorCode) {
+            return errorCode;
+        }
+        printSOSData(&sosInfo);   /* Finally, print the wonder mail info */
+    }
     fflush(stdout);
+
     return NoError;
 }
 
 
 int encodeSOSM(int argc, const char *argv[])
 {
-    if (argc != 7) {
-        return showHelpEncodingSos(argv[0]);
+    
+    struct SosMail sos;
+
+    if (argc != 7 || argv == NULL) {
+        requestAndParseSosMailData(&sos);
+    } else if (parseSOSData(argv, &sos) != NoError) {
+        fputs("Aborting...\n", stderr);
+        return InputError;
     }
 
-    struct SosMail sos;
     parseSOSData(argv, &sos);
-    char finalPassword[55] = {0}; /* 55 because we need one more char with a NULL value (if not fprintf() will maybe print garbage and cause a segmentation fault) */
+    char finalPassword[55] = {0};
     int errorCode = encodeSosMail(&sos, finalPassword);
     if (errorCode) {
         return errorCode;
     }
 
+    /* Get the full SOS Mail info */
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     setSosInfo(&sos, &sosInfo);
     sprintf(sosInfo.password, "%s\n          %s", strncat(sosInfo.password, finalPassword, 27), finalPassword + 27);
     printSOSData(&sosInfo);
+    if (sos.dungeon == 10 || sos.dungeon == 12 || sos.dungeon == 14 || sos.dungeon == 16 || sos.dungeon == 18 || sos.dungeon == 22 || sos.dungeon == 47 || sos.dungeon == 48 || sos.dungeon == 52) {
+        fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n", stderr);
+    }
     fflush(stdout);
+    fflush(stderr);
 
     return NoError;
 }
 
-void parseSOSData(const char *argv[], struct SosMail *sos)
+int parseSOSData(const char *argv[], struct SosMail *sos)
 {
     sos->pkmnToRescue = (unsigned int)atoi(argv[1]);
     sos->dungeon = (unsigned int)atoi(argv[3]);
@@ -287,6 +313,8 @@ void parseSOSData(const char *argv[], struct SosMail *sos)
     } else {
         sos->pkmnNick[0] = '\0';
     }
+
+    return NoError;
 }
 
 int convertSOS(int argc, const char *argv[])
@@ -299,7 +327,7 @@ int convertSOS(int argc, const char *argv[])
     if (argc < 3) {
         fputs("Reward item not specified. Default to nothing.\n", stderr);
     } else {
-        item = atoi(argv[2]);
+        item = atoi(argv[3]);
     }
 
     char AOKPassword[55];

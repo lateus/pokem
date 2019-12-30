@@ -55,10 +55,13 @@ int autodetect(int argc, const char *argv[])
     }
 
     size_t lenghtArg1 = strlen(argv[1]);
+    size_t lenghtArg2 = argc >= 3 ? strlen(argv[2]) : 0;
     if (argc == 2 && lenghtArg1 >= 20 && lenghtArg1 <= 28) {
         return decodeWM(argc, argv);
-    } else if (argc == 2 && lenghtArg1 >= 48 && lenghtArg1 <= 56) {
-        return -1; /* what do you want? decode or convert? */
+    } else if (argc >= 2 && lenghtArg1 >= 48 && lenghtArg1 <= 56) {
+        return decodeSOSM(argc, argv);
+    } else if (argc >= 3 && (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--convert") == 0) && lenghtArg2 >= 48 && lenghtArg2 <= 56) {
+        return convertSOS(argc, argv);
     } else if (argc == 10) {
         return encodeWM(argc, argv);
     } else if (argc == 7) {

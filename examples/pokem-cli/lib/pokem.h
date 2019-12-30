@@ -130,20 +130,20 @@ extern const char* SOS_Thanks1;
 extern const char* SOS_Thanks2;
 
 /* Pokémon species */
-extern const int pkmnSpeciesCount;
+extern const unsigned int pkmnSpeciesCount;
 extern const char* pkmnSpeciesStr[];
 
 /* Items */
-extern const int itemsCount;
+extern const unsigned int itemsCount;
 extern const char* itemsStr[];
 
 /* Dungeons */
 /* Note: Some of the dungeons bellow are useless because you can't accept a rescue on it, but are still provided as database. There are others unknown dungeons (invalid too) */
-extern const int dungeonsCount;
+extern const unsigned int dungeonsCount;
 extern const char* dungeonsStr[];
 
 /* Friend areas */
-extern const int friendAreasCount;
+extern const unsigned int friendAreasCount;
 extern const char* friendAreasStr[];
 
 /* Helper texts */
@@ -155,6 +155,9 @@ extern const char* nearPlaceText;
 #define DEBUG 1
 
 /* Data definitions */
+
+/* Mail type */
+enum MailType { SosMailType = 1, AOkMailType = 4, ThankYouMailType = 5, WonderMailType = ThankYouMailType };
 
 /* Error codes */
 enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };

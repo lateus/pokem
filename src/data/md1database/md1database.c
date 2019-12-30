@@ -709,7 +709,7 @@ const char* SOS_Thanks1  = "This is a rescue through communication.";
 const char* SOS_Thanks2  = "Send your thanks to your friend!";
 
 /* Pokémon species */
-const int pkmnSpeciesCount = 415; /* The size of the array */
+const unsigned int pkmnSpeciesCount = 415; /* The size of the array */
 const char* pkmnSpeciesStr[] = {
     "??????????", /* Decamark == Nothing */
     "Bulbasaur",
@@ -1130,7 +1130,7 @@ const char* pkmnSpeciesStr[] = {
 
 
 /* Items */
-const int itemsCount = 240; /* The size of the array */
+const unsigned int itemsCount = 240; /* The size of the array */
 const char* itemsStr[] = {
     "Nothing", /* 0 */
     "Stick",
@@ -1376,7 +1376,7 @@ const char* itemsStr[] = {
 
 /* Dungeons */
 /* Note: Some of this dungeons are useless in mails because you can't accept such mail, but are still provided as database, there are others unknown dungeons (also invalid values) */
-const int dungeonsCount = 63; /* The size of the array */
+const unsigned int dungeonsCount = 63; /* The size of the array */
 const char* dungeonsStr[] = {
     "Tiny Woods", /* 0 */
     "Thunderwave Cave",
@@ -1445,7 +1445,7 @@ const char* dungeonsStr[] = {
 
 
 /* Friend areas */
-const int friendAreasCount = 58; /* The size of the array */
+const unsigned int friendAreasCount = 58; /* The size of the array */
 const char* friendAreasStr[] = {
     "[Nothing]", /* 0 */
     "Bountiful Sea",
