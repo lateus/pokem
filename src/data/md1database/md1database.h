@@ -128,16 +128,20 @@ extern const char* SOS_Thanks1;
 extern const char* SOS_Thanks2;
 
 /* Pokémon species */
+extern const int pkmnSpeciesCount;
 extern const char* pkmnSpeciesStr[];
 
 /* Items */
+extern const int itemsCount;
 extern const char* itemsStr[];
 
 /* Dungeons */
 /* Note: Some of the dungeons bellow are useless because you can't accept a rescue on it, but are still provided as database. There are others unknown dungeons (invalid too) */
+extern const int dungeonsCount;
 extern const char* dungeonsStr[];
 
 /* Friend areas */
+extern const int friendAreasCount;
 extern const char* friendAreasStr[];
 
 /* Helper texts */

@@ -1,5 +1,6 @@
 #include "application/application.h"
 #include "view/view.h"
+#include "utils/colors.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,14 +11,10 @@ int autodetect(int argc, const char *argv[]);
 int main(int argc, const char *argv[])
 {
     /* Copyright notice */
-    fputs("PokeM v0.1   Copyright 2018-2019 Carlos Enrique Perez Sanchez.\n"
-          "Based on the tools written by Peter O.\n"
+    fputs(LIGHT "PokeM " RESET DRED "v0.1" DGREEN "   Copyright 2018-2019 Carlos Enrique Perez Sanchez.\n"
+          RESET "Based on the tools written by Peter O.\n"
           ".................................................................\n", stdout);
-
-    if (argc == 1) { /* no input */
-        showGeneralHelp(argv[0]);
-        return 0;
-    }
+    fflush(stdout);
 
     /* A seed to generate random numbers */
     srand((unsigned int)time(NULL));
@@ -26,17 +23,18 @@ int main(int argc, const char *argv[])
     int autodetectResult = autodetect(argc, argv);
     if (autodetectResult == -1) {
         selection = showSelectionScreen();
+        clearStdinBuffer();
         switch (selection) {
         case 1:
-            return decodeWM(argc, argv);
+            return decodeWM(0, NULL);
         case 2:
-            return encodeWM(argc, argv);
+            return encodeWM(0, NULL);
         case 3:
-            return decodeSOSM(argc, argv);
+            return decodeSOSM(0, NULL);
         case 4:
-            return encodeSOSM(argc, argv);
+            return encodeSOSM(0, NULL);
         case 5:
-            return convertSOS(argc, argv);
+            return convertSOS(0, NULL);
         default:
             fputs("Exiting...\n", stdout);
         }
@@ -51,8 +49,8 @@ int main(int argc, const char *argv[])
 
 int autodetect(int argc, const char *argv[])
 {
-    /* this should never happen. Check to avoid segmentation fault while acceding argv */
-    if (argc == 1) {
+    /* no input */
+    if (argc <= 1) {
         return -1;
     }
 

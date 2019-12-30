@@ -1,6 +1,9 @@
 #ifndef MD1GLOBAL_H
 #define MD1GLOBAL_H
 
+/* Enable (1) or disable (0) debug messages */
+#define DEBUG 1
+
 /* Data definitions */
 
 /* Error codes */
@@ -8,6 +11,9 @@ enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeErr
 
 /* The type of a mission */
 enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
+
+/* The type of reward of a mission */
+enum RewardType { Money, MoneyItem, Item, ItemItem, MoneyMoney, MoneyMoneyItem, Item2, ItemItem2, FriendArea };
 
 /* Encapsulates a Wonder Mail */
 struct WonderMail {

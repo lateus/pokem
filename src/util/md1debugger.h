@@ -5,9 +5,6 @@
 #include <string.h>
 #include "../data/md1global/md1global.h"
 
-
-#define DEBUG(X, Y) fputs("["#X"] " Y "\n", stderr);
-
 /* Functions prototypes */
 void printBinary(long long int n, const int bitsToPrint);    /* Print the binary representation using bitsToPrint bits to stderr */
 void printWonderMailBruteData(const struct WonderMail *wm);

@@ -1,23 +1,39 @@
 #include "application.h"
 #include "../view/view.h"
+#include "../utils/utils.h"
+#include "../utils/colors.h"
 
 #include <stdlib.h>
+#include <ctype.h>
 
 int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
-    if (argc == 1) {
-        return showHelpDecodingWonderMail(argv[0]); /* No arguments specified. */
+    char psw[24] = {0};
+
+    if (argc <= 1 || argv == NULL) {
+        requestWonderMailPassword(psw);
     }
 
     struct WonderMailInfo mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
-    /* This loop will allow to decode all entered wonder mails one by one. */
+    int i;
     int errorCode;
-    errorCode = decodeWonderMail(argv[1], &mailInfo);
-    if (errorCode) {
-        return errorCode;
+    
+    if (argc > 1) {
+        /* This loop will allow to decode all entered wonder mails one by one. */
+        for (i = 1; i < argc; ++i) {
+            errorCode = decodeWonderMail(argv[i], &mailInfo);
+            if (errorCode) {
+                return errorCode;
+            }
+            printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
+        }
+    } else {
+        errorCode = decodeWonderMail(psw, &mailInfo);
+        if (errorCode) {
+            return errorCode;
+        }
+        printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
     }
-
-    printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
     fflush(stdout);
 
     return NoError;
@@ -26,15 +42,18 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
 
 int encodeWM(int argc, const char *argv[])
 {
-    if (argc != 10) {
-        return showHelpEncodingWonderMail(argv[0]);
+    struct WonderMail wm;
+
+    if (argc != 10 || argv == NULL) {
+        requestAndParseWonderMailData(&wm);
+    } else if (parseWMData(argv, &wm) != NoError) {
+        fputs("Aborting...\n", stderr);
+        return InputError;
     }
 
-    struct WonderMail wm;
-    parseWMData(argv, &wm);
     char finalPassword[25] = {0};
     int errorCode = encodeWonderMail(&wm, finalPassword, 1); /* "1": Try special missions */
-    if (errorCode) {
+    if (errorCode != NoError) {
         return errorCode;
     }
 
@@ -53,18 +72,164 @@ int encodeWM(int argc, const char *argv[])
 
 
 
-void parseWMData(const char *argv[], struct WonderMail *wm)
+int parseWMData(const char *argv[], struct WonderMail *wm)
 {
+    int i;
+    int mostSimilarIndex = 0;
+
     wm->mailType         = 5; /* Wonder Mail */
     wm->missionType      = (unsigned int)atoi(argv[1]);
-    wm->pkmnClient       = (unsigned int)atoi(argv[2]);
-    wm->pkmnTarget       = (wm->missionType == Find || wm->missionType == Escort) ? (unsigned int)atoi(argv[3]) : wm->pkmnClient;
-    wm->itemDeliverFind  = (wm->missionType == FindItem || wm->missionType == DeliverItem) ? (unsigned int)atoi(argv[4]) : 9;
-    wm->dungeon          = (unsigned int)atoi(argv[5]);
+
+    /* user can input the pkmns, items, dungeons and friend zones by using its name or its index */
+    
+    if (isdigit(argv[2][0])) {
+        wm->pkmnClient   = (unsigned int)atoi(argv[2]);
+    } else {
+        wm->pkmnClient   = pkmnSpeciesCount; /* invalid name, invalid index */
+        for (i = 0; i < pkmnSpeciesCount; ++i) {
+            if (strcmp(pkmnSpeciesStr[i], argv[2]) == 0) {
+                wm->pkmnClient = i;
+                break;
+            }
+        }
+        if (wm->pkmnClient == pkmnSpeciesCount) {
+            fprintf(stderr, "ERROR: Cannot find client pokemon \"%s\" in the database.\n", argv[2]);
+            mostSimilarIndex = findMostSimilarStringInArray(argv[2], pkmnSpeciesStr, pkmnSpeciesCount);
+            if (mostSimilarIndex == -1) {
+                fputs("Re-check your spelling.\n", stderr);
+            } else {
+                fprintf(stderr, "Do you mean \"%s\"?\n", pkmnSpeciesStr[mostSimilarIndex]);
+            }
+            return InputError;
+        }
+    }
+
+    if (wm->missionType == Find || wm->missionType == Escort) {
+        if (isdigit(argv[3][0])) {
+            wm->pkmnTarget   = (unsigned int)atoi(argv[3]);
+        } else {
+            wm->pkmnTarget   = pkmnSpeciesCount; /* invalid name, invalid index */
+            for (i = 0; i < pkmnSpeciesCount; ++i) {
+                if (strcmp(pkmnSpeciesStr[i], argv[3]) == 0) {
+                    wm->pkmnTarget = i;
+                    break;
+                }
+            }
+        }
+        if (wm->pkmnTarget == pkmnSpeciesCount) {
+            fprintf(stderr, "ERROR: Cannot find target pokemon \"%s\" in the database.\n", argv[3]);
+            mostSimilarIndex = findMostSimilarStringInArray(argv[3], pkmnSpeciesStr, pkmnSpeciesCount);
+            if (mostSimilarIndex == -1) {
+                fputs("Re-check your spelling.\n", stderr);
+            } else {
+                fprintf(stderr, "Do you mean \"%s\"?\n", pkmnSpeciesStr[mostSimilarIndex]);
+            }
+            return InputError;
+        }
+    } else {
+        wm->pkmnTarget   = wm->pkmnClient;
+    }
+
+    if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
+        if (isdigit(argv[4][0])) {
+            wm->itemDeliverFind   = (unsigned int)atoi(argv[4]);
+        } else {
+            wm->itemDeliverFind   = itemsCount; /* invalid name, invalid index */
+            for (i = 0; i < itemsCount; ++i) {
+                if (strcmp(itemsStr[i], argv[4]) == 0) {
+                    wm->itemDeliverFind = i;
+                    break;
+                }
+            }
+            if (wm->itemDeliverFind == itemsCount) {
+                fprintf(stderr, "ERROR: Cannot find item to %s \"%s\" in the database.\n", wm->missionType == FindItem ? "find" : "deliver", argv[4]);
+                mostSimilarIndex = findMostSimilarStringInArray(argv[4], itemsStr, itemsCount);
+                if (mostSimilarIndex == -1) {
+                    fputs("Re-check your spelling.\n", stderr);
+                } else {
+                    fprintf(stderr, "Do you mean \"%s\"?\n", itemsStr[mostSimilarIndex]);
+                }
+                return InputError;
+            }
+        }
+    } else {
+        wm->itemDeliverFind = 9;
+    }
+
+    if (isdigit(argv[5][0])) {
+        wm->dungeon   = (unsigned int)atoi(argv[5]);
+    } else {
+        wm->dungeon   = dungeonsCount; /* invalid name, invalid index */
+        for (i = 0; i < dungeonsCount; ++i) {
+            if (strcmp(dungeonsStr[i], argv[5]) == 0) {
+                wm->dungeon = i;
+                break;
+            }
+        }
+        if (wm->dungeon == dungeonsCount) {
+            fprintf(stderr, "ERROR: Cannot find dungeon \"%s\" in the database.\n", argv[5]);
+            mostSimilarIndex = findMostSimilarStringInArray(argv[5], dungeonsStr, dungeonsCount);
+            if (mostSimilarIndex == -1) {
+                fputs("Re-check your spelling.\n", stderr);
+            } else {
+                fprintf(stderr, "Do you mean \"%s\"?\n", dungeonsStr[mostSimilarIndex]);
+            }
+            return InputError;
+        }
+    }
+
     wm->floor            = (unsigned int)atoi(argv[6]);
     wm->rewardType       = (unsigned int)atoi(argv[7]);
-    wm->itemReward       = (unsigned int)atoi(argv[8]);
-    wm->friendAreaReward = (wm->rewardType == 9) ? (unsigned int)atoi(argv[9]) : 0;
+
+    if (isdigit(argv[8][0])) {
+        wm->itemReward   = (unsigned int)atoi(argv[8]);
+    } else {
+        wm->itemReward   = itemsCount; /* invalid name, invalid index */
+        for (i = 0; i < itemsCount; ++i) {
+            if (strcmp(itemsStr[i], argv[8]) == 0) {
+                wm->itemReward = i;
+                break;
+            }
+        }
+        if (wm->itemReward == itemsCount) {
+            fprintf(stderr, "ERROR: Cannot find reward item \"%s\" in the database.\n", argv[8]);
+            mostSimilarIndex = findMostSimilarStringInArray(argv[8], itemsStr, itemsCount);
+            if (mostSimilarIndex == -1) {
+                fputs("Re-check your spelling.\n", stderr);
+            } else {
+                fprintf(stderr, "Do you mean \"%s\"?\n", itemsStr[mostSimilarIndex]);
+            }
+            return InputError;
+        }
+    }
+
+    if (wm->rewardType == 9) {
+        if (isdigit(argv[9][0])) {
+            wm->friendAreaReward   = (unsigned int)atoi(argv[9]);
+        } else {
+            wm->friendAreaReward   = friendAreasCount; /* invalid name, invalid index */
+            for (i = 0; i < friendAreasCount; ++i) {
+                if (strcmp(friendAreasStr[i], argv[9]) == 0) {
+                    wm->friendAreaReward = i;
+                    break;
+                }
+            }
+            if (wm->friendAreaReward == friendAreasCount) {
+                fprintf(stderr, "ERROR: Cannot find friend area \"%s\" in the database.\n", argv[9]);
+                mostSimilarIndex = findMostSimilarStringInArray(argv[9], friendAreasStr, friendAreasCount);
+                if (mostSimilarIndex == -1) {
+                    fputs("Re-check your spelling.\n", stderr);
+                } else {
+                    fprintf(stderr, "Do you mean \"%s\"?\n", friendAreasStr[mostSimilarIndex]);
+                }
+                    return InputError;
+                }
+        }
+    } else {
+        wm->friendAreaReward = 0;
+    }
+
+    return NoError;
 }
 
 

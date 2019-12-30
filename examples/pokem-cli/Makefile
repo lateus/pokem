@@ -17,12 +17,14 @@ BINDIR		:=	bin
 
 SOURCES		:=	src/view/view.c \
 				src/application/application.c \
+				src/utils/utils.c \
 				src/main.c
 
 LIBS		:=	pokem
 
 OBJS		:=	$(BUILDDIR)/view.o \
 				$(BUILDDIR)/application.o \
+				$(BUILDDIR)/utils.o \
 				$(BUILDDIR)/main.o
 
 RC_FILE		:=	res/manifest.rc
@@ -103,3 +105,4 @@ $(BINDIR):
 $(BUILDDIR)/main.o:        		src/main.c
 $(BUILDDIR)/application.o:		src/application/application.c
 $(BUILDDIR)/view.o:				src/view/view.c
+$(BUILDDIR)/utils.o:			src/utils/utils.c
