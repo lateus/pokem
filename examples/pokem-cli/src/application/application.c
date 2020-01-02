@@ -25,14 +25,14 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
             if (errorCode) {
                 return errorCode;
             }
-            printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
+            printWonderMailData(&mailInfo, NULL);   /* Finally, print the wonder mail info */
         }
     } else {
         errorCode = decodeWonderMail(psw, &mailInfo);
         if (errorCode) {
             return errorCode;
         }
-        printWonderMailData(&mailInfo);   /* Finally, print the wonder mail info */
+        printWonderMailData(&mailInfo, NULL);   /* Finally, print the wonder mail info */
     }
     fflush(stdout);
 
@@ -60,10 +60,10 @@ int encodeWM(int argc, const char *argv[])
     /* Get the full Wonder Mail info */
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} };
     setWonderMailInfo(&wm, &wmInfo);
-    sprintf(wmInfo.password, "%s\n          %s", strncat(wmInfo.password, finalPassword, 12), finalPassword + 12);
-    printWonderMailData(&wmInfo);
+    strncpy(wmInfo.password, finalPassword, 24);
+    printWonderMailData(&wmInfo, &wm);
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
-        fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n", stderr);
+        fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n\n", stderr);
     }
     fflush(stdout);
     fflush(stderr);

@@ -166,7 +166,7 @@ enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeErr
 enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
 
 /* The type of reward of a mission */
-enum RewardType { Money, MoneyItem, Item, ItemItem, MoneyMoney, MoneyMoneyItem, Item2, ItemItem2, FriendArea };
+enum RewardType { Money, MoneyItem, Item, ItemItem, UnknownRewardType, MoneyMoney, MoneyMoneyItem, Item2, ItemItem2, FriendArea };
 
 /* Encapsulates a Wonder Mail */
 struct WonderMail {
@@ -216,7 +216,7 @@ struct WonderMailInfo {
     char floor[7];
     char difficulty;
     char reward[35];
-    char password[50];
+    char password[25];
 };
 
 /* Contains the human-readable information of a SOS, A-OK or Thank-You Mail */

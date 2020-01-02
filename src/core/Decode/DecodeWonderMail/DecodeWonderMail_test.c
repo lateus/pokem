@@ -55,17 +55,17 @@ void decodeWonderMail_test(CuTest *tc)
 
     const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError, NoError, NoError };
     const struct WonderMailInfo expected2[ARRAY_SIZE] = {
-        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",        "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                     "1?J9N/X?4P?3\n          4??764?0P??W" },
+        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",        "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                     "1?J9N/X?4P?34??764?0P??W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",           "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]", "4?6F7M+?4JNR\n          J*??K??0+9??" },
+        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",           "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]", "4?6F7M+?4JNRJ*??K??0+9??" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",              "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",   "S60*SW0?4P5H\n          HS?869H0?N?W" },
-        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                     "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                     "???N+CS?466S\n          *+?RX4?5???W" },
+        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",              "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",   "S60*SW0?4P5HHS?869H0?N?W" },
+        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                     "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                     "???N+CS?466S*+?RX4?5???W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!", "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                     "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
+        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!", "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                     "F??CR/0?4/+!*3?7TP?T?7?W" },
         { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",   "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",              "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!", "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",           "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",   "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",              "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!", "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",           "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     int i;
@@ -266,33 +266,33 @@ void setFlavorText_test(CuTest *tc)
         { 5, 4,  6, 192, 192,  89,  3, 134,  0, 169, 215, 255, 42,  7 }
     };
     struct WonderMailInfo input2[ARRAY_SIZE] = {
-        { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { {0}, {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { {0}, {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { {0}, {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { {0}, {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { {0}, {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { {0}, {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { {0}, {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { {0}, {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
-        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",          "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",             "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",                "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                       "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!",   "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { "Please help my brother!", "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { "Escort me to my love!",   "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!",   "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",          "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",             "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",                "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                       "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!",   "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { "Please help my brother!", "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { "Escort me to my love!",   "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!",   "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     int i;
@@ -334,33 +334,33 @@ void setFlavorTextHead_test(CuTest *tc)
     int input4[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1,  0,  5, -1, -1, -1, -1 };
     int input5[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
     struct WonderMailInfo input6[ARRAY_SIZE] = {
-        { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { {0}, {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { {0}, {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { {0}, {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { {0}, {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { {0}, {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { {0}, {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { {0}, {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { {0}, {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
-        { "Take me!",                {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { "Take me!",                {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { "Escort me!",              {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { "Deliver one Moon Stone",  {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { "One Sun Stone wanted!",   {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { "Please help my brother!", {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { "Please save my love!",    {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { "Escort me to my love!",   {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { "Rescue my rival!",        {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { "Please save my friend!",  {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { "Deliver one Fire Stone",  {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { "Deliver one Grass Gummi", {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { "Take me!",                {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { "Take me!",                {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { "Escort me!",              {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { "Deliver one Moon Stone",  {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { "One Sun Stone wanted!",   {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { "Please help my brother!", {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { "Please save my love!",    {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { "Escort me to my love!",   {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { "Rescue my rival!",        {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { "Please save my friend!",  {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { "Deliver one Fire Stone",  {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { "Deliver one Grass Gummi", {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     int i;
@@ -402,33 +402,33 @@ void setFlavorTextBody_test(CuTest *tc)
     int input4[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1,  0,  5, -1, -1, -1, -1 };
     int input5[ARRAY_SIZE] = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
     struct WonderMailInfo input6[ARRAY_SIZE] = {
-        { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { {0}, {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { {0}, {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { {0}, {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { {0}, {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { {0}, {0}, {0}, "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { {0}, {0}, {0}, "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { {0}, {0}, {0}, "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { {0}, {0}, {0}, "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { {0}, {0}, {0}, "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { {0}, {0}, {0}, "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { {0}, {0}, {0}, "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { {0}, {0}, {0}, "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { {0}, {0}, {0}, "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { {0}, {0}, {0}, "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { {0}, {0}, {0}, "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { {0}, {0}, {0}, "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
-        { {0}, "I can't go by myself...",              "Please take me to see Wartortle!",          "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { {0}, "Lapras is waiting for me!",            "Please take me to see Lapras!",             "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { {0}, "I have to go!",                        "Someone, please escort me!",                "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { {0}, "Having one Moon Stone is reassuring.", "Please give me one!",                       "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { {0}, "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!",   "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { {0}, "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { {0}, "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { {0}, "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { {0}, "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { {0}, "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { {0}, "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!",   "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { {0}, "I can't go by myself...",              "Please take me to see Wartortle!",          "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { {0}, "Lapras is waiting for me!",            "Please take me to see Lapras!",             "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { {0}, "I have to go!",                        "Someone, please escort me!",                "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { {0}, "Having one Moon Stone is reassuring.", "Please give me one!",                       "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { {0}, "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!",   "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { {0}, "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { {0}, "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { {0}, "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { {0}, "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { {0}, "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { {0}, "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { {0}, "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!",   "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     int i;
@@ -466,33 +466,33 @@ void setWonderMailInfo_test(CuTest *tc)
         { 5, 4,  6, 192, 192,  89,  3, 134,  0, 169, 215, 255, 42,  7 }
     };
     struct WonderMailInfo input2[ARRAY_SIZE] = {
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "???N+CS?466S\n          *+?RX4?5???W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?J9N/X?4P?34??764?0P??W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?6F7M+?4JNRJ*??K??0+9??" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "S62*S40?4P5H8S?869H0!N?W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "???N+CS?466S*+?RX4?5???W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "F?6K-KY?0R84+7?.67?R.7?W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     const struct WonderMailInfo expected[ARRAY_SIZE] = {
-        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",          "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?3\n          4??764?0P??W" },
-        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",             "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNR\n          J*??K??0+9??" },
-        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",                "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H\n          8S?869H0!N?W" },
-        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                       "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S\n          *+?RX4?5???W" },
-        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!",   "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!\n          *3?7TP?T?7?W" },
-        { "Please help my brother!", "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84\n          +7?.67?R.7?W" },
-        { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!\n          9F?96NNRXN?W" },
-        { "Escort me to my love!",   "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7\n          MT?H6P?0KN?W" },
-        { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?\n          N7?N6J?R*??W" },
-        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8\n          QT??6K?R1??W" },
-        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3\n          .F?0XP?5!2?W" },
-        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!",   "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNY\n          YN?4.J75N+?W" }
+        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",          "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                      "1?J9N/X?4P?34??764?0P??W" },
+        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",             "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]",  "4?6F7M+?4JNRJ*??K??0+9??" },
+        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",                "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",    "S62*S40?4P5H8S?869H0!N?W" },
+        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                       "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                      "???N+CS?466S*+?RX4?5???W" },
+        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!",   "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                      "F??CR/0?4/+!*3?7TP?T?7?W" },
+        { "Please help my brother!", "My little brother Pichu disappeared!", "I'm really worried! Someone, please help!", "Pichu",     "Find Pichu.",          "Meteor Cave",      "B12F", 'A', "500 poke + ??? [Warp Scarf]",   "F?6K-KY?0R84+7?.67?R.7?W" },
+        { "Please save my love!",    "Please! Please rescue NidoranF!",      "We're madly in love!",                      "NidoranM",  "Find NidoranF.",       "Desert Region",    " 18F", 'A', "Stairs Orb",                    "4?MW4*Y?0P0!9F?96NNRXN?W" },
+        { "Escort me to my love!",   "I really want to meet Minum!",         "We're in love! Please, take me there!",     "Plusle",    "Escort to Minum.",     "Wyvern Hill",      " 24F", 'S', "Friend Bow + ???",              "??N9FC+?+8S7MT?H6P?0KN?W" },
+        { "Rescue my rival!",        "Kabuto has been a rival since my",     "ancestors' time. The rivalry can't end!",   "Omanyte",   "Find Kabuto.",         "Oddity Cave",      "B7F",  'B', "800 poke",                      "4?JYRHX?0RN?N7?N6J?R*??W" },
+        { "Please save my friend!",  "Help! Magikarp isn't much now, but",   "my friend is amazing after evolution!",     "Feebas",    "Find Magikarp.",       "Unown Relic",      "B1F",  'B', "800 poke + ??? [Lunar Ribbon]", "1?-9*Q+?0R?8QT??6K?R1??W" },
+        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",     "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",               "1?C.MWY?JPS3.F?0XP?5!2?W" },
+        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!",   "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",            "F?N.?QY?8RNYYN?4.J75N+?W" }
     };
 
     int i;

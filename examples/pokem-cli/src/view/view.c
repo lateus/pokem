@@ -455,14 +455,15 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     /* item to find/deliver */
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
         forever {
-            fprintf(stdout, LIGHT "Enter the name (case sensitive) or room index of the item to %s.\n" RESET, wm->missionType == FindItem ? "find" : "deliver");
+            fprintf(stdout, LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "item to %s" RESET LIGHT " (leave it blank for random).\n" RESET, wm->missionType == FindItem ? "find" : "deliver");
             fputs(LIGHT ">>> " LGREEN, stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
                 stringInput[strlen(stringInput) - 1] = '\0';
             }
             if (strlen(stringInput) == 0) {
-                sprintf(stringInput, "%u", 0x00);
+                sprintf(stringInput, "%u", wm->missionType == FindItem ? (unsigned int)itemsInDungeons[wm->dungeon][1 + rand() % (itemsInDungeons[wm->dungeon][0] - 1)] : 1 + rand() % (itemsCount - 8));
+                selection = (unsigned int)atoi(stringInput);
             } else {
                 for (i = 0; i < strlen(stringInput); ++i) {
                     if (!isdigit(stringInput[i])) {
@@ -493,8 +494,12 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 }
             } /* non-empty input */
 
-            if (checkItemToFindDeliverRangeInWonderMail(selection, 1) == NoError && (wm->missionType == DeliverItem || checkItemToFindDeliverByDungeonInWonderMail(selection, wm->dungeon, 1))) {
-                break; /* input is ok */
+            if (checkItemToFindDeliverRangeInWonderMail(selection, 1) == NoError) {
+                if (wm->missionType == DeliverItem) {
+                    break; /* input is ok */
+                } else if (checkItemToFindDeliverByDungeonInWonderMail(selection, wm->dungeon, 1) == NoError) {
+                    break; /* input is ok */
+                }
             }
         } /* forever */
         wm->itemDeliverFind = selection;
@@ -506,7 +511,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     const enum RewardType rewardTypes[] = { MoneyMoney, Item2, MoneyMoneyItem, ItemItem2, FriendArea };
     const char* rewardTypesStr[] = { "Money", "Item", "Money + (?)", "Item + (?)", "Friend Area" };
     forever {
-        fputs(LIGHT "Select the reward type.\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "reward type" RESET LIGHT ".\n" RESET, stdout);
         for (i = 0; i < 5; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fputs(rewardTypesStr[i], stdout);
@@ -520,20 +525,20 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             break; /* input is ok */
         }
         fprintf(stderr, LRED "INPUT ERROR\n" RESET);
-    }
+    } /* forever */
     wm->rewardType = rewardTypes[selection];
 
     /* reward item */
     if (wm->rewardType == Item || wm->rewardType == ItemItem || wm->rewardType == Item2 || wm->rewardType == ItemItem2 || wm->rewardType == MoneyItem || wm->rewardType == MoneyMoneyItem) {
         forever {
-            fputs(LIGHT "Enter the name (case sensitive) or room index of the reward item (leave it blank for no reward item).\n" RESET, stdout);
+            fputs(LIGHT "Enter the name (case sensitive) or room index of the reward item (leave it blank for random).\n" RESET, stdout);
             fputs(LIGHT ">>> " LGREEN, stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
                 stringInput[strlen(stringInput) - 1] = '\0';
             }
             if (strlen(stringInput) == 0) {
-                sprintf(stringInput, "%u", 0x00);
+                sprintf(stringInput, "%u", 1 + rand() % (itemsCount - 1));
                 selection = (unsigned int)atoi(stringInput);
             } else {
                 for (i = 0; i < strlen(stringInput); ++i) {
@@ -889,17 +894,176 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
 
 
-void printWonderMailData(const struct WonderMailInfo *mailInfo)
+void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct WonderMail *mail)
 {
-    fprintf(stdout, "\n%s\n\n%s\n%s\n\n"
-                    "Client: %s\n"
-                    "Objective: %s\n"
-                    "Place: %s  %s\n"
-                    "Difficulty: %c\n"
-                    "Reward: %s\n"
-                    "Password: %s\n"
-                    ". . . . . . . . . . . . . . . . . . . . . . .\n\n",
-            mailInfo->head, mailInfo->body1, mailInfo->body2, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->password);
+    char newHead[76] = {0};
+    char newBody1[150] = {0};
+    char newBody2[150] = {0};
+    char newObjective[72] = {0};
+    char newPlace[76] = {0};
+    char newFloor[57] = {0};
+    char newReward[85] = {0};
+    strcpy(newHead, mailInfo->head);
+    strcpy(newBody1, mailInfo->body1);
+    strcpy(newBody2, mailInfo->body2);
+    strcpy(newObjective, mailInfo->objective);
+    strcpy(newPlace, mailInfo->place);
+    strcpy(newFloor, mailInfo->floor);
+    strcpy(newReward, mailInfo->reward);
+    char* pkmnHead = strstr(newHead, pkmnSpeciesStr[mail->pkmnTarget]);
+    char* pkmnBody1 = strstr(newBody1, pkmnSpeciesStr[mail->pkmnTarget]);
+    char* pkmnBody2 = strstr(newBody2, pkmnSpeciesStr[mail->pkmnTarget]);
+    char* pkmnObjective = strstr(newObjective, pkmnSpeciesStr[mail->pkmnTarget]);
+    char* dungeonPlace = strstr(newPlace, dungeonsStr[mail->dungeon]);
+    char floorStr[3];
+    sprintf(floorStr, "%d", mail->floor % 100);
+    char* dungeonFloor = strstr(newFloor, floorStr);
+    char* itemHead = strstr(newHead, itemsStr[mail->itemDeliverFind]);
+    char* itemBody1 = strstr(newBody1, itemsStr[mail->itemDeliverFind]);
+    char* itemBody2 = strstr(newBody2, itemsStr[mail->itemDeliverFind]);
+    char* itemObjective = strstr(newObjective, itemsStr[mail->itemDeliverFind]);
+    char* itemReward = strstr(newReward, itemsStr[mail->itemReward]);
+
+    char hold[200] = {0};
+
+    if (pkmnHead) {
+        strcpy(hold, pkmnHead);
+        strcpy(pkmnHead, LYELLOW);
+        strncat(newHead, hold, strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+        strcat(newHead, WHITE);
+        strcat(newHead, hold + strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+    }
+
+    if (pkmnBody1) {
+        strcpy(hold, pkmnBody1);
+        strcpy(pkmnBody1, COLOR_YELLOW);
+        strncat(newBody1, hold, strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+        strcat(newBody1, RESET COLOR_BACKGROUND);
+        strcat(newBody1, hold + strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+    }
+
+    if (pkmnBody2) {
+        strcpy(hold, pkmnBody2);
+        strcpy(pkmnBody2, COLOR_YELLOW);
+        strncat(newBody2, hold, strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+        strcat(newBody2, RESET COLOR_BACKGROUND);
+        strcat(newBody2, hold + strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+    }
+
+    if (pkmnObjective) {
+        strcpy(hold, pkmnObjective);
+        strcpy(pkmnObjective, COLOR_YELLOW);
+        strncat(newObjective, hold, strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+        strcat(newObjective, WHITE);
+        strcat(newObjective, hold + strlen(pkmnSpeciesStr[mail->pkmnTarget]));
+    }
+
+    if (dungeonPlace) {
+        strcpy(hold, dungeonPlace);
+        strcpy(dungeonPlace, COLOR_YELLOW);
+        strncat(newPlace, hold, strlen(dungeonsStr[mail->dungeon]));
+        strcat(newPlace, RESET COLOR_BACKGROUND);
+        strcat(newPlace, hold + strlen(dungeonsStr[mail->dungeon]));
+    } else {
+        strcat(newPlace, COLOR_YELLOW RESET COLOR_BACKGROUND);
+    }
+
+    if (dungeonFloor) {
+        --dungeonFloor;
+        strcpy(hold, dungeonFloor);
+        strcpy(dungeonFloor, COLOR_CYAN);
+        strncat(newFloor, hold, strlen(floorStr) + 1);
+        strcat(newFloor, RESET COLOR_BACKGROUND);
+        strcat(newFloor, hold + strlen(floorStr) + 1);
+    } else {
+        strcat(newFloor, COLOR_CYAN RESET COLOR_BACKGROUND);
+    }
+
+    if (itemHead) {
+        strcpy(hold, itemHead);
+        strcpy(itemHead, LGREEN);
+        strncat(newHead, hold, strlen(itemsStr[mail->itemDeliverFind]));
+        strcat(newHead, WHITE);
+        strcat(newHead, hold + strlen(itemsStr[mail->itemDeliverFind]));
+    }
+
+    if (itemBody1) {
+        strcpy(hold, itemBody1);
+        strcpy(itemBody1, COLOR_GREEN);
+        strncat(newBody1, hold, strlen(itemsStr[mail->itemDeliverFind]));
+        strcat(newBody1, RESET COLOR_BACKGROUND);
+        strcat(newBody1, hold + strlen(itemsStr[mail->itemDeliverFind]));
+    }
+
+    if (itemBody2) {
+        strcpy(hold, itemBody2);
+        strcpy(itemBody2, COLOR_GREEN);
+        strncat(newBody2, hold, strlen(itemsStr[mail->itemDeliverFind]));
+        strcat(newBody2, RESET COLOR_BACKGROUND);
+        strcat(newBody2, hold + strlen(itemsStr[mail->itemDeliverFind]));
+    }
+
+    if (itemObjective) {
+        strcpy(hold, itemObjective);
+        strcpy(itemObjective, COLOR_GREEN);
+        strncat(newObjective, hold, strlen(itemsStr[mail->itemDeliverFind]));
+        strcat(newObjective, RESET COLOR_BACKGROUND);
+        strcat(newObjective, hold + strlen(itemsStr[mail->itemDeliverFind]));
+    }
+    
+    if (itemReward) {
+        strcpy(hold, itemReward);
+        strcpy(itemReward, COLOR_GREEN);
+        strncat(newReward, hold, strlen(itemsStr[mail->itemReward]));
+        strcat(newReward, RESET COLOR_BACKGROUND);
+        strcat(newReward, hold + strlen(itemsStr[mail->itemReward]));
+    } else {
+        strcat(newReward, RESET COLOR_BACKGROUND);
+    }
+
+    if (!pkmnHead && ! itemHead) {
+        strcat(newHead, LYELLOW WHITE);
+    }
+    if (!pkmnBody1 && ! itemBody1) {
+        strcat(newBody1, COLOR_YELLOW RESET COLOR_BACKGROUND);
+    }
+    if (!pkmnBody2 && !itemBody2) {
+        strcat(newBody2, COLOR_YELLOW RESET COLOR_BACKGROUND);
+    }
+    if (!pkmnObjective && ! itemObjective) {
+        strcat(newObjective, COLOR_YELLOW WHITE);        
+    }
+
+    char placeAndFloor[120] = {0};
+    sprintf(placeAndFloor, "%s  %s", newPlace, newFloor);
+    
+    char diffColor[50] = {0};
+    strcpy(diffColor, mailInfo->difficulty == 'E' ? RESET COLOR_BACKGROUND : mailInfo->difficulty == 'D' || mailInfo->difficulty == 'C' ? COLOR_GREEN : mailInfo->difficulty == 'B' || mailInfo->difficulty == 'A' ? COLOR_CYAN : mailInfo->difficulty == 'S' ? COLOR_RED : LYELLOW);
+    
+    int i, j;
+    char temp[30] = {0};
+    for (i = j = 0; i < 24; ++i) {
+        if (i && i % 4 == 0) {
+            temp[i + j++] = '\0';
+        }
+        temp[i + j] = mailInfo->password[i];
+    }
+
+    fprintf(stdout, "\n" COLOR_BORDER COLOR_BACKGROUND "**********************************************" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-56s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-43s*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-81s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-81s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-43s*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:     " RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:  " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:      " RESET COLOR_BACKGROUND "%-107s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty: " RESET COLOR_BACKGROUND "%s%c%-30s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:   " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-23s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-23s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "**********************************************" RESET "\n",
+            newHead, "", newBody1, newBody2, "", mailInfo->client, newObjective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, temp, temp + 5, temp + 10, temp + 15, temp + 20, temp + 25);
 }
 
 
@@ -914,7 +1078,7 @@ void printSOSData(const struct SosMailInfo *mailInfo)
                     "ID: %s\n"
                     "Chances left: %s\n"
                     "Password: %s\n"
-                    ". . . . . . . . . . . . . . . . . . . . . . .\n\n",
+                    "_____________________________________________\n\n",
             mailInfo->head, mailInfo->body, mailInfo->nickname, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->id, mailInfo->chancesLeft, mailInfo->password);
 }
 

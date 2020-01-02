@@ -241,12 +241,12 @@ int computeMoneyReward(int difficulty, int rewardType)
 {
     int money = (difficulty + 1) * 100;
 
-    if (rewardType < 2) {
+    if (rewardType == Money || rewardType == MoneyItem) {
         return money;
-    } else if (rewardType == 5 || rewardType == 6) {
+    } else if (rewardType == MoneyMoney || rewardType == MoneyMoneyItem) {
         return money << 1;  /* same as money*2 */
     } else {
-        return NoError;
+        return 0;
     }
 }
 
