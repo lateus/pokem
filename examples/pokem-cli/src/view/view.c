@@ -22,7 +22,7 @@ int showSelectionScreen()
           LGREEN  "4." RESET " Encode a SOS Mail\n"
           LGREEN  "5." RESET " Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n"
           LGREEN  "[Other]:" LRED " Exit\n"
-          LIGHT ">>> " LGREEN, stdout);
+          RESET ">>> " LGREEN, stdout);
     return getchar() - '0';
 }
 
@@ -227,7 +227,7 @@ void showDatabase()
 int requestWonderMailPassword(char *password)
 {
     fputs(LIGHT "Enter the Wonder Mail's password\n" RESET, stdout);
-    fputs(LIGHT ">>> " LGREEN, stdout);
+    fputs(RESET ">>> " LGREEN, stdout);
     fflush(stdout);
     (void)!fgets(password, 24, stdin);
     fputs(RESET, stdout);
@@ -256,7 +256,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             fprintf(stdout, missionTypeObjectiveStr[i], i == FindItem || i == DeliverItem ? "item" : "pokemon");
             fputc('\n', stdout);
         }
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         selection = getchar() - '0' - 1;
         clearStdinBuffer();
@@ -270,7 +270,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     /* pokemon client */
     forever {
         fputs(LIGHT "Enter the name (case sensitive) or room index of the client pokemon (leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -321,7 +321,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     if (wm->missionType == Find || wm->missionType == Escort) {
         forever {
             fputs(LIGHT "Enter the name (case sensitive) or room index of the target pokemon (leave it blank for random).\n" RESET, stdout);
-            fputs(LIGHT ">>> " LGREEN, stdout);
+            fputs(RESET ">>> " LGREEN, stdout);
             fflush(stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -374,7 +374,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     /* dungeon */
     forever {
         fputs(LIGHT "Enter the name (case sensitive) or room index of the dungeon (leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -424,7 +424,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     /* floor */
     forever {
         fputs(LIGHT "Enter the floor (leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -456,7 +456,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
         forever {
             fprintf(stdout, LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "item to %s" RESET LIGHT " (leave it blank for random).\n" RESET, wm->missionType == FindItem ? "find" : "deliver");
-            fputs(LIGHT ">>> " LGREEN, stdout);
+            fputs(RESET ">>> " LGREEN, stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
                 stringInput[strlen(stringInput) - 1] = '\0';
@@ -517,7 +517,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             fputs(rewardTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         selection = getchar() - '0' - 1;
         clearStdinBuffer();
@@ -532,7 +532,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     if (wm->rewardType == Item || wm->rewardType == ItemItem || wm->rewardType == Item2 || wm->rewardType == ItemItem2 || wm->rewardType == MoneyItem || wm->rewardType == MoneyMoneyItem) {
         forever {
             fputs(LIGHT "Enter the name (case sensitive) or room index of the reward item (leave it blank for random).\n" RESET, stdout);
-            fputs(LIGHT ">>> " LGREEN, stdout);
+            fputs(RESET ">>> " LGREEN, stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
                 stringInput[strlen(stringInput) - 1] = '\0';
@@ -589,7 +589,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 fputs(friendAreasStr[availableFriendAreasIndexes[i]], stdout);
                 fputc('\n', stdout);
             }
-            fputs(LIGHT ">>> " LGREEN, stdout);
+            fputs(RESET ">>> " LGREEN, stdout);
             fflush(stdout);
             selection = getchar() - '0' - 1;
             clearStdinBuffer();
@@ -611,7 +611,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 int requestSOSMailPassword(char *password)
 {
     fputs(LIGHT "Enter the SOS Mail's password\n" RESET, stdout);
-    fputs(LIGHT ">>> " LGREEN, stdout);
+    fputs(RESET ">>> " LGREEN, stdout);
     fflush(stdout);
     (void)!fgets(password, 54, stdin);
     fputs(RESET, stdout);
@@ -642,7 +642,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
             fputs(mailTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         selection = getchar() - '0' - 1;
         clearStdinBuffer();
@@ -656,7 +656,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     /* dungeon */
     forever {
         fputs(LIGHT "Enter the name (case sensitive) or room index of the dungeon (leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -708,7 +708,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     /* floor */
     forever {
         fputs(LIGHT "Enter the floor (leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -742,7 +742,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     /* pokemon to rescue */
     forever {
         fputs(LIGHT "Enter the name (case sensitive) or room index of the pokemon to rescue (leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -794,7 +794,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     /* reward item */
     forever {
         fputs(LIGHT "Enter the name (case sensitive) or room index of the reward item (type \"0\" or \"Nothing\" for no reward, or leave it blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
             stringInput[strlen(stringInput) - 1] = '\0';
@@ -840,7 +840,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     /* nickname */
     forever {
         fputs(LIGHT "Enter the nickname of the pokemon to the rescue.\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -861,7 +861,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     /* mail ID */
     forever {
         fputs(LIGHT "Enter the Mail ID (leave blank for random).\n" RESET, stdout);
-        fputs(LIGHT ">>> " LGREEN, stdout);
+        fputs(RESET ">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
