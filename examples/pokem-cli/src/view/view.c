@@ -736,14 +736,13 @@ int requestAndParseSosMailData(struct SosMail *sos)
                 fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
                 continue;
             }
-
-            if (checkFloorForDungeon(selection, sos->dungeon, 1) == NoError) {
-                break; /* input is ok */
-            }
         } /* non-empty input */
 
         /* input is ok (only digits) */
         selection = (unsigned int)atoi(stringInput);
+        if (checkFloorForDungeon(selection, sos->dungeon, 1) == NoError) {
+            break; /* input is ok */
+        }
     } /* forever */
     sos->floor = selection;
 
