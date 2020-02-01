@@ -954,7 +954,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
         strcpy(hold, pkmnObjective);
         strcpy(pkmnObjective, COLOR_YELLOW);
         strncat(newObjective, hold, strlen(pkmnSpeciesStr[mail->pkmnTarget]));
-        strcat(newObjective, WHITE);
+        strcat(newObjective, RESET COLOR_BACKGROUND);
         strcat(newObjective, hold + strlen(pkmnSpeciesStr[mail->pkmnTarget]));
     }
 
@@ -1018,20 +1018,20 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
         strcat(newReward, RESET COLOR_BACKGROUND);
         strcat(newReward, hold + strlen(itemsStr[mail->itemReward]));
     } else {
-        strcat(newReward, RESET COLOR_BACKGROUND);
+        strcat(newReward, COLOR_GREEN RESET COLOR_BACKGROUND);
     }
 
-    if (!pkmnHead && ! itemHead) {
+    if (!pkmnHead && !itemHead) {
         strcat(newHead, LYELLOW WHITE);
     }
-    if (!pkmnBody1 && ! itemBody1) {
+    if (!pkmnBody1 && !itemBody1) {
         strcat(newBody1, COLOR_YELLOW RESET COLOR_BACKGROUND);
     }
     if (!pkmnBody2 && !itemBody2) {
         strcat(newBody2, COLOR_YELLOW RESET COLOR_BACKGROUND);
     }
-    if (!pkmnObjective && ! itemObjective) {
-        strcat(newObjective, COLOR_YELLOW WHITE);        
+    if (!pkmnObjective && !itemObjective) {
+        strcat(newObjective, COLOR_YELLOW RESET COLOR_BACKGROUND);        
     }
 
     char placeAndFloor[120] = {0};
