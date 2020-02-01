@@ -22,7 +22,7 @@ int showSelectionScreen()
           LGREEN  "4." RESET " Encode a SOS Mail\n"
           LGREEN  "5." RESET " Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n"
           LGREEN  "[Other]:" LRED " Exit\n"
-          RESET ">>> " LGREEN, stdout);
+          ">>> " LGREEN, stdout);
     return getchar() - '0';
 }
 
@@ -227,7 +227,7 @@ void showDatabase()
 int requestWonderMailPassword(char *password)
 {
     fputs(LIGHT "Enter the Wonder Mail's password\n" RESET, stdout);
-    fputs(RESET ">>> " LGREEN, stdout);
+    fputs(">>> " LGREEN, stdout);
     fflush(stdout);
     (void)!fgets(password, 24, stdin);
     fputs(RESET, stdout);
@@ -250,17 +250,17 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* mission type */
     forever {
-        fputs(LIGHT "Select the mission type.\n" RESET, stdout);
-        for (i = 0; i < 6; ++i) {
+        fputs(LIGHT "Select the " LGREEN "type of mission" RESET LIGHT ".\n" RESET, stdout);
+        for (i = 0; i < 5; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fprintf(stdout, missionTypeObjectiveStr[i], i == FindItem || i == DeliverItem ? "item" : "pokemon");
             fputc('\n', stdout);
         }
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         selection = getchar() - '0' - 1;
         clearStdinBuffer();
-        if (selection < 6) { /* `selection` is unsigned so it's always >= 0 */
+        if (selection < 5) { /* `selection` is unsigned so it's always >= 0 */
             break; /* input is ok */
         }
         fprintf(stderr, LRED "INPUT ERROR\n" RESET);
@@ -269,8 +269,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* pokemon client */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the client pokemon (leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "client pokemon" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -281,6 +281,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 sprintf(stringInput, "%u", rand() % pkmnSpeciesCount);
             } while (checkPkmnInWonderMail(atoi(stringInput), 0) != NoError);
             selection = (unsigned int)atoi(stringInput);
+            fprintf(stdout, "%s\n" RESET, pkmnSpeciesStr[selection]);
         } else {
             for (i = 0; i < strlen(stringInput); ++i) {
                 if (!isdigit(stringInput[i])) {
@@ -320,8 +321,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     /* pokemon target */
     if (wm->missionType == Find || wm->missionType == Escort) {
         forever {
-            fputs(LIGHT "Enter the name (case sensitive) or room index of the target pokemon (leave it blank for random).\n" RESET, stdout);
-            fputs(RESET ">>> " LGREEN, stdout);
+            fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "target pokemon" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+            fputs(">>> " LGREEN, stdout);
             fflush(stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -332,6 +333,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                     sprintf(stringInput, "%u", rand() % pkmnSpeciesCount);
                 } while (checkPkmnInWonderMail(atoi(stringInput), 0) != NoError);
                 selection = (unsigned int)atoi(stringInput);
+                fprintf(stdout, "%s\n" RESET, pkmnSpeciesStr[selection]);
             } else {
                 for (i = 0; i < strlen(stringInput); ++i) {
                     if (!isdigit(stringInput[i])) {
@@ -373,8 +375,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* dungeon */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the dungeon (leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -385,6 +387,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 sprintf(stringInput, "%u", rand() % dungeonsCount);
             } while (checkDungeonInWonderMail(atoi(stringInput), 0) != NoError);
             selection = (unsigned int)atoi(stringInput);
+            fprintf(stdout, "%s\n" RESET, dungeonsStr[selection]);
         } else {
             for (i = 0; i < strlen(stringInput); ++i) {
                 if (!isdigit(stringInput[i])) {
@@ -423,8 +426,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* floor */
     forever {
-        fputs(LIGHT "Enter the floor (leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -432,6 +435,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
         }
         if (strlen(stringInput) == 0) {
             sprintf(stringInput, "%u", 1 + rand() % difficulties[wm->dungeon][0]);
+            fprintf(stdout, "%s\n" RESET, stringInput);
         } else {
             for (i = 0; i < strlen(stringInput); ++i) {
                 if (!isdigit(stringInput[i])) {
@@ -439,7 +443,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 }
             }
             if (i != strlen(stringInput)) { /* non-digit found */
-                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n", stderr);
+                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
                 continue;
             }
         } /* non-empty input */
@@ -456,7 +460,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
         forever {
             fprintf(stdout, LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "item to %s" RESET LIGHT " (leave it blank for random).\n" RESET, wm->missionType == FindItem ? "find" : "deliver");
-            fputs(RESET ">>> " LGREEN, stdout);
+            fputs(">>> " LGREEN, stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
                 stringInput[strlen(stringInput) - 1] = '\0';
@@ -464,6 +468,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             if (strlen(stringInput) == 0) {
                 sprintf(stringInput, "%u", wm->missionType == FindItem ? (unsigned int)itemsInDungeons[wm->dungeon][1 + rand() % (itemsInDungeons[wm->dungeon][0] - 1)] : 1 + rand() % (itemsCount - 8));
                 selection = (unsigned int)atoi(stringInput);
+                fprintf(stdout, "%s\n" RESET, itemsStr[selection]);
             } else {
                 for (i = 0; i < strlen(stringInput); ++i) {
                     if (!isdigit(stringInput[i])) {
@@ -517,7 +522,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             fputs(rewardTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         selection = getchar() - '0' - 1;
         clearStdinBuffer();
@@ -531,8 +536,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     /* reward item */
     if (wm->rewardType == Item || wm->rewardType == ItemItem || wm->rewardType == Item2 || wm->rewardType == ItemItem2 || wm->rewardType == MoneyItem || wm->rewardType == MoneyMoneyItem) {
         forever {
-            fputs(LIGHT "Enter the name (case sensitive) or room index of the reward item (leave it blank for random).\n" RESET, stdout);
-            fputs(RESET ">>> " LGREEN, stdout);
+            fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+            fputs(">>> " LGREEN, stdout);
             (void)!fgets(stringInput, 100, stdin);
             if (stringInput[strlen(stringInput) - 1] == '\n') {
                 stringInput[strlen(stringInput) - 1] = '\0';
@@ -540,6 +545,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             if (strlen(stringInput) == 0) {
                 sprintf(stringInput, "%u", 1 + rand() % (itemsCount - 1));
                 selection = (unsigned int)atoi(stringInput);
+                fprintf(stdout, "%s\n" RESET, itemsStr[selection]);
             } else {
                 for (i = 0; i < strlen(stringInput); ++i) {
                     if (!isdigit(stringInput[i])) {
@@ -583,13 +589,13 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     const int availableFriendAreasIndexes[] = { 9, 10, 15, 37 };
     if (wm->rewardType == FriendArea) {
         forever {
-            fputs(LIGHT "Select the friend area that you want as reward.\n" RESET, stdout);
+            fputs(LIGHT "Select the " LGREEN "friend area" RESET LIGHT " that you want as reward.\n" RESET, stdout);
             for (i = 0; i < 4; ++i) {
                 fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
                 fputs(friendAreasStr[availableFriendAreasIndexes[i]], stdout);
                 fputc('\n', stdout);
             }
-            fputs(RESET ">>> " LGREEN, stdout);
+            fputs(">>> " LGREEN, stdout);
             fflush(stdout);
             selection = getchar() - '0' - 1;
             clearStdinBuffer();
@@ -611,7 +617,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 int requestSOSMailPassword(char *password)
 {
     fputs(LIGHT "Enter the SOS Mail's password\n" RESET, stdout);
-    fputs(RESET ">>> " LGREEN, stdout);
+    fputs(">>> " LGREEN, stdout);
     fflush(stdout);
     (void)!fgets(password, 54, stdin);
     fputs(RESET, stdout);
@@ -636,13 +642,13 @@ int requestAndParseSosMailData(struct SosMail *sos)
     const enum MailType mailTypes[] = { SosMailType, AOkMailType, ThankYouMailType };
     const char* mailTypesStr[] = { "SOS Mail", "A-Ok Mail", "Thank-You Mail" };
     forever {
-        fputs(LIGHT "Select the mail type.\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "type of mail" RESET LIGHT ".\n" RESET, stdout);
         for (i = 0; i < 3; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fputs(mailTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         selection = getchar() - '0' - 1;
         clearStdinBuffer();
@@ -655,8 +661,8 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* dungeon */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the dungeon (leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -667,6 +673,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
                 sprintf(stringInput, "%u", rand() % dungeonsCount);
             } while (checkDungeonInWonderMail(atoi(stringInput), 0) != NoError);
             selection = (unsigned int)atoi(stringInput);
+            fprintf(stdout, "%s\n" RESET, dungeonsStr[selection]);
             fputs(LYELLOW "WARNING:" RESET " You selected a random dungeon. This can be unacceptable for you friend.\n", stdout);
             fflush(stdout);
         } else {
@@ -707,8 +714,8 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* floor */
     forever {
-        fputs(LIGHT "Enter the floor (leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -716,6 +723,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
         }
         if (strlen(stringInput) == 0) {
             sprintf(stringInput, "%u", 1 + rand() % (difficulties[sos->dungeon][0] + 1));
+            fprintf(stdout, "%s\n" RESET, stringInput);
             fputs(LYELLOW "WARNING:" RESET " You selected a random floor. This can be unacceptable for you friend.\n", stdout);
             fflush(stdout);
         } else {
@@ -725,7 +733,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
                 }
             }
             if (i != strlen(stringInput)) { /* non-digit found */
-                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n", stderr);
+                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
                 continue;
             }
 
@@ -741,8 +749,8 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* pokemon to rescue */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the pokemon to rescue (leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "pokemon to rescue" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -753,6 +761,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
                 sprintf(stringInput, "%u", rand() % pkmnSpeciesCount);
             } while (checkPkmnInWonderMail(atoi(stringInput), 0) != NoError);
             selection = (unsigned int)atoi(stringInput);
+            fprintf(stdout, "%s\n" RESET, pkmnSpeciesStr[selection]);
             fputs(LYELLOW "WARNING:" RESET " You selected a random pokemon. This can be unacceptable for you friend.\n", stdout);
             fflush(stdout);
         } else {
@@ -793,14 +802,15 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* reward item */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the reward item (type \"0\" or \"Nothing\" for no reward, or leave it blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"0\" or \"Nothing\" for no reward, or leave it blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
             stringInput[strlen(stringInput) - 1] = '\0';
         }
         if (strlen(stringInput) == 0) {
             sprintf(stringInput, "%u", 1 + rand() % (itemsCount - 1));
+            fprintf(stdout, "%s\n" RESET, stringInput);
         } else {
             for (i = 0; i < strlen(stringInput); ++i) {
                 if (!isdigit(stringInput[i])) {
@@ -839,15 +849,15 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* nickname */
     forever {
-        fputs(LIGHT "Enter the nickname of the pokemon to the rescue.\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the " LGREEN "nickname" RESET LIGHT " of the " LGREEN "pokemon to the rescue" RESET LIGHT ".\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
             stringInput[strlen(stringInput) - 1] = '\0';
         }
         if (strlen(stringInput) == 0) {
-            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Please enter a name with no more than 10 characters.\n\n", stderr);
+            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Please enter a name with no more than 10 characters.\n\n" RESET, stderr);
             fflush(stderr);
             continue;
         } else if (strlen(stringInput) > 10) {
@@ -860,8 +870,8 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* mail ID */
     forever {
-        fputs(LIGHT "Enter the Mail ID (leave blank for random).\n" RESET, stdout);
-        fputs(RESET ">>> " LGREEN, stdout);
+        fputs(LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (leave blank for random).\n" RESET, stdout);
+        fputs(">>> " LGREEN, stdout);
         fflush(stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -869,6 +879,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
         }
         if (strlen(stringInput) == 0) {
             sprintf(stringInput, "%u", rand() & 0xFFFF);
+            fprintf(stdout, "%s\n" RESET, stringInput);
             fputs(LYELLOW "WARNING:" RESET " You selected a random Mail ID. You may be unable to receive an A-Ok/Thank-You Mail.\n", stdout);
             fflush(stdout);
         } else {
@@ -879,7 +890,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
             }
         }
         if (i != strlen(stringInput)) { /* non-digit found */
-            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n", stderr);
+            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
             fflush(stderr);
             continue;
         }
@@ -902,7 +913,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
     char newObjective[72] = {0};
     char newPlace[76] = {0};
     char newFloor[57] = {0};
-    char newReward[85] = {0};
+    char newReward[106] = {0};
     strcpy(newHead, mailInfo->head);
     strcpy(newBody1, mailInfo->body1);
     strcpy(newBody2, mailInfo->body2);
@@ -923,6 +934,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
     char* itemBody2 = strstr(newBody2, itemsStr[mail->itemDeliverFind]);
     char* itemObjective = strstr(newObjective, itemsStr[mail->itemDeliverFind]);
     char* itemReward = strstr(newReward, itemsStr[mail->itemReward]);
+    char* friendAreaReward = strstr(newReward, friendAreasStr[mail->friendAreaReward]);
 
     char hold[200] = {0};
 
@@ -1020,6 +1032,16 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
     } else {
         strcat(newReward, COLOR_GREEN RESET COLOR_BACKGROUND);
     }
+    
+    if (friendAreaReward) {
+        strcpy(hold, friendAreaReward);
+        strcpy(friendAreaReward, COLOR_GREEN);
+        strncat(newReward, hold, strlen(friendAreasStr[mail->friendAreaReward]));
+        strcat(newReward, RESET COLOR_BACKGROUND);
+        strcat(newReward, hold + strlen(friendAreasStr[mail->friendAreaReward]));
+    } else {
+        strcat(newReward, COLOR_GREEN RESET COLOR_BACKGROUND);
+    }
 
     if (!pkmnHead && !itemHead) {
         strcat(newHead, LYELLOW WHITE);
@@ -1059,7 +1081,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:  " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:      " RESET COLOR_BACKGROUND "%-107s" COLOR_BORDER "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty: " RESET COLOR_BACKGROUND "%s%c%-30s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-107s" COLOR_BORDER "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:   " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-23s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-23s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "**********************************************" RESET "\n",
