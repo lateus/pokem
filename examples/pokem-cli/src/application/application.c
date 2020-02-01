@@ -270,7 +270,6 @@ int decodeSOSM(int argc, const char *argv[])
 
 int encodeSOSM(int argc, const char *argv[])
 {
-    
     struct SosMail sos;
 
     if (argc != 7 || argv == NULL) {
@@ -280,7 +279,6 @@ int encodeSOSM(int argc, const char *argv[])
         return InputError;
     }
 
-    parseSOSData(argv, &sos);
     char finalPassword[55] = {0};
     int errorCode = encodeSosMail(&sos, finalPassword);
     if (errorCode) {
@@ -290,7 +288,7 @@ int encodeSOSM(int argc, const char *argv[])
     /* Get the full SOS Mail info */
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     setSosInfo(&sos, &sosInfo);
-    sprintf(sosInfo.password, "%s\n          %s", strncat(sosInfo.password, finalPassword, 27), finalPassword + 27);
+    strncpy(sosInfo.password, finalPassword, 54);
     printSOSData(&sosInfo);
     if (sos.dungeon == 10 || sos.dungeon == 12 || sos.dungeon == 14 || sos.dungeon == 16 || sos.dungeon == 18 || sos.dungeon == 22 || sos.dungeon == 47 || sos.dungeon == 48 || sos.dungeon == 52) {
         fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n", stderr);
