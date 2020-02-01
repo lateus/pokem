@@ -801,7 +801,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* reward item */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"0\" or \"Nothing\" for no reward, or leave it blank for random).\n" RESET, stdout);
+        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET, stdout);
         fputs(">>> " LGREEN, stdout);
         (void)!fgets(stringInput, 100, stdin);
         if (stringInput[strlen(stringInput) - 1] == '\n') {
@@ -809,7 +809,8 @@ int requestAndParseSosMailData(struct SosMail *sos)
         }
         if (strlen(stringInput) == 0) {
             sprintf(stringInput, "%u", 1 + rand() % (itemsCount - 1));
-            fprintf(stdout, "%s\n" RESET, stringInput);
+            selection = (unsigned int)atoi(stringInput);
+            fprintf(stdout, "%s\n" RESET, itemsStr[selection]);
         } else {
             for (i = 0; i < strlen(stringInput); ++i) {
                 if (!isdigit(stringInput[i])) {
@@ -887,15 +888,16 @@ int requestAndParseSosMailData(struct SosMail *sos)
                     break;
                 }
             }
-        }
-        if (i != strlen(stringInput)) { /* non-digit found */
-            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
-            fflush(stderr);
-            continue;
+            if (i != strlen(stringInput)) { /* non-digit found */
+                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
+                fflush(stderr);
+                continue;
+            }
         }
 
         /* input is ok (only digits) */
         selection = (unsigned int)atoi(stringInput);
+        break;
     }
     sos->mailID = selection;
 
