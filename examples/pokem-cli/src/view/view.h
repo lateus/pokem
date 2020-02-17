@@ -38,5 +38,7 @@ int checkItemToFindDeliverByDungeonInWonderMail(int itemIndex, int dungeonIndex,
 int checkItemRange(int index, int printErrorMessages);
 
 void clearStdinBuffer();
+int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int valueIfEmpty, const char* message);
+int requestAndValidateStringInput(char* str, int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message);
 
 #endif /* VIEW_H */

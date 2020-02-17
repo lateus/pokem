@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <errno.h>
 
 #define forever for(;;)
 #define DISCLAIMER \
@@ -250,16 +251,16 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* mission type */
     forever {
-        fputs(LIGHT "Select the " LGREEN "type of mission" RESET LIGHT ".\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "type of mission" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
         for (i = 0; i < 5; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fprintf(stdout, missionTypeObjectiveStr[i], i == FindItem || i == DeliverItem ? "item" : "pokemon");
             fputc('\n', stdout);
         }
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        selection = getchar() - '0' - 1;
-        clearStdinBuffer();
+        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % 5, "") != NoError) {
+            continue;
+        }
+        --selection;
         if (selection < 5) { /* `selection` is unsigned so it's always >= 0 */
             break; /* input is ok */
         }
@@ -426,30 +427,9 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* floor */
     forever {
-        fputs(LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
+        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % difficulties[wm->dungeon][0], LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+            continue;
         }
-        if (strlen(stringInput) == 0) {
-            sprintf(stringInput, "%u", 1 + rand() % difficulties[wm->dungeon][0]);
-            fprintf(stdout, "%s\n" RESET, stringInput);
-        } else {
-            for (i = 0; i < strlen(stringInput); ++i) {
-                if (!isdigit(stringInput[i])) {
-                    break;
-                }
-            }
-            if (i != strlen(stringInput)) { /* non-digit found */
-                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
-                continue;
-            }
-        } /* non-empty input */
-
-        /* input is ok (only digits) */
-        selection = (unsigned int)atoi(stringInput);
         if (checkFloorForDungeon(selection, wm->dungeon, 1) == NoError) {
             break; /* input is ok */
         }
@@ -516,16 +496,16 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     const enum RewardType rewardTypes[] = { MoneyMoney, Item2, MoneyMoneyItem, ItemItem2, FriendArea };
     const char* rewardTypesStr[] = { "Money", "Item", "Money + (?)", "Item + (?)", "Friend Area" };
     forever {
-        fputs(LIGHT "Select the " LGREEN "reward type" RESET LIGHT ".\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "reward type" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
         for (i = 0; i < 5; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fputs(rewardTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        selection = getchar() - '0' - 1;
-        clearStdinBuffer();
+        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % 5, "") != NoError) {
+            continue;
+        }
+        --selection;
         if (selection < 5) { /* `selection` is unsigned so it's always >= 0 */
             break; /* input is ok */
         }
@@ -589,16 +569,16 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     const int availableFriendAreasIndexes[] = { 9, 10, 15, 37 };
     if (wm->rewardType == FriendArea) {
         forever {
-            fputs(LIGHT "Select the " LGREEN "friend area" RESET LIGHT " that you want as reward.\n" RESET, stdout);
+            fputs(LIGHT "Select the " LGREEN "friend area" RESET LIGHT " reward (leave it blank for random).\n" RESET, stdout);
             for (i = 0; i < 4; ++i) {
                 fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
                 fputs(friendAreasStr[availableFriendAreasIndexes[i]], stdout);
                 fputc('\n', stdout);
             }
-            fputs(">>> " LGREEN, stdout);
-            fflush(stdout);
-            selection = getchar() - '0' - 1;
-            clearStdinBuffer();
+            if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % 4, "") != NoError) {
+                continue;
+            }
+            --selection;
             if (selection < 4) { /* `selection` is unsigned so it's always >= 0 */
                 break; /* input is ok */
             }
@@ -1147,7 +1127,7 @@ int checkPkmnInWonderMail(int index, int printErrorMessages)
     if (index <= 0 || (unsigned int)index >= pkmnSpeciesCount) {
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Pkmn must be numbers between 1 and %d (not necessarily match pkdex numbers).\n"
-                            "      Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, pkmnSpeciesCount - 1, index);
+                            "       Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, pkmnSpeciesCount - 1, index);
         }
         return InputError;
     }
@@ -1158,7 +1138,7 @@ int checkPkmnInWonderMail(int index, int printErrorMessages)
               (index >= 405 && index <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Legendaries are not valid values.\n"
-                            "      Current value: " LRED "%u" RESET LIGHT " [" LRED "%s" RESET LIGHT "]\n\n" RESET, index, pkmnSpeciesStr[index]);
+                            "       Current value: " LRED "%u" RESET LIGHT " [" LRED "%s" RESET LIGHT "]\n\n" RESET, index, pkmnSpeciesStr[index]);
         }
         return InputError;
     }
@@ -1174,7 +1154,7 @@ int checkDungeonInWonderMail(int index, int printErrorMessages)
     if (index < 0 || (unsigned int)index >= dungeonsCount) {
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Dungeons must be numbers between 1 and %d.\n"
-                            "      Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, dungeonsCount - 1, index);
+                            "       Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, dungeonsCount - 1, index);
         }
         return InputError;
     } else if (strcmp(dungeonsStr[index], "[INVALID]") == 0) {
@@ -1218,7 +1198,7 @@ int checkItemToFindDeliverRangeInWonderMail(int index, int printErrorMessages)
     if (index < 1 || (unsigned int)index >= (itemsCount - 8)) { /* the last 8 are not valid */
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Items must be numbers between 1 and %d.\n"
-                            "      Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, (itemsCount - 9), index);
+                            "       Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, (itemsCount - 9), index);
         }
         return InputError;
     }
@@ -1257,7 +1237,7 @@ int checkItemRange(int index, int printErrorMessages)
     if (index < 1 || (unsigned int)index >= itemsCount) {
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Items must be numbers between 1 and %d.\n"
-                            "      Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, itemsCount - 1, index);
+                            "       Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, itemsCount - 1, index);
         }
         return InputError;
     }
@@ -1272,3 +1252,62 @@ void clearStdinBuffer()
     int c;
     while ( (c = getchar()) != '\n' && c != EOF );
 }
+
+int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int valueIfEmpty, const char* message)
+{
+#define MAX_LENGTH_INPUT 20
+    fputs(message, stdout);
+    fputs(">>> " LGREEN, stdout);
+    fflush(stdout);
+    char stringInput[MAX_LENGTH_INPUT + 1];
+    (void)!fgets(stringInput, MAX_LENGTH_INPUT, stdin);
+    if (stringInput[strlen(stringInput) - 1] == '\n') {
+        stringInput[strlen(stringInput) - 1] = '\0';
+    }
+    if (strlen(stringInput) == 0) {
+        if (allowEmptyValue) {
+            *n = valueIfEmpty;
+            fprintf(stdout, "%u\n", valueIfEmpty);
+            return NoError;
+        } else {
+            return InputError;
+        }
+    } else {
+        *n = (unsigned int)atoi(stringInput);
+        if (errno) {
+            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
+            return InputError;
+        }
+        return NoError;
+    }
+#undef MAX_LENGTH_INPUT
+}
+
+int requestAndValidateStringInput(char* str, int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message)
+{
+#define MAX_LENGTH_INPUT 100 /* if `maxLength` is bigger the behavior is undefined */
+    fputs(message, stdout);
+    fputs(">>> " LGREEN, stdout);
+    fflush(stdout);
+    char stringInput[MAX_LENGTH_INPUT + 1];
+    (void)!fgets(stringInput, maxLength, stdin);
+    if (stringInput[strlen(stringInput) - 1] == '\n') {
+        stringInput[strlen(stringInput) - 1] = '\0';
+    }
+    if (strlen(stringInput) == 0) {
+        if (allowEmptyValue) {
+            strcpy(str, valueIfEmpty);
+            fprintf(stdout, "%s\n", str);
+            return NoError;
+        } else {
+            return InputError;
+        }
+    } else {
+        strcpy(str, stringInput);
+        return NoError;
+    }
+#undef MAX_LENGTH_INPUT
+}
+
+#undef forever
+#undef DISCLAIMER
