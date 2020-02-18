@@ -23,7 +23,6 @@ int main(int argc, const char *argv[])
     int autodetectResult = autodetect(argc, argv);
     if (autodetectResult == -1) {
         selection = showSelectionScreen();
-        clearStdinBuffer();
         switch (selection) {
         case 1:
             return decodeWM(0, NULL);
