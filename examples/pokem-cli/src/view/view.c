@@ -388,10 +388,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* floor */
     forever {
-        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % difficulties[wm->dungeon][0], LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
-            continue;
-        }
-        if (checkFloorForDungeon(selection, wm->dungeon, 1) == NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % difficulties[wm->dungeon][0], LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET) == NoError && checkFloorForDungeon(selection, wm->dungeon, 1) == NoError) {
             break; /* input is ok */
         }
     } /* forever */
@@ -606,10 +603,9 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* nickname */
     forever {
-        if (requestAndValidateStringInput(stringInput, 10, 1, pkmnSpeciesStr[sos->pkmnToRescue], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "pokemon to rescue" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
-            continue;
-        }
-        break;
+        if (requestAndValidateStringInput(stringInput, 10, 1, pkmnSpeciesStr[sos->pkmnToRescue], LIGHT "Enter the " LGREEN "nickname" RESET LIGHT " of that pokemon (leave it blank for none).\n" RESET) == NoError) {
+            break;
+        }        
     } /* forever */
     strncpy(sos->pkmnNick, stringInput, 10);
 
@@ -651,79 +647,39 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* floor */
     forever {
-        fputs(LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
-        }
-        if (strlen(stringInput) == 0) {
-            sprintf(stringInput, "%u", 1 + rand() % (difficulties[sos->dungeon][0] + 1));
-            fprintf(stdout, "%s\n" RESET, stringInput);
-            fputs(LYELLOW "WARNING:" RESET " You selected a random floor. This can be unacceptable for you friend.\n", stdout);
-            fflush(stdout);
-        } else {
-            for (i = 0; i < strlen(stringInput); ++i) {
-                if (!isdigit(stringInput[i])) {
-                    break;
-                }
-            }
-            if (i != strlen(stringInput)) { /* non-digit found */
-                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
-                continue;
-            }
-        } /* non-empty input */
-
-        /* input is ok (only digits) */
-        selection = (unsigned int)atoi(stringInput);
-        if (checkFloorForDungeon(selection, sos->dungeon, 1) == NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % difficulties[sos->dungeon][0], LIGHT "Enter the " LGREEN "floor" RESET LIGHT " (leave it blank for random).\n" RESET) == NoError && checkFloorForDungeon(selection, sos->dungeon, 1) == NoError) {
             break; /* input is ok */
         }
-    } /* forever */
+    }
     sos->floor = selection;
 
     /* reward item */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
+        randomHolder = 1 + rand() % (itemsCount - 1);
+        if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
+            continue;
         }
-        if (strlen(stringInput) == 0) {
-            sprintf(stringInput, "%u", 1 + rand() % (itemsCount - 1));
-            selection = (unsigned int)atoi(stringInput);
-            fprintf(stdout, "%s\n" RESET, itemsStr[selection]);
-        } else {
-            for (i = 0; i < strlen(stringInput); ++i) {
-                if (!isdigit(stringInput[i])) {
-                    break;
+        selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
+        if (*stringEnd) { /* non-digit found */
+            selection = itemsCount; /* invalid name, invalid index */
+            for (i = 0; i < itemsCount; ++i) {
+                if (strcmp(itemsStr[i], stringInput) == 0) {
+                    selection = i;
+                    break; /* item found */
                 }
             }
-            if (i != strlen(stringInput)) { /* non-digit found */
-                selection = itemsCount; /* invalid name, invalid index */
-                for (i = 0; i < itemsCount; ++i) {
-                    if (strcmp(itemsStr[i], stringInput) == 0) {
-                        selection = i;
-                        break; /* item found */
-                    }
-                }
 
-                if (selection == itemsCount) {
-                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
-                    mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
-                    if (mostSimilarIndex == -1) {
-                        fputs("Re-check your spelling.\n" RESET, stderr);
-                    } else {
-                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
-                    }
-                    continue;
+            if (selection == itemsCount) {
+                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
+                mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
+                if (mostSimilarIndex == -1) {
+                    fputs("Re-check your spelling.\n" RESET, stderr);
+                } else {
+                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
                 }
-            } else {
-                selection = (unsigned int)atoi(stringInput);
+                continue;
             }
-        } /* non-empty input */
+        }
 
         if (checkItemRange(selection, 1) == NoError) {
             break; /* input is ok */
@@ -733,67 +689,16 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* mail ID */
     forever {
-        fputs(LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (leave blank for random).\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
+        if (requestAndValidateIntegerInput(&selection, 1, rand() & 0xFFFF, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (leave blank for random).\n" RESET) == NoError) {
+            break; /* input is ok */
         }
-        if (strlen(stringInput) == 0) {
-            sprintf(stringInput, "%u", rand() & 0xFFFF);
-            fprintf(stdout, "%s\n" RESET, stringInput);
-            fputs(LYELLOW "WARNING:" RESET " You selected a random Mail ID. You may be unable to receive an A-Ok/Thank-You Mail.\n", stdout);
-            fflush(stdout);
-        } else {
-            for (i = 0; i < strlen(stringInput); ++i) {
-                if (!isdigit(stringInput[i])) {
-                    break;
-                }
-            }
-            if (i != strlen(stringInput)) { /* non-digit found */
-                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
-                fflush(stderr);
-                continue;
-            }
-        }
-
-        /* input is ok (only digits) */
-        selection = (unsigned int)atoi(stringInput);
-        break;
     }
     sos->mailID = selection;
 
     /* Chances left */
     forever {
-        fputs(LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (leave blank for 10).\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
-        }
-        if (strlen(stringInput) == 0) {
-            sprintf(stringInput, "%u", 10);
-            fprintf(stdout, "%s\n" RESET, stringInput);
-            fflush(stdout);
-        } else {
-            for (i = 0; i < strlen(stringInput); ++i) {
-                if (!isdigit(stringInput[i])) {
-                    break;
-                }
-            }
-            if (i != strlen(stringInput)) { /* non-digit found */
-                fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
-                fflush(stderr);
-                continue;
-            }
-        }
-
-        /* input is ok (only digits) */
-        selection = (unsigned int)atoi(stringInput);
-        if (selection >= 1 && selection <= 10) {
-            break;
+        if (requestAndValidateIntegerInput(&selection, 1, 10, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (1 to 10, leave blank for 10).\n" RESET) == NoError && selection >= 1 && selection <= 10) {
+            break; /* input is ok */
         }
     }
     sos->chancesLeft = selection;
@@ -1193,22 +1098,20 @@ int requestAndValidateStringInput(char* str, unsigned int maxLength, int allowEm
     fputs(">>> " LGREEN, stdout);
     fflush(stdout);
     char stringInput[MAX_LENGTH_INPUT + 1];
-    (void)!fgets(stringInput, maxLength, stdin);
+    (void)!fgets(stringInput, MAX_LENGTH_INPUT, stdin);
     if (stringInput[strlen(stringInput) - 1] == '\n') {
         stringInput[strlen(stringInput) - 1] = '\0';
     }
+    strncpy(str, stringInput, maxLength);
     if (strlen(stringInput) > maxLength) {
-        fprintf(stderr, LYELLOW "WARNING:" RESET " The input (" LRED "%s" RESET ") is bigger than %d characters, so it has been truncated to " LGREEN "%10s" RESET ".\n", stringInput, maxLength, stringInput);
+        fprintf(stderr, LYELLOW "WARNING:" RESET " The input (" LRED "%s" RESET ") is bigger than %d characters, so it has been truncated to " LGREEN "%s" RESET ".\n" LGREEN, stringInput, maxLength, str);
     }
-    if (strlen(stringInput) == 0) {
-        if (allowEmptyValue) {
-            strncpy(str, valueIfEmpty, maxLength);
-            fprintf(stdout, "%s\n", str);
-        } else {
-            return InputError;
-        }
-    } else {
+    
+    if (strlen(stringInput) == 0 && !allowEmptyValue) {
+        return InputError;
+    } else if (strlen(stringInput) == 0) {
         strncpy(str, valueIfEmpty, maxLength);
+        fprintf(stdout, "%s\n", str);
     }
 
     return NoError;
