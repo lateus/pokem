@@ -550,6 +550,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     unsigned int i = 0;
     unsigned int selection = -1;
     char stringInput[101];
+    int randomHolder;
     char *stringEnd;
     int mostSimilarIndex = 0;
 
@@ -605,20 +606,8 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* nickname */
     forever {
-        fputs(LIGHT "Enter the " LGREEN "nickname" RESET LIGHT " of the " LGREEN "pokemon to rescue" RESET LIGHT ".\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
-        }
-        if (strlen(stringInput) == 0) {
-            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Please enter a name with no more than 10 characters.\n\n" RESET, stderr);
-            fflush(stderr);
+        if (requestAndValidateStringInput(stringInput, 10, 1, pkmnSpeciesStr[sos->pkmnToRescue], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "pokemon to rescue" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
             continue;
-        } else if (strlen(stringInput) > 10) {
-            fputs(LYELLOW "WARNING:" RESET " The entered name (" LRED "%s" RESET ") is bigger than 10 characters, so it has been truncated to " LGREEN "%10s" RESET ".\n", stdout);
-            fflush(stdout);
         }
         break;
     } /* forever */
@@ -626,50 +615,33 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* dungeon */
     forever {
-        fputs(LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
-        fputs(">>> " LGREEN, stdout);
-        fflush(stdout);
-        (void)!fgets(stringInput, 100, stdin);
-        if (stringInput[strlen(stringInput) - 1] == '\n') {
-            stringInput[strlen(stringInput) - 1] = '\0';
+        do {
+            randomHolder = rand() % dungeonsCount;
+        } while (checkDungeonInSosMail(randomHolder, 0) != NoError);
+        if (requestAndValidateStringInput(stringInput, 100, 1, dungeonsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+            continue;
         }
-        if (strlen(stringInput) == 0) {
-            do {
-                sprintf(stringInput, "%u", rand() % dungeonsCount);
-            } while (checkDungeonInWonderMail(atoi(stringInput), 0) != NoError);
-            selection = (unsigned int)atoi(stringInput);
-            fprintf(stdout, "%s\n" RESET, dungeonsStr[selection]);
-            fputs(LYELLOW "WARNING:" RESET " You selected a random dungeon. This can be unacceptable for you friend.\n", stdout);
-            fflush(stdout);
-        } else {
-            for (i = 0; i < strlen(stringInput); ++i) {
-                if (!isdigit(stringInput[i])) {
-                    break;
+        selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
+        if (*stringEnd) { /* non-digit found */
+            selection = dungeonsCount; /* invalid name, invalid index */
+            for (i = 0; i < dungeonsCount; ++i) {
+                if (strcmp(dungeonsStr[i], stringInput) == 0) {
+                    selection = i;
+                    break; /* item found */
                 }
             }
-            if (i != strlen(stringInput)) { /* non-digit found */
-                selection = dungeonsCount; /* invalid name, invalid index */
-                for (i = 0; i < dungeonsCount; ++i) {
-                    if (strcmp(dungeonsStr[i], stringInput) == 0) {
-                        selection = i;
-                        break; /* item found */
-                    }
-                }
 
-                if (selection == dungeonsCount) {
-                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
-                    mostSimilarIndex = findMostSimilarStringInArray(stringInput, dungeonsStr, dungeonsCount);
-                    if (mostSimilarIndex == -1) {
-                        fputs("Re-check your spelling.\n" RESET, stderr);
-                    } else {
-                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, dungeonsStr[mostSimilarIndex]);
-                    }
-                    continue;
+            if (selection == dungeonsCount) {
+                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find dungeon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
+                mostSimilarIndex = findMostSimilarStringInArray(stringInput, dungeonsStr, dungeonsCount);
+                if (mostSimilarIndex == -1) {
+                    fputs("Re-check your spelling.\n" RESET, stderr);
+                } else {
+                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, dungeonsStr[mostSimilarIndex]);
                 }
-            } else {
-                selection = (unsigned int)atoi(stringInput);
+                continue;
             }
-        } /* non-empty input */
+        }
 
         if (checkDungeonInWonderMail(selection, 1) == NoError) {
             break; /* input is ok */
@@ -1096,6 +1068,14 @@ int checkDungeonInWonderMail(int index, int printErrorMessages)
 
 
 
+int checkDungeonInSosMail(int index, int printErrorMessages)
+{
+    /* it's actually the same checking for all kinds of mails */
+    return checkDungeonInWonderMail(index, printErrorMessages);
+}
+
+
+
 int checkFloorForDungeon(int floor, int dungeonIndex, int printErrorMessages)
 {
     /* floor check (floor 0) */
@@ -1177,6 +1157,7 @@ int checkItemRange(int index, int printErrorMessages)
 int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int valueIfEmpty, const char* message)
 {
 #define MAX_LENGTH_INPUT 20
+    char *stringEnd;
     fputs(message, stdout);
     fputs(">>> " LGREEN, stdout);
     fflush(stdout);
@@ -1194,8 +1175,9 @@ int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int val
             return InputError;
         }
     } else {
-        *n = (unsigned int)atoi(stringInput);
-        if (errno) {
+        errno = 0; /* strtol modifies `errno` if the input is too big to be stored in a `long int` */
+        *n = (unsigned int)strtol(stringInput, &stringEnd, 10);
+        if (*stringEnd || errno) {
             fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
             return InputError;
         }
@@ -1204,7 +1186,7 @@ int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int val
 #undef MAX_LENGTH_INPUT
 }
 
-int requestAndValidateStringInput(char* str, int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message)
+int requestAndValidateStringInput(char* str, unsigned int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message)
 {
 #define MAX_LENGTH_INPUT 100 /* if `maxLength` is bigger the behavior is undefined */
     fputs(message, stdout);
@@ -1215,18 +1197,21 @@ int requestAndValidateStringInput(char* str, int maxLength, int allowEmptyValue,
     if (stringInput[strlen(stringInput) - 1] == '\n') {
         stringInput[strlen(stringInput) - 1] = '\0';
     }
+    if (strlen(stringInput) > maxLength) {
+        fprintf(stderr, LYELLOW "WARNING:" RESET " The input (" LRED "%s" RESET ") is bigger than %d characters, so it has been truncated to " LGREEN "%10s" RESET ".\n", stringInput, maxLength, stringInput);
+    }
     if (strlen(stringInput) == 0) {
         if (allowEmptyValue) {
-            strcpy(str, valueIfEmpty);
+            strncpy(str, valueIfEmpty, maxLength);
             fprintf(stdout, "%s\n", str);
-            return NoError;
         } else {
             return InputError;
         }
     } else {
-        strcpy(str, stringInput);
-        return NoError;
+        strncpy(str, valueIfEmpty, maxLength);
     }
+
+    return NoError;
 #undef MAX_LENGTH_INPUT
 }
 

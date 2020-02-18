@@ -33,12 +33,13 @@ void printSOSData(const struct SosMailInfo *mailInfo);
 int checkPkmnInWonderMail(int index, int printErrorMessages);
 int checkPkmnInSosMail(int index, int printErrorMessages);
 int checkDungeonInWonderMail(int index, int printErrorMessages);
+int checkDungeonInSosMail(int index, int printErrorMessages);
 int checkFloorForDungeon(int floor, int dungeonIndex, int printErrorMessages);
 int checkItemToFindDeliverRangeInWonderMail(int index, int printErrorMessages);
 int checkItemToFindDeliverByDungeonInWonderMail(int itemIndex, int dungeonIndex, int printErrorMessages);
 int checkItemRange(int index, int printErrorMessages);
 
 int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int valueIfEmpty, const char* message);
-int requestAndValidateStringInput(char* str, int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message);
+int requestAndValidateStringInput(char* str, unsigned int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message);
 
 #endif /* VIEW_H */
