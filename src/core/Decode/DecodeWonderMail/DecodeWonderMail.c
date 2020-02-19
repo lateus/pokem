@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult)
+int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
 {
     char packed15Bytes[15] = {0};
     int errorCodeWM = wonderMailIsInvalid(password, packed15Bytes);
@@ -29,12 +29,10 @@ int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfo
         fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
         fflush(stderr);
 #endif
-        return InputError; /* to use the NOT operator */
+        return InputError;
     }
 
-    /* Bulking the mail's data... */
-    setWonderMailInfo(&wm, wonderMailInfoResult);
-    strncpy(wonderMailInfoResult->password, password, 24);
+    *wonderMailResult = wm;
 
     return NoError; /* means ok */
 }

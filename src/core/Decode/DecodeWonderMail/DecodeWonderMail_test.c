@@ -49,39 +49,55 @@ void decodeWonderMail_test(CuTest *tc)
         { "1?C.MWY?JPS3.F?0XP?5!2?W" }, /* (WM - VALID - SPECIAL EVOLVE) */
         { "F?N.?QY?8RNYYN?4.J75N+?W" }  /* (WM - VALID - SPECIAL FOOD) */
     };
-    struct WonderMailInfo input2[ARRAY_SIZE];
+    struct WonderMail input2[ARRAY_SIZE] = {
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    };
 
     int actualResults[ARRAY_SIZE];
 
     const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError, NoError, NoError };
-    const struct WonderMailInfo expected2[ARRAY_SIZE] = {
-        { "Take me!",                "I can't go by myself...",              "Please take me to see Wartortle!",        "Squirtle",  "Escort to Wartortle.", "Thunderwave Cave", "B1F",  'D', "400 poke",                     "1?J9N/X?4P?34??764?0P??W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Take me!",                "Lapras is waiting for me!",            "Please take me to see Lapras!",           "Umbreon",   "Escort to Lapras.",    "Mt. Steel",        " 6F",  'D', "200 poke + ??? [Pecha Scarf]", "4?6F7M+?4JNRJ*??K??0+9??" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Escort me!",              "I have to go!",                        "Someone, please escort me!",              "Combusken", "Escort to Pikachu.",   "Purity Forest",    " 98F", '*', "Friend Zone [Boulder Cave]",   "S60*SW0?4P5HHS?869H0?N?W" },
-        { "Deliver one Moon Stone",  "Having one Moon Stone is reassuring.", "Please give me one!",                     "Dragonite", "Deliver Moon Stone.",  "Tiny Woods",       "B3F",  'E', "100 poke",                     "???N+CS?466S*+?RX4?5???W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "One Sun Stone wanted!",   "Sun Stone--it's convenient to have.",  "Please! I'm offering a generous reward!", "Blissey",   "Find Sun Stone.",      "Near Solar Cave",  "B20F", 'A', "500 poke",                     "F??CR/0?4/+!*3?7TP?T?7?W" },
-        { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} },
-        { "Deliver one Fire Stone",  "With the item Fire Stone, I can",      "evolve! I'm yearning to evolve! Help!",   "Vulpix",    "Deliver Fire Stone.",  "Fiery Field",      " 24F", 'A', "Heal Seed + ???",              "1?C.MWY?JPS3.F?0XP?5!2?W" },
-        { "Deliver one Grass Gummi", "The Grass Gummi! What I love to eat",  "and can't live without! Please get one!", "Sunflora",  "Deliver Grass Gummi.", "Uproar Forest",    "B7F",  'C', "Hidden Power + ???",           "F?N.?QY?8RNYYN?4.J75N+?W" }
+    const struct WonderMail expected2[ARRAY_SIZE] = {
+        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3,   0, 255,  1,  1 },
+        { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
+        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158,   0,   1,  2,  6 },
+        { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
+        { 5, 2, 0, 281,  25,   9, 9,   0, 37,  13,   0, 255, 62, 98 },
+        { 5, 4, 0, 149, 149, 112, 0,   0,  0,   0,  54, 255,  0,  3 },
+        { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
+        { 5, 3, 0, 267, 267, 111, 0,   0,  0,   9, 237, 255, 36, 20 },
+        { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
+        { 5, 4, 5,  37,  37, 113, 3,  53,  0, 103, 254, 255, 34, 24 },
+        { 5, 4, 6, 192, 192,  89, 3, 134,  0, 169, 215, 255, 42,  7 }
     };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         actualResults[i] = decodeWonderMail(input1[i], &input2[i]);
         CuAssertIntEquals(tc, expected1[i], actualResults[i]);
-        CuAssertStrEquals(tc, expected2[i].head, input2[i].head);
-        CuAssertStrEquals(tc, expected2[i].body1, input2[i].body1);
-        CuAssertStrEquals(tc, expected2[i].body2, input2[i].body2);
-        CuAssertStrEquals(tc, expected2[i].client, input2[i].client);
-        CuAssertStrEquals(tc, expected2[i].objective, input2[i].objective);
-        CuAssertStrEquals(tc, expected2[i].place, input2[i].place);
-        CuAssertStrEquals(tc, expected2[i].floor, input2[i].floor);
-        CuAssertIntEquals(tc, (int)expected2[i].difficulty, (int)input2[i].difficulty);
-        CuAssertStrEquals(tc, expected2[i].reward, input2[i].reward);
-        CuAssertStrEquals(tc, expected2[i].password, input2[i].password);
+        CuAssertIntEquals(tc, expected2[i].mailType,            input2[i].mailType);
+        CuAssertIntEquals(tc, expected2[i].missionType,         input2[i].missionType);
+        CuAssertIntEquals(tc, expected2[i].specialJobIndicator, input2[i].specialJobIndicator);
+        CuAssertIntEquals(tc, expected2[i].pkmnClient,          input2[i].pkmnClient);
+        CuAssertIntEquals(tc, expected2[i].pkmnTarget,          input2[i].pkmnTarget);
+        CuAssertIntEquals(tc, expected2[i].itemDeliverFind,     input2[i].itemDeliverFind);
+        CuAssertIntEquals(tc, expected2[i].rewardType,          input2[i].rewardType);
+        CuAssertIntEquals(tc, expected2[i].itemReward,          input2[i].itemReward);
+        CuAssertIntEquals(tc, expected2[i].friendAreaReward,    input2[i].friendAreaReward);
+        CuAssertIntEquals(tc, expected2[i].flavorText,          input2[i].flavorText);
+        /* skip the `random` field (as it is random) */
+        CuAssertIntEquals(tc, expected2[i].idk_always0xFF,      input2[i].idk_always0xFF);
+        CuAssertIntEquals(tc, expected2[i].dungeon,             input2[i].dungeon);
+        CuAssertIntEquals(tc, expected2[i].floor,               input2[i].floor);
     }
 #undef ARRAY_SIZE
 }
