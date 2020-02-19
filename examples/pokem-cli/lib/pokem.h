@@ -229,7 +229,7 @@ struct SosMailInfo {
     char place[26];
     char floor[7];
     char difficulty;
-    char reward[13];
+    char reward[19];
     char id[6];
     char chancesLeft[3];
     char password[100];

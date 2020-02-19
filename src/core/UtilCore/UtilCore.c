@@ -496,6 +496,17 @@ int entryErrorsSosMail(const struct SosMail *sos)
     }
 
 
+    /* mail ID check */
+    if (sos->mailID > 9999) {
+        ++errorsFound;
+#ifdef DEBUG
+        fprintf(stderr, "ERROR No. %d in argument 5 (Mail ID).\n"
+                        "      The mail ID must be a non-negative number with no more than 4 digits.\n\n", errorsFound);
+        fflush(stderr);
+#endif
+    }
+
+
     /* rescue chances left check */
     if (sos->chancesLeft < 1 || sos->chancesLeft > 10) {
         ++errorsFound;

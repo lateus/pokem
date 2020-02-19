@@ -253,14 +253,14 @@ int decodeSOSM(int argc, const char *argv[])
             if (errorCode) {
                 return errorCode;
             }
-            printSOSData(&sosInfo);   /* Finally, print the wonder mail info */
+            printSOSData(&sosInfo, NULL);   /* Finally, print the wonder mail info */
         }
     } else {
         errorCode = decodeSosMail(psw, &sosInfo);
         if (errorCode) {
             return errorCode;
         }
-        printSOSData(&sosInfo);   /* Finally, print the wonder mail info */
+        printSOSData(&sosInfo, NULL);   /* Finally, print the wonder mail info */
     }
     fflush(stdout);
 
@@ -289,7 +289,7 @@ int encodeSOSM(int argc, const char *argv[])
     struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
     setSosInfo(&sos, &sosInfo);
     strncpy(sosInfo.password, finalPassword, 54);
-    printSOSData(&sosInfo);
+    printSOSData(&sosInfo, &sos);
     if (sos.dungeon == 10 || sos.dungeon == 12 || sos.dungeon == 14 || sos.dungeon == 16 || sos.dungeon == 18 || sos.dungeon == 22 || sos.dungeon == 47 || sos.dungeon == 48 || sos.dungeon == 52) {
         fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n", stderr);
     }
@@ -337,9 +337,9 @@ int convertSOS(int argc, const char *argv[])
     decodeSosMail(AOKPassword, &AOKInfo);
     decodeSosMail(ThankYouPassword, &ThxInfo);
     fprintf(stdout, "============== A-OK Mail ==============");
-    printSOSData(&AOKInfo);
+    printSOSData(&AOKInfo, NULL);
     fprintf(stdout, "============ Thank-You Mail ===========");
-    printSOSData(&ThxInfo);
+    printSOSData(&ThxInfo, NULL);
     fflush(stdout);
     return NoError;
 }

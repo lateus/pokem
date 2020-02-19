@@ -562,6 +562,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
             fputc('\n', stdout);
         }
         if (requestAndValidateIntegerInput(&selection, 0, 0, "") == NoError && selection < 3) { /* as `selection` is unsigned, it is always >= 0 */
+            --selection;
             break; /* input is ok */
         }
         fprintf(stderr, LRED "INPUT ERROR\n" RESET);
@@ -681,7 +682,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
             }
         }
 
-        if (checkItemRange(selection, 1) == NoError) {
+        if (selection == 0 || checkItemRange(selection, 1) == NoError) {
             break; /* input is ok */
         }
     } /* forever */
@@ -689,7 +690,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* mail ID */
     forever {
-        if (requestAndValidateIntegerInput(&selection, 1, rand() & 0xFFFF, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (leave blank for random).\n" RESET) == NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, rand() % 10000, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (0 to 9999, leave blank for random).\n" RESET) == NoError && checkMailID(selection, 0) == NoError) {
             break; /* input is ok */
         }
     }
@@ -892,19 +893,89 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
 }
 
 
-void printSOSData(const struct SosMailInfo *mailInfo)
+void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail)
 {
-    fprintf(stdout, "\n%s\n\n%s\n\n"
-                    "Client: %s (%s)\n"
-                    "Objective: %s\n"
-                    "Place: %s  %s\n"
-                    "Difficulty: %c\n"
-                    "Reward: %s\n"
-                    "ID: %s\n"
-                    "Chances left: %s\n"
-                    "Password: %s\n"
-                    "_____________________________________________\n\n",
-            mailInfo->head, mailInfo->body, mailInfo->nickname, mailInfo->client, mailInfo->objective, mailInfo->place, mailInfo->floor, mailInfo->difficulty, mailInfo->reward, mailInfo->id, mailInfo->chancesLeft, mailInfo->password);
+    char newClient[70]  = {0};
+    char newPlace[76]   = {0};
+    char newFloor[57]   = {0};
+    char newReward[106] = {0};
+    sprintf(newClient, "%s " COLOR_GREEN "(%s)" RESET COLOR_BACKGROUND, mailInfo->nickname, mailInfo->client);
+    strcpy(newPlace, mailInfo->place);
+    strcpy(newFloor, mailInfo->floor);
+    strcpy(newReward, mailInfo->reward);
+    char* dungeonPlace = strstr(newPlace, dungeonsStr[mail->dungeon]);
+    char floorStr[3];
+    sprintf(floorStr, "%d", mail->floor % 100);
+    char* dungeonFloor = strstr(newFloor, floorStr);
+    char* itemReward = strstr(newReward, itemsStr[mail->itemReward]);
+
+    char hold[200] = {0};
+
+    if (dungeonPlace) {
+        strcpy(hold, dungeonPlace);
+        strcpy(dungeonPlace, COLOR_YELLOW);
+        strncat(newPlace, hold, strlen(dungeonsStr[mail->dungeon]));
+        strcat(newPlace, RESET COLOR_BACKGROUND);
+        strcat(newPlace, hold + strlen(dungeonsStr[mail->dungeon]));
+    } else {
+        strcat(newPlace, COLOR_YELLOW RESET COLOR_BACKGROUND);
+    }
+
+    if (dungeonFloor) {
+        --dungeonFloor;
+        strcpy(hold, dungeonFloor);
+        strcpy(dungeonFloor, COLOR_CYAN);
+        strncat(newFloor, hold, strlen(floorStr) + 1);
+        strcat(newFloor, RESET COLOR_BACKGROUND);
+        strcat(newFloor, hold + strlen(floorStr) + 1);
+    } else {
+        strcat(newFloor, COLOR_CYAN RESET COLOR_BACKGROUND);
+    }
+    
+    if (itemReward) {
+        strcpy(hold, itemReward);
+        strcpy(itemReward, COLOR_GREEN);
+        strncat(newReward, hold, strlen(itemsStr[mail->itemReward]));
+        strcat(newReward, RESET COLOR_BACKGROUND);
+        strcat(newReward, hold + strlen(itemsStr[mail->itemReward]));
+    } else {
+        strcat(newReward, COLOR_GREEN RESET COLOR_BACKGROUND);
+    }
+
+    char placeAndFloor[120] = {0};
+    sprintf(placeAndFloor, "%s  %s", newPlace, newFloor);
+
+    char diffColor[50] = {0};
+    strcpy(diffColor, mailInfo->difficulty == 'E' ? RESET COLOR_BACKGROUND : mailInfo->difficulty == 'D' || mailInfo->difficulty == 'C' ? COLOR_GREEN : mailInfo->difficulty == 'B' || mailInfo->difficulty == 'A' ? COLOR_CYAN : mailInfo->difficulty == 'S' ? COLOR_RED : LYELLOW);
+
+    int i, j;
+    char temp[70] = {0};
+    for (i = j = 0; i < 54; ++i) {
+        if (i ==  5 || i == 13 || i == 18 ||
+            i == 23 || i == 31 || i == 36 ||
+            i == 41 || i == 49) {
+            temp[i + j++] = '\0';
+        }
+        temp[i + j] = mailInfo->password[i];
+    }
+
+    fprintf(stdout, "\n" COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-44s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-45s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:       " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:    " RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:        " RESET COLOR_BACKGROUND "%-107s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty:   " RESET COLOR_BACKGROUND "%s%c%-30s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:       " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "ID:           " RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Chances left: " RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:     " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-18s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-18s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-18s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n",
+            mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mailInfo->chancesLeft, temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
 }
 
 
@@ -1050,6 +1121,22 @@ int checkItemRange(int index, int printErrorMessages)
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Items must be numbers between 1 and %d.\n"
                             "       Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, itemsCount - 1, index);
+        }
+        return InputError;
+    }
+
+    return NoError;
+}
+
+
+
+int checkMailID(int mailID, int printErrorMessages)
+{
+    /* item check (limits) */
+    if (mailID < 0 || mailID > 10000) {
+        if (printErrorMessages) {
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " The mail ID must be a non-negative number with no more than 4 digits (0 to 9999).\n"
+                            "       Current value: " LRED "%u" RESET "\n\n", mailID);
         }
         return InputError;
     }

@@ -28,7 +28,7 @@ int requestSOSMailPassword(char *password);
 int requestAndParseSosMailData(struct SosMail *sos);
 
 void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct WonderMail *mail);
-void printSOSData(const struct SosMailInfo *mailInfo);
+void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail);
 
 int checkPkmnInWonderMail(int index, int printErrorMessages);
 int checkPkmnInSosMail(int index, int printErrorMessages);
@@ -38,6 +38,7 @@ int checkFloorForDungeon(int floor, int dungeonIndex, int printErrorMessages);
 int checkItemToFindDeliverRangeInWonderMail(int index, int printErrorMessages);
 int checkItemToFindDeliverByDungeonInWonderMail(int itemIndex, int dungeonIndex, int printErrorMessages);
 int checkItemRange(int index, int printErrorMessages);
+int checkMailID(int mailID, int printErrorMessages);
 
 int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int valueIfEmpty, const char* message);
 int requestAndValidateStringInput(char* str, unsigned int maxLength, int allowEmptyValue, const char* valueIfEmpty, const char* message);
