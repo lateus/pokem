@@ -14,6 +14,7 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
         requestWonderMailPassword(psw);
     }
 
+    struct WonderMail mail = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     struct WonderMailInfo mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
     int i;
     int errorCode;
@@ -21,18 +22,26 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
     if (argc > 1) {
         /* This loop will allow to decode all entered wonder mails one by one. */
         for (i = 1; i < argc; ++i) {
-            errorCode = decodeWonderMail(argv[i], &mailInfo);
+            errorCode = decodeWonderMail(argv[i], &mail);
             if (errorCode) {
                 return errorCode;
             }
-            printWonderMailData(&mailInfo, NULL);   /* Finally, print the wonder mail info */
+
+            /* Bulking the mail's data... */
+            setWonderMailInfo(&mail, &mailInfo);
+            strncpy(mailInfo.password, argv[i], 24);
+            printWonderMailData(&mailInfo, &mail);
         }
     } else {
-        errorCode = decodeWonderMail(psw, &mailInfo);
+        errorCode = decodeWonderMail(psw, &mail);
         if (errorCode) {
             return errorCode;
         }
-        printWonderMailData(&mailInfo, NULL);   /* Finally, print the wonder mail info */
+
+        /* Bulking the mail's data... */
+        setWonderMailInfo(&mail, &mailInfo);
+        strncpy(mailInfo.password, psw, 24);
+        printWonderMailData(&mailInfo, &mail);
     }
     fflush(stdout);
 
@@ -247,20 +256,20 @@ int decodeSOSM(int argc, const char *argv[])
     int errorCode;
 
     if (argc > 1) {
-        /* This loop will allow to decode all entered wonder mails one by one. */
+        /* This loop will allow to decode all entered SOS mails one by one. */
         for (i = 1; i < argc; ++i) {
             errorCode = decodeSosMail(argv[i], &sosInfo);
             if (errorCode) {
                 return errorCode;
             }
-            printSOSData(&sosInfo, NULL);   /* Finally, print the wonder mail info */
+            printSOSData(&sosInfo, NULL);
         }
     } else {
         errorCode = decodeSosMail(psw, &sosInfo);
         if (errorCode) {
             return errorCode;
         }
-        printSOSData(&sosInfo, NULL);   /* Finally, print the wonder mail info */
+        printSOSData(&sosInfo, NULL);
     }
     fflush(stdout);
 

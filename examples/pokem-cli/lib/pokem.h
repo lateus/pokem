@@ -257,7 +257,7 @@ void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo);
 
 
 /* DECODING WONDER MAIL FUNCTIONS */
-int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult);
+int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult);
 int wonderMailIsInvalid(const char *password, char *packed15BytesPassword);
 void reallocateBytesDecodingWonderMail(const char *unallocatedPassword, char *allocatedPassword);
 int lookupTableDecodingWonderMail(const char *allocatedPassword, char *passwordIntegers);
