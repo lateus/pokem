@@ -55,17 +55,24 @@ int autodetect(int argc, const char *argv[])
 
     size_t lenghtArg1 = strlen(argv[1]);
     size_t lenghtArg2 = argc >= 3 ? strlen(argv[2]) : 0;
-    if (argc == 2 && lenghtArg1 >= 20 && lenghtArg1 <= 28) {
+    fprintf(stdout, "Autodetected: ");
+    if (lenghtArg1 >= 20 && lenghtArg1 <= 28) {
+        fprintf(stdout, "Decode WM\n\n");
         return decodeWM(argc, argv);
-    } else if (argc >= 2 && lenghtArg1 >= 48 && lenghtArg1 <= 56) {
-        return decodeSOSM(argc, argv);
-    } else if (argc >= 3 && (strcmp(argv[1], "-c") == 0 || strcmp(argv[1], "--convert") == 0) && lenghtArg2 >= 48 && lenghtArg2 <= 56) {
+    } else if (lenghtArg1 >= 48 && lenghtArg1 <= 56 && lenghtArg2 <= 16) {
+        fprintf(stdout, "Convert SOS\n\n");
         return convertSOS(argc, argv);
+    } else if (lenghtArg1 >= 48 && lenghtArg1 <= 56) {
+        fprintf(stdout, "Decode SOS\n\n");
+        return decodeSOSM(argc, argv);
     } else if (argc == 10) {
+        fprintf(stdout, "Encode WM\n\n");
         return encodeWM(argc, argv);
     } else if (argc == 7) {
+        fprintf(stdout, "Encode SOS\n\n");
         return encodeSOSM(argc, argv);
     } else {
+        fprintf(stdout, "Nothing.\n\n");
         return -1; /* failed to autodetect */
     }
 }

@@ -26,6 +26,7 @@ int requestWonderMailPassword(char *password);
 int requestAndParseWonderMailData(struct WonderMail *wm);
 int requestSOSMailPassword(char *password);
 int requestAndParseSosMailData(struct SosMail *sos);
+int requestAndParseSOSMailConvertion(char *password, int *item);
 
 void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct WonderMail *mail);
 void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail);

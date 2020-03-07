@@ -231,17 +231,7 @@ void showDatabase()
 
 int requestWonderMailPassword(char *password)
 {
-    fputs(LIGHT "Enter the Wonder Mail's password\n" RESET, stdout);
-    fputs(">>> " LGREEN, stdout);
-    fflush(stdout);
-    (void)!fgets(password, 24, stdin);
-    fputs(RESET, stdout);
-    fflush(stdout);
-    if (password[strlen(password) - 1] == '\n') {
-        password[strlen(password) - 1] = '\0';
-    }
-
-    return NoError;
+    return requestAndValidateStringInput(password, 24, 0, NULL, LIGHT "Enter the Wonder Mail's password\n" RESET);
 }
 
 
@@ -527,17 +517,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
 int requestSOSMailPassword(char *password)
 {
-    fputs(LIGHT "Enter the SOS Mail's password\n" RESET, stdout);
-    fputs(">>> " LGREEN, stdout);
-    fflush(stdout);
-    (void)!fgets(password, 54, stdin);
-    fputs(RESET, stdout);
-    fflush(stdout);
-    if (password[strlen(password) - 1] == '\n') {
-        password[strlen(password) - 1] = '\0';
-    }
-
-    return NoError;
+    return requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS Mail's password\n" RESET);
 }
 
 
@@ -655,9 +635,80 @@ int requestAndParseSosMailData(struct SosMail *sos)
     sos->floor = selection;
 
     /* reward item */
+    if (sos->mailType == ThankYouMailType) {
+        forever {
+            randomHolder = 1 + rand() % (itemsCount - 1);
+            if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
+                continue;
+            }
+            selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
+            if (*stringEnd) { /* non-digit found */
+                selection = itemsCount; /* invalid name, invalid index */
+                for (i = 0; i < itemsCount; ++i) {
+                    if (strcmp(itemsStr[i], stringInput) == 0) {
+                        selection = i;
+                        break; /* item found */
+                    }
+                }
+
+                if (selection == itemsCount) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
+                    mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
+                    if (mostSimilarIndex == -1) {
+                        fputs("Re-check your spelling.\n" RESET, stderr);
+                    } else {
+                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
+                    }
+                    continue;
+                }
+            }
+
+            if (selection == 0 || checkItemRange(selection, 1) == NoError) {
+                break; /* input is ok */
+            }
+        } /* forever */
+        sos->itemReward = selection;
+    } else {
+        sos->itemReward = rand() % itemsCount; /* ignored if not thank-u mail */
+    }
+
+    /* mail ID */
+    forever {
+        if (requestAndValidateIntegerInput(&selection, 1, rand() % 10000, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (0 to 9999, leave blank for random).\n" RESET) == NoError && checkMailID(selection, 0) == NoError) {
+            break; /* input is ok */
+        }
+    }
+    sos->mailID = selection;
+
+    /* Chances left */
+    forever {
+        if (requestAndValidateIntegerInput(&selection, 1, 10, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (1 to 10, leave blank for 10).\n" RESET) == NoError && selection >= 1 && selection <= 10) {
+            break; /* input is ok */
+        }
+    }
+    sos->chancesLeft = selection;
+
+    return NoError;
+}
+
+
+
+int requestAndParseSOSMailConvertion(char *password, int *item)
+{
+    if (requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS or A-OK Mail's " LGREEN "password" RESET LIGHT " (54 characters)\n" RESET) != NoError) {
+        return InputError;
+    }
+
+    unsigned int i = 0;
+    unsigned int selection = -1;
+    char stringInput[101];
+    int randomHolder;
+    char *stringEnd;
+    int mostSimilarIndex = 0;
+
     forever {
         randomHolder = 1 + rand() % (itemsCount - 1);
-        if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
+        if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item for the Thank-You mail" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
             continue;
         }
         selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -686,24 +737,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
             break; /* input is ok */
         }
     } /* forever */
-    sos->itemReward = selection;
-
-    /* mail ID */
-    forever {
-        if (requestAndValidateIntegerInput(&selection, 1, rand() % 10000, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (0 to 9999, leave blank for random).\n" RESET) == NoError && checkMailID(selection, 0) == NoError) {
-            break; /* input is ok */
-        }
-    }
-    sos->mailID = selection;
-
-    /* Chances left */
-    forever {
-        if (requestAndValidateIntegerInput(&selection, 1, 10, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (1 to 10, leave blank for 10).\n" RESET) == NoError && selection >= 1 && selection <= 10) {
-            break; /* input is ok */
-        }
-    }
-    sos->chancesLeft = selection;
-
+    *item = selection;
     return NoError;
 }
 
@@ -875,7 +909,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
         temp[i + j] = mailInfo->password[i];
     }
 
-    fprintf(stdout, "\n" COLOR_BORDER COLOR_BACKGROUND "**********************************************" RESET "\n"
+    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "**********************************************" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-56s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-43s*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-81s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
@@ -959,7 +993,7 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
         temp[i + j] = mailInfo->password[i];
     }
 
-    fprintf(stdout, "\n" COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n"
+    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-44s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-45s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
@@ -1170,7 +1204,7 @@ int requestAndValidateIntegerInput(unsigned int *n, int allowEmptyValue, int val
         errno = 0; /* strtol modifies `errno` if the input is too big to be stored in a `long int` */
         *n = (unsigned int)strtol(stringInput, &stringEnd, 10);
         if (*stringEnd || errno) {
-            fputs(LRED "ERROR:" RESET LIGHT " Invalid input. Only positive numbers are allowed.\n\n" RESET, stderr);
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " Invalid input. %s.\n\n" RESET, errno ? strerror(errno) : "Only positive numbers are allowed");
             return InputError;
         }
         return NoError;

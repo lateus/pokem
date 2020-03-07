@@ -20,7 +20,7 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     if (mailType != 1) { /* 1 is SOS Mail */
         fputs("ERROR: The mail entered not belongs to a SOS Mail.\n", stderr);
         if (mailType == 4 || mailType == 5) {
-            fprintf(stderr, "        Apparently it belongs to a %s.\n", mailType == 4 ? "A-OK Mail" : "Thank-You Mail");
+            fprintf(stderr, "        It belongs to a %s.\n", mailType == 4 ? "A-OK Mail" : "Thank-You Mail");
         }
         fputs("THE PASSWORD CAN'T BE DECODED.\n\n", stderr);
         return InputError;
@@ -41,9 +41,9 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
         password54Integers[i] = 0;
     }
     bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
-    char passwordAllocated[54] = {0};
-    lookupTableEncodingSos(password54Integers, passwordAllocated);
-    realocateBytesEncodingSos(resultAOKMail, passwordAllocated);
+    char passwordUnallocated[54] = {0};
+    lookupTableEncodingSos(password54Integers, passwordUnallocated);
+    realocateBytesEncodingSos(passwordUnallocated, resultAOKMail);
 
     /* SECOND: THANK-YOU MAIL */
     if (item <= 0 || item > 239) {
@@ -63,11 +63,11 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     /* back again */
     for (i = 0; i < 54; ++i) {
         password54Integers[i] = 0;
-        passwordAllocated[i] = 0;
+        passwordUnallocated[i] = 0;
     }
     bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
-    lookupTableEncodingSos(password54Integers, passwordAllocated);
-    realocateBytesEncodingSos(resultThankYouMail, passwordAllocated);
+    lookupTableEncodingSos(password54Integers, passwordUnallocated);
+    realocateBytesEncodingSos(passwordUnallocated, resultThankYouMail);
 
     return NoError;
 }

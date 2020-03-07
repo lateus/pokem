@@ -12,3 +12,4 @@ build/
 *.creator
 *.files
 *.includes
+*.config

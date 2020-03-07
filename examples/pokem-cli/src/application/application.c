@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <ctype.h>
+#include <errno.h>
 
 int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
@@ -19,29 +20,21 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
     int i;
     int errorCode;
     
-    if (argc > 1) {
-        /* This loop will allow to decode all entered wonder mails one by one. */
-        for (i = 1; i < argc; ++i) {
-            errorCode = decodeWonderMail(argv[i], &mail);
-            if (errorCode) {
-                return errorCode;
-            }
-
-            /* Bulking the mail's data... */
-            setWonderMailInfo(&mail, &mailInfo);
-            strncpy(mailInfo.password, argv[i], 24);
-            printWonderMailData(&mailInfo, &mail);
+    for (i = 1; i < argc || i == 1; ++i) {
+        if (argc > 1) {
+            fprintf(stdout, LIGHT "%d.\n" RESET, i);
+            strncpy(psw, argv[i], 24);
         }
-    } else {
         errorCode = decodeWonderMail(psw, &mail);
         if (errorCode) {
-            return errorCode;
+            continue;
         }
 
         /* Bulking the mail's data... */
         setWonderMailInfo(&mail, &mailInfo);
         strncpy(mailInfo.password, psw, 24);
         printWonderMailData(&mailInfo, &mail);
+        fputc('\n', stdout);
     }
     fflush(stdout);
 
@@ -248,28 +241,30 @@ int decodeSOSM(int argc, const char *argv[])
 {
     char psw[55] = {0};
 
-    if (argc == 1) {
+    if (argc <= 1) {
         requestSOSMailPassword(psw);
     }
-    struct SosMailInfo sosInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
+
+    struct SosMail mail = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
+    struct SosMailInfo mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} }; /* The 8th element is a char */
     int i;
     int errorCode;
 
-    if (argc > 1) {
-        /* This loop will allow to decode all entered SOS mails one by one. */
-        for (i = 1; i < argc; ++i) {
-            errorCode = decodeSosMail(argv[i], &sosInfo);
-            if (errorCode) {
-                return errorCode;
-            }
-            printSOSData(&sosInfo, NULL);
+    for (i = 1; i < argc || i == 1; ++i) {
+        if (argc > 1) {
+            fprintf(stdout, LIGHT "%d.\n" RESET, i);
+            strncpy(psw, argv[i], 54);
         }
-    } else {
-        errorCode = decodeSosMail(psw, &sosInfo);
-        if (errorCode) {
-            return errorCode;
+        errorCode = decodeSosMail(psw, &mail);
+        if (errorCode != NoError) {
+            continue;
         }
-        printSOSData(&sosInfo, NULL);
+
+        /* Bulking the mail's data... */
+        setSosInfo(&mail, &mailInfo);
+        strncpy(mailInfo.password, psw, 54);
+        printSOSData(&mailInfo, &mail);
+        fputc('\n', stdout);
     }
     fflush(stdout);
 
@@ -326,29 +321,84 @@ int parseSOSData(const char *argv[], struct SosMail *sos)
 
 int convertSOS(int argc, const char *argv[])
 {
-    if (argc == 1) {
-        return showHelpConverting(argv[0]);   /* No arguments specified. The value of the macro HELP is returned. */
-    }
-
-    int item = 0;
-    if (argc < 3) {
-        fputs("Reward item not specified. Default to nothing.\n", stderr);
-    } else {
-        item = atoi(argv[3]);
-    }
-
+    char SOSPassword[55];
     char AOKPassword[55];
     char ThankYouPassword[55];
-    convertSosMail(argv[1], item, AOKPassword, ThankYouPassword);
+    int itemReward;
+    char *stringEnd; /* strtol() */
 
-    struct SosMailInfo AOKInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
-    struct SosMailInfo ThxInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
-    decodeSosMail(AOKPassword, &AOKInfo);
-    decodeSosMail(ThankYouPassword, &ThxInfo);
-    fprintf(stdout, "============== A-OK Mail ==============");
-    printSOSData(&AOKInfo, NULL);
-    fprintf(stdout, "============ Thank-You Mail ===========");
-    printSOSData(&ThxInfo, NULL);
+    struct SosMail SOSMail = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
+    struct SosMail AOKMail = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
+    struct SosMail ThxMail = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
+    struct SosMailInfo SOSInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    struct SosMailInfo AOKInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+    struct SosMailInfo ThxInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0}, {0}, {0} };
+
+    int i, j, count;
+    int mostSimilarIndex = 0;
+    int errorCode;
+
+    if  (argc <= 1) {
+        requestAndParseSOSMailConvertion(SOSPassword, &itemReward);
+    }
+
+    for (i = 1, count = 1; i < argc || i == 1; i += 2, ++count) {
+        if (argc > 1) {
+            fprintf(stdout, LIGHT "%d.\n" RESET, count);
+            strncpy(SOSPassword, argv[i], 54);
+        }
+
+        if (argc > 1 && i + 1 >= argc) {
+            itemReward = 0;
+            fprintf(stdout, LIGHT "Reward item not specified. Default to " LGREEN "\"%s\"" RESET LIGHT ".\n", itemsStr[itemReward]);
+        } else if (argc > 1) {
+            itemReward = strtol(argv[i + 1], &stringEnd, 10);
+            if (*stringEnd) { /* non-digit found */
+                itemReward = itemsCount; /* invalid name, invalid index */
+                for (j = 0; j < (int)itemsCount; ++j) {
+                    if (strcmp(itemsStr[j], argv[i + 1]) == 0) {
+                        itemReward = j;
+                        break; /* item found */
+                    }
+                }
+
+                if ((unsigned int)itemReward == itemsCount) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n" RESET, argv[i + 1]);
+                    mostSimilarIndex = findMostSimilarStringInArray(argv[i + 1], itemsStr, itemsCount);
+                    itemReward = mostSimilarIndex == -1 ? 0 : mostSimilarIndex;
+                    fprintf(stderr, LGREEN "\"%s\"" RESET LIGHT " has been assumed.\n" RESET, itemsStr[itemReward]);
+                }
+            } else if (checkItemRange(itemReward, 1) != NoError) {
+                continue;
+            }
+        }
+
+        errorCode = convertSosMail(SOSPassword, itemReward, AOKPassword, ThankYouPassword);
+        if (errorCode) {
+            continue;
+        }
+
+        if (decodeSosMail(SOSPassword, &SOSMail) != NoError || decodeSosMail(AOKPassword, &AOKMail) != NoError || decodeSosMail(ThankYouPassword, &ThxMail) != NoError) {
+            continue;
+        }
+        /* Bulking the mail's data... */
+        setSosInfo(&SOSMail, &SOSInfo);
+        strncpy(SOSInfo.password, SOSPassword, 54);
+        setSosInfo(&AOKMail, &AOKInfo);
+        strncpy(AOKInfo.password, AOKPassword, 54);
+        setSosInfo(&ThxMail, &ThxInfo);
+        strncpy(ThxInfo.password, ThankYouPassword, 54);
+
+        fputs(RESET "================== SOS Mail ====================\n", stdout);
+        printSOSData(&SOSInfo, &SOSMail);
+        fputs("\n================== A-OK Mail ===================\n", stdout);
+        printSOSData(&AOKInfo, &AOKMail);
+        fputs("\n================ Thank-You Mail ================\n", stdout);
+        printSOSData(&ThxInfo, &ThxMail);
+        fputc('\n', stdout);
+        fflush(stdout);
+    }
     fflush(stdout);
+
     return NoError;
 }

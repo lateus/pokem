@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
+int decodeSosMail(const char *sosPassword, struct SosMail *sosMailResult)
 {
     char packed34Bytes[34] = {0};
     int errorCode;
@@ -29,10 +29,9 @@ int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult
 #endif
         return InputError; /* to use the NOT operator */
     }
-    setSosInfo(&sosm, sosMailInfoResult);
-    sprintf(sosMailInfoResult->password, "%s\n          %s", strncat(sosMailInfoResult->password, sosPassword, 27), sosPassword + 27);
+    
+    *sosMailResult = sosm;
 
-    fflush(stdout);
     return NoError;
 }
 
