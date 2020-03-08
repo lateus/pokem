@@ -6,15 +6,46 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define VERSION_STRING "0.1"
+
 int autodetect(int argc, const char *argv[]);
 
 int main(int argc, const char *argv[])
 {
     /* Copyright notice */
-    fputs(LIGHT "PokeM " RESET DRED "v0.1" DGREEN "   Copyright 2018-2019 Carlos Enrique Perez Sanchez.\n"
+    fputs(LIGHT "PokeM " RESET DRED "v" VERSION_STRING DGREEN "   Copyright 2018-2020 Carlos Enrique Perez Sanchez.\n"
           RESET "Based on the tools written by Peter O.\n"
           ".................................................................\n", stdout);
     fflush(stdout);
+
+    int i; /* iterations */
+
+    /* Basics command line options */
+    const char* databaseTypesStr[] = { "pokemon", "items", "dungeons", "areas", "missions", "rewards" };
+    if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))) {
+        showHelp(argv[0]);
+        return 0;
+    } else if (argc > 1 && (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version"))) {
+        fputs(VERSION_STRING "\n", stdout);
+        return 0;
+    } else if (argc > 1 && (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--database"))) {
+        if (argc <= 2) {
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " Missing argument.\n" RESET \
+                       "       Expected type [pokemon|items|dungeons|areas|missions|rewards]\n" \
+                       "       Example: " LGREEN "%s --database pokemon\n" RESET, argv[0]);
+            return InputError;
+        } else {
+            for (i = 0; i < 6; ++i) {
+                if (!strcmp(argv[2], databaseTypesStr[i])) {
+                    showDatabase(i);
+                    return 0;
+                }
+            }
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " Unknown database type " LGREEN "%s" RESET LIGHT ".\n" RESET \
+                                 "       Available types: [pokemon|items|dungeons|areas|missions|rewards]\n", argv[2]);
+            return InputError;
+        }
+    }
 
     /* A seed to generate random numbers */
     srand((unsigned int)time(NULL));
@@ -34,6 +65,9 @@ int main(int argc, const char *argv[])
             return encodeSOSM(0, NULL);
         case 5:
             return convertSOS(0, NULL);
+        case 6:
+            showHelp(argv[0]);
+            return 0;
         default:
             fputs("Exiting...\n", stdout);
         }

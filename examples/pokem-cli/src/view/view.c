@@ -11,219 +11,167 @@
 #define forever for(;;)
 #define DISCLAIMER \
     "This program comes with ABSOLUTELY NO WARRANTY.\n" \
-    "This is free software, and you are welcome to modify and/or redistribute it under\n" \
-    "the terms of the GNU GENERAL PUBLIC LICENSE v2. Please visit http://www.gnu.org/licenses/\n\n"
+    "This is free software, and you are welcome to modify and/or redistribute it under the\n" \
+    "terms of the GNU GENERAL PUBLIC LICENSE v2. Please visit http://www.gnu.org/licenses/\n\n"
 
-int showSelectionScreen()
+
+void showHelp(const char *programName)
 {
-    fputs(LIGHT "What do you want to do?\n"
-          LGREEN  "1" RESET " - Decode a Wonder Mail\n"
-          LGREEN  "2" RESET " - Encode a Wonder Mail\n"
-          LGREEN  "3" RESET " - Decode a SOS Mail\n"
-          LGREEN  "4" RESET " - Encode a SOS Mail\n"
-          LGREEN  "5" RESET " - Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n"
-          LGREEN  "[Other]:" LRED " Exit\n" RESET, stdout);
-    unsigned int selection;
-    if (requestAndValidateIntegerInput(&selection, 0, 0, "") != NoError) {
-        return 6; /* exit */
-    } else {
-        return selection;
+    fputs(DISCLAIMER, stdout);
+
+    fprintf(stdout, LIGHT "Usage: " LGREEN "%s [ARGUMENTS]...\n" \
+                    LYELLOW "-h, --help              " RESET "display this help and exit\n" \
+                    LYELLOW "-v, --version           " RESET "display version information and exit\n" \
+                    LYELLOW "-d, --database <type>   " RESET "display the database of the selected type,\n" \
+                    "                        which can be one of [pokemon|items|dungeons|areas|missions|rewards]\n\n" \
+                    LIGHT "Generic:\n" RESET \
+                    "This program will try to autodetect what do you want to do based\n" \
+                    "on your input. If you enter a Wonder Mail or SOS Mail, this program\n" \
+                    "will try to decode it. If you enter an SOS Mail and an item, this\n" \
+                    "program will try to convert it in a A-OK Mail and then in a Thank-You\n" \
+                    "Mail. If you enter exactly 9 or 6 arguments, this program will try\n" \
+                    "to encode a Wonder Mail or a SOS Mail respectively.\n" \
+                    "\n" \
+                    LIGHT "Conventions:\n" RESET \
+                    LIGHT "1. " RESET "Enter the password in UPPERCASE.\n" \
+                    LIGHT "2. " RESET "Enter the names of pokemon, items, dungeons, etc. " LIGHT "C" RESET "apitalized.\n" \
+                    LIGHT "3. " RESET "Symbols conventions:\n" \
+                    "    \'Female\' -> \'" LGREEN "*" RESET "\'\n" \
+                    "    \'Male\'   -> \'" LGREEN "/" RESET "\'\n" \
+                    "    \'...\'    -> \'" LGREEN "." RESET "\'\n" \
+                    LIGHT "4. " RESET "It's recommended that you quote passwords arguments and arguments that\n" \
+                    "   contains spaces by using \"double quotes\" on Windows and \'single quotes\' on\n" \
+                    "   UNIX systems.\n" \
+                    "\n", programName);
+    fprintf(stdout, LIGHT "Decode Wonder Mail:\n" RESET \
+                    LIGHT "Usage: " LGREEN "%s [password1] [password2]...\n" RESET \
+                    "Decode all entered passwords. Invalid ones are skipped.\n" \
+                    "Examples of valid entries:\n" \
+                    LGREEN "%s \'4?6F7M+?4JNRJ*??K??0+9??\' \'16J.8!0?1PS35-?06N?RP8?W\' \'F?N.?QY?8RNYYN?4.J75N+?W\'\n" \
+                    LGREEN "%s \'??J9XJX?2P??8??F6H?0P??W\'\n" \
+                    "\n" \
+                    LIGHT "Encode Wonder Mail:\n" RESET \
+                    LIGHT "Usage: " LGREEN "%s [Mission type] [Pkmn client] [Pkmn target] [Item to find/deliver] [Dungeon] [Floor] [Reward type] [Item reward] [Friend area reward]\n" RESET \
+                    "Encode a Wonder Mail using the entered arguments.\n" \
+                    "You must enter exactly 9 arguments.\n" \
+                    "You can use both numeric or text values for pokemon, items, dungeons and friend areas.\n" \
+                    "For the remaining fields, only numeric values are accepted.\n" \
+                    "Check the database to know the available mission types, pokemon, items, dungeons, etc.\n" \
+                    "Example of valid entries:\n" \
+                    LGREEN "%s 0 Milotic 1 0 \"Fantasy Strait\" 2 6 \"Wish Stone\" 0\n" RESET \
+                    LIGHT "NOTE: " RESET "It's a Help-type mission from Milotic, the target pkmn and the item\n" \
+                    "      to find/deliver are ignored. The rescue is in Fantasy Strait at 2nd floor.\n" \
+                    "      The reward is a lot of money and a Wish Stone, and the Friend Area reward is ignored.\n" \
+                    "--This is very useful, as wou can get any item, including hard to find ones like Beauty Scarf.\n" \
+                    "--You can also unlock game-exclusive pokemon like Porygon, Mantine, Plusle, Roselia and Feebas in\n"
+                    "  Red Rescue Team (GBA), and Lapras, Minum, Aipom and Magikarp in Blue Rescue Team (DS).\n" \
+                    "--And, of course, you can also create high rescue points rewarding missions to improve your rank.\n" \
+                    "\n" \
+                    LIGHT "Decode SOS Mail:\n" RESET \
+                    LIGHT "Usage: " LGREEN "%s [password1] [password2]...\n" RESET \
+                    "Decode all entered passwords. Invalid ones are skipped.\n" \
+                    "Examples of valid entries:\n" \
+                    LGREEN "%s \'?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04?\' \'S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N\'\n" RESET \
+                    LGREEN "%s \'????6+7SHX???1?4???H??4?NP???4???TR?????X25??PJ??07?C?\'\n" RESET \
+                    "\n" \
+                    LIGHT "Encode SOS Mail:\n" RESET \
+                    LIGHT "Usage: " LGREEN "%s [Pkmn client] [Pkmn nickname] [Dungeon] [Floor] [Mail ID] [Rescue chances]\n" RESET \
+                    "Encode a SOS Mail using the entered arguments.\n" \
+                    "You must enter exactly 6 arguments.\n" \
+                    "You can use both numeric or text values for pokemon, items and dungeons.\n" \
+                    "For the remaining fields, only numeric values are accepted.\n" \
+                    "Check the database to know the available pokemon, items, dungeons, etc.\n" \
+                    "Example of valid entries:\n" \
+                    LGREEN "%s Chansey Nurcy \'Joyous Tower\' 50 1234 10\n" RESET \
+                    LIGHT "NOTE: " RESET "Rescue a Chansey named Nurcy at Joyous Tower floor 50.\n" \
+                    "      The Mail ID is 1234 and you can try 10 times.\n" \
+                    "--It is very unlikely that you ever need to encode a SOS Mail, but, still, I want to support it.\n" \
+                    "\n"
+                    LIGHT "Convert SOS Mail in A-OK and Thank-You Mail:\n" RESET \
+                    LIGHT "Usage: " LGREEN "%s [password1] [item1] [password2] [item2]...\n" RESET \
+                    "Convert all entered passwords in A-OK and Thank-You Mail passwords. Invalid ones are skipped.\n" \
+                    "The password specified must belong to an SOS Mail.\n" \
+                    "The item specified is set as reward in the Thank-You Mail password.\n" \
+                    "If the item specified does not exists, the most similar in terms of writing is assumed.\n" \
+                    "Check the database to know the available items.\n" \
+                    "Examples of valid entries:\n" \
+                    LGREEN "%s \'?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04?\' \"Joy Seed\" \'S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N\' Ginseng\n" RESET \
+                    LGREEN "%s \'????6+7SHX???1?4???H??4?NP???4???TR?????X25??PJ??07?C?\' Nothing\n" RESET \
+                    "--This is very useful, as wou can rescue yourself by converting your own SOS Mail.\n", programName, programName, programName, programName, programName, programName, programName, programName, programName, programName, programName, programName, programName);
+    fflush(stdout);
+}
+
+
+
+void showDatabase(enum DatabaseType type)
+{
+    unsigned int i;
+    switch (type) {
+    case PokemonDB:
+        fprintf(stdout, LIGHT "Pokemon database\n" RESET);
+        for (i = 0; i < pkmnSpeciesCount; ++i) {
+            fprintf(stdout, "(" LGREEN "%d" RESET ") %s\n", i, pkmnSpeciesStr[i]);
+        }
+        break;
+    case ItemsDB:
+        fprintf(stdout, LIGHT "Items database\n" RESET);
+        for (i = 0; i < itemsCount; ++i) {
+            fprintf(stdout, "(" LGREEN "%d" RESET ") %s\n", i, itemsStr[i]);
+        }
+        break;
+    case DungeonDB:
+        fprintf(stdout, LIGHT "Dungeons database\n" RESET);
+        for (i = 0; i < dungeonsCount; ++i) {
+            fprintf(stdout, "(" LGREEN "%d" RESET ") %s\n", i, dungeonsStr[i]);
+        }
+        break;
+    case FriendAreaDB:
+        fprintf(stdout, LIGHT "Friend areas database\n" RESET);
+        for (i = 0; i < friendAreasCount; ++i) {
+            fprintf(stdout, "(" LGREEN "%d" RESET ") %s\n", i, friendAreasStr[i]);
+        }
+        break;
+    case MissionDB:
+        fprintf(stdout, LIGHT "Mission types database\n" RESET);
+        for (i = 0; i < missionTypeObjectiveCount; ++i) {
+            fprintf(stdout, "(" LGREEN "%d" RESET ") %s\n", i, missionTypeObjectiveStr[i]);
+        }
+        break;
+    case RewardTypeDB:
+        fputs(LIGHT "Reward types database\n" RESET \
+              "(" LGREEN "0" RESET ") Money\n" \
+              "(" LGREEN "1" RESET ") Money + ?\n" \
+              "(" LGREEN "2" RESET ") Item\n" \
+              "(" LGREEN "3" RESET ") Item + ?\n" \
+              "(" LGREEN "4" RESET ") Money\n" \
+              "(" LGREEN "5" RESET ") Money + ?\n" \
+              "(" LGREEN "6" RESET ") Item\n" \
+              "(" LGREEN "7" RESET ") Item + ?\n" \
+              "(" LGREEN "8" RESET ") Friend area\n", stdout);
+        break;
+    default:
+        fprintf(stderr, LRED "ERROR:" RESET LIGHT " Invalid request\n" RESET);   /* this should never happen */
+        break;
     }
 }
 
 
-int showGeneralHelp(const char *programName)
+
+int showSelectionScreen()
 {
-    fputs(DISCLAIMER, stdout);
-
-    fprintf(stdout, "Usage: %s [ARGUMENTS]...\n"
-                    "[ARGUMENTS]:\n"
-                    "This program will try to autodetect what do you want to do based\n"
-                    "on your input. If you enter a Wonder Mail, this program will try\n"
-                    "to decode it. If you enter exactly 9 or 6 arguments, this program\n"
-                    "will try to encode a Wonder Mail or a SOS Mail respectively.\n"
-                    "If your input is incorrect, a menu will appear to bring you help\n"
-                    "about a specific topic.\n\n"
-                    "Developed by Carlos Enrique Perez Sanchez.\n", programName);
-    fflush(stdout);
-    return NoError;
-}
-
-
-int showHelpDecodingWonderMail(const char* programName) /* argv[0] is the program path/name */
-{
-    fputs(DISCLAIMER, stdout);
-
-    fprintf(stdout, "========= HELP DECODING WONDER MAIL =========\n"
-                    "Usage: %s [PASSWORD_1] [PASSWORD_2]...\n"
-                    "Enter the password in UPPERCASE.\n"
-                    "Symbols conventions:\n"
-                    "\t> \'FEMALE\' are \'*\'\n"
-                    "\t> \'MALE\' are \'/\'\n"
-                    "\t> \'...\' are \'.\'\n\n"
-                    "Examples of valid entries:\n"
-                    "\t%s 16J.8!0?1PS35-?06N?RP8?W\n"
-                    "\t%s ??J9XJX?2P??8??F6H?0P??W\n"
-                    "NOTE: On UNIX, you must quote (using simple quotes) the passwords.\n"
-                    "      The first one will decode three Wonder Mails, and the second will decode just one.\n\n"
-                    "Developed by Carlos Enrique Perez Sanchez.\n", programName, programName, programName);
-    fflush(stdout);
-    return NoError;
-}
-
-
-int showHelpEncodingWonderMail(const char* programName)
-{
-    fputs(DISCLAIMER, stdout);
-
-    fprintf(stdout, "========= HELP ENCODING WONDER MAIL =========\n"
-                    "Usage: %s [Mission type] [Pkmn client] [Pkmn target] [Item to find/deliver] [Dungeon] [Floor] [Reward type] [Item reward] [Friend area reward]\n"
-                    "You must enter exactly 9 arguments.\n"
-                    "You can use both numeric or text values for pokemon, items, dungeons and friend areas.\n"
-                    "For the remaining fields, only numeric values are accepted.\n"
-                    "Example of valid entries:\n"
-                    "%s 0 375 1 0 46 2 6 54 0\n"
-                    "NOTE: It's a Help-type mission from Milotic, the target pkmn and the item\n"
-                    "      to find/deliver are ignored. The rescue is in Fantasy Strait at 2nd floor.\n"
-                    "      The reward is a lot of money and a Wish Stone, and the Friend Area Reward is ignored.\n\n"
-                    "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName);
-    showDatabase();
-
-    fflush(stdout);
-    return NoError;
-}
-
-
-int showHelpDecodingSos(const char* programName)
-{
-    fputs(DISCLAIMER, stdout);
-
-    fprintf(stdout, "========== HELP DECODING SOS MAIL ==========\n"
-                    "Usage: %s [PASSWORD_1] [PASSWORD_2]...\n"
-                    "Enter the password in UPPERCASE.\n"
-                    "Symbols conventions:\n"
-                    "\t> 'FEMALE' are '*'\n"
-                    "\t> 'MALE' are '/'\n"
-                    "\t> '...' are '.'\n\n"
-                    "Examples of valid entries:\n"
-                    "\t%s ?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04? S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N\n"
-                    "\t%s S2???.RYW6F\?\?!P5*5KW???RH3J-?3?JX7P0??SNM42PSKJ\?\?!QJ4N\n" /* Seek others passwords that not contains trigraphs */
-            "NOTE: On UNIX, you must quote (using simple quotes) the passwords.\n"
-            "      The first one will decode two SOS Mails, and the second will decode just one.\n\n"
-            "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName, programName);
-
-    fflush(stdout);
-    return NoError;
-}
-
-
-int showHelpEncodingSos(const char *programName)
-{
-    fputs(DISCLAIMER, stdout);
-
-    fprintf(stdout, "========== HELP ENCODING SOS MAIL ==========\n"
-                    "Usage: %s [Pkmn client] [Pkmn nickname] [Dungeon] [Floor] [Mail ID (default: 0)] [Rescue chances (default: 10)]\n"
-                    "Enter only the numerical values.\nYou must enter exactly 6 arguments.\n\n"
-                    "Example of valid entry:\n%s 113 Nurcy 58 50 1234 10\n"
-                    "NOTE: Rescue a Chansey named \'Nurcy\' at 'Joyous Tower' floor 50.\n"
-                    "      The Mail ID is 1234 and you can try 10 times.\n\n"
-                    "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName);
-    showDatabase();
-
-    return NoError;
-}
-
-
-int showHelpConverting(const char *programName)
-{
-    fputs(DISCLAIMER, stdout);
-
-    fprintf(stdout, "========= HELP CONVERTING SOS MAIL =========\n"
-                    "Usage: %s [PASSWORD_1] [PASSWORD_2]...\n"
-                    "Enter the password in UPPERCASE.\n"
-                    "Symbols conventions:\n"
-                    "\t> 'FEMALE' are '*'\n"
-                    "\t> 'MALE' are '/'\n"
-                    "\t> '...' are '.'\n\n"
-                    "Examples of valid entries:\n"
-                    "\t%s ?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04? S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N\n"
-                    "\t%s S2???.RYW6F\?\?!P5*5KW???RH3J-?3?JX7P0??SNM42PSKJ\?\?!QJ4N\n" /* Seek others passwords that not contains trigraphs */
-            "NOTE: On UNIX, you must quote (using simple quotes) the passwords.\n"
-            "      The first one will convert two SOS Mails, and the second will convert just one.\n"
-            "      You will get a A-OK Mail that allows you to be rescued.\n"
-            "      You will get also a Thank-You Mail, use it if you want.\n\n"
-            "Developed by Carlos Enrique Perez Sanchez.\n\n", programName, programName, programName);
-
-    fflush(stdout);
-    return NoError;
-}
-
-
-void showDatabase()
-{
-    unsigned int i;
-    forever { /* infinite loop */
-        fputs("Enter one of the following values to see the desired database:\n"
-              "1) Pkmn database\n"
-              "2) Dungeons database\n"
-              "3) Mission type\n"
-              "4) Reward type\n"
-              "5) Friend area reward\n"
-              "OTHER KEY: [Exit]\n"
-              "Your choice?: ", stdout);
-        fflush(stdout);
-        fflush(stdin);
-        int choice;
-        if (scanf("%d", &choice) <= 0) {
-            choice = 0; /* exit */
-        }
-        if (choice < 1 || choice > 5) {
-            fputs("Exiting...\n", stdout);
-            return;
-        } else {
-            switch (choice) {
-            case 1:
-                fprintf(stdout, " :: Pkmn database: ---\n");
-                for (i = 0; i < 405; ++i) {
-                    fprintf(stdout, "    %d - %s\n", i, pkmnSpeciesStr[i]);
-                }
-                break;
-            case 2:
-                fprintf(stdout, " :: Dungeons database: ---\n");
-                for (i = 0; i < 63; ++i) {
-                    fprintf(stdout, "    %d - %s\n", i, dungeonsStr[i]);
-                }
-                break;
-            case 3:
-                fprintf(stdout, " :: Mission type: ---\n");
-                for (i = 0; i < 6; ++i) {
-                    fprintf(stdout, "    %d - %s\n", i, missionTypeObjectiveStr[i]);
-                }
-                break;
-            case 4:
-                fprintf(stdout, " :: Reward type: ---\n");
-                fputs("    0 - Money\n"
-                      "    1 - Money + ?\n"
-                      "    2 - Item\n"
-                      "    3 - Item + ?\n"
-                      "    4 - Money\n"
-                      "    5 - Money + ?\n"
-                      "    6 - Item\n"
-                      "    7 - Item + ?\n"
-                      "    8 - Friend area\n", stdout);
-                break;
-            case 5:
-                fprintf(stdout, " :: Friend area reward: ---\n"); /* update the range if you uncomment the full database */
-                for (i = 0; i < 4; ++i) {
-                    fprintf(stdout, "    %d - %s\n", i, friendAreasStr[i]);
-                }
-                break;
-            default:
-                fprintf(stderr, " :: Invalid key\n");   /* this should never happen */
-                break;
-            }
-            putchar('\n');
-        }
+    fputs(LIGHT "What do you want to do?\n" \
+          LGREEN  "1" RESET " - Decode a Wonder Mail\n" \
+          LGREEN  "2" RESET " - Encode a Wonder Mail\n" \
+          LGREEN  "3" RESET " - Decode a SOS Mail\n" \
+          LGREEN  "4" RESET " - Encode a SOS Mail\n" \
+          LGREEN  "5" RESET " - Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n"
+          LGREEN  "6" RESET " - Show Help\n"
+          LGREEN  "[Other]:" LRED " Exit\n" RESET, stdout);
+    unsigned int selection;
+    if (requestAndValidateIntegerInput(&selection, 0, 0, "") != NoError) {
+        return 7; /* exit */
+    } else {
+        return selection;
     }
 }
 

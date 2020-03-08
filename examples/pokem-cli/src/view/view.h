@@ -11,16 +11,12 @@
 #define COLOR_CYAN COLOR(0, 248, 248)
 #define COLOR_RED COLOR(248, 128, 88)
 
+enum DatabaseType { PokemonDB, ItemsDB, DungeonDB, FriendAreaDB, MissionDB, RewardTypeDB };
+
 int showSelectionScreen(void);
 
-int showGeneralHelp(const char *programName);
-int showHelpDecodingWonderMail(const char *programName);
-int showHelpEncodingWonderMail(const char *programName);
-int showHelpDecodingSos(const char *programName);
-int showHelpEncodingSos(const char *programName);
-int showHelpConverting(const char *programName);
-
-void showDatabase(void);
+void showHelp(const char *programName);
+void showDatabase(enum DatabaseType type);
 
 int requestWonderMailPassword(char *password);
 int requestAndParseWonderMailData(struct WonderMail *wm);

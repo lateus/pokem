@@ -48,6 +48,7 @@ extern const int lunarRibbonPkmn[];
 extern const int beautyScarfPkmn[];
 
 /* Mission type */
+extern const unsigned int missionTypeObjectiveCount;
 extern const char* missionTypeObjectiveStr[];
 
 /** *** Standard titles and bodies *** **/

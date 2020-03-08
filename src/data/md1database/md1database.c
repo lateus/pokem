@@ -182,6 +182,7 @@ const int beautyScarfPkmn[]  = { 1, 374 }; /* Feebas */
 
 
 /* Mission type */
+const unsigned int missionTypeObjectiveCount = 6; /* The size of the array */
 const char* missionTypeObjectiveStr[] = {
     "Help me!",
     "Find %s.",
