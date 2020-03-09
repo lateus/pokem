@@ -8,7 +8,6 @@
 CuSuite* DecodeWonderMailGetTestSuite(void);
 
 void decodeWonderMail_test(CuTest *tc);
-void reallocateBytesDecodingWonderMail_test(CuTest *tc);
 void bitUnpackingDecodingWonderMail_test(CuTest *tc);
 void setFlavorText_test(CuTest *tc);
 void setFlavorTextHead_test(CuTest *tc);
