@@ -34,8 +34,10 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword, int trySpecialW
     bitUnpackingEncoding(packed15BytesPassword, password24Integers, 15);
 
     char password24Chars[24] = {0};
-    lookupTableEncodingWonderMail(password24Integers, password24Chars);
-    reallocateBytesEncodingWonderMail(password24Chars, finalPassword);
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    mapPasswordByPositionInLookupTable(password24Integers, lookupTable, 24, password24Chars);
+    const int newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
+    reallocateBytes(password24Chars, newPositions, 24, finalPassword);
 
     return NoError; /* means ok */
 }
@@ -86,26 +88,4 @@ void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14B
     packed14BytesPassword[11]  = ((mail->floor >> 2) & 0x3F);   /* get the last 5 bits and... finish! */
 
     /* The elements beyond index 11 were filled with 0 during array initialization, so there is no need to do it now */
-}
-
-
-
-void lookupTableEncodingWonderMail(const char* password24Integers, char* password24Chars)
-{
-    char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    int i;
-    for (i = 0; i < 24; ++i) {
-        password24Chars[i] = table[(int)password24Integers[i]];
-    }
-}
-
-
-
-void reallocateBytesEncodingWonderMail(const char* unallocatedPassword, char* allocatedPassword)
-{
-    const int newPos[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
-    int i;
-    for (i = 0; i < 24; ++i) {
-        allocatedPassword[i] = unallocatedPassword[newPos[i]];
-    }
 }
