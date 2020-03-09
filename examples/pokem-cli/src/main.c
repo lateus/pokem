@@ -93,7 +93,7 @@ int autodetect(int argc, const char *argv[])
     if (lenghtArg1 >= 20 && lenghtArg1 <= 28) {
         fprintf(stdout, "Decode WM\n\n");
         return decodeWM(argc, argv);
-    } else if (lenghtArg1 >= 48 && lenghtArg1 <= 56 && lenghtArg2 <= 16) {
+    } else if (lenghtArg1 >= 48 && lenghtArg1 <= 56 && lenghtArg2 > 0 && lenghtArg2 <= 16) {
         fprintf(stdout, "Convert SOS\n\n");
         return convertSOS(argc, argv);
     } else if (lenghtArg1 >= 48 && lenghtArg1 <= 56) {
