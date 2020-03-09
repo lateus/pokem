@@ -14,6 +14,8 @@ void findItemByDungeon_test(CuTest *tc);
 void computeDifficulty_test(CuTest *tc);
 void computeMoneyReward_test(CuTest *tc);
 void computeChecksum_test(CuTest *tc);
+void reallocateBytes_test(CuTest *tc);
+void mapPasswordByPositionInLookupTable_test(CuTest *tc);
 
 
 CuSuite* UtilCoreGetTestSuite()
@@ -26,6 +28,8 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, computeDifficulty_test);
     SUITE_ADD_TEST(suite, computeMoneyReward_test);
     SUITE_ADD_TEST(suite, computeChecksum_test);
+    SUITE_ADD_TEST(suite, reallocateBytes_test);
+    SUITE_ADD_TEST(suite, mapPasswordByPositionInLookupTable_test);
     return suite;
 }
 
@@ -161,6 +165,111 @@ void computeChecksum_test(CuTest *tc)
     for (i = 0; i < ARRAY_SIZE; ++i) {
         actual[i] = computeChecksum((char*)input1[i], input2[i]);
         CuAssertIntEquals(tc, expected[i], actual[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void reallocateBytes_test(CuTest *tc)
+{
+#define ARRAY_SIZE 7
+    const char input1[ARRAY_SIZE][24 + 1] = {
+        { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
+        { "4?6F7M+?4JNRJ*??K??0+9??" }, /* (WM - VALID) */
+        { "S62*S40?4P5H8S?869H0!N?W" }, /* (WM - VALID) */
+        { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
+        { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
+        { "1?C.MWY?JPS3.F?0XP?5!2?W" }, /* (WM - VALID - SPECIAL EVOLVE) */
+        { "F?N.?QY?8RNYYN?4.J75N+?W" }  /* (WM - VALID - SPECIAL FOOD) */
+    };
+    const int input2[ARRAY_SIZE][24] = {
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
+        { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 }
+    };
+    const int input3[ARRAY_SIZE] = { 24, 24, 24, 24, 24, 24, 24 };
+    char input4[ARRAY_SIZE][24 + 1] = {0};
+
+    const char expected[ARRAY_SIZE][24 + 1] = {
+        { "4X04N?7P6JP?1?3/W94?????" },
+        { "J+047*?JK6+?49RM?F?N????" },
+        { "8004SS8P62!HSNH4W*956???" },
+        { "*S54++R6X?????SCWN46????" },
+        { "*0T4R37/T???F7!/WCP+????" },
+        { ".Y5JMF0PXC!?123WW.PS????" },
+        { "YY58?N4R.NN7F+YQW.JN????" }
+    };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        reallocateBytes(input1[i], input2[i], input3[i], input4[i]);
+        CuAssertStrEquals(tc, expected[i], input4[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void mapPasswordByPositionInLookupTable_test(CuTest *tc)
+{
+#define ARRAY_SIZE 11
+    const char* input1[ARRAY_SIZE] = {
+        "4X04N?7P6JP?1?3/W94?????", /* (WM - VALID) */
+        "4X04N?7P6JP?2?3/W94?????", /* (WM - INVALID CHECKSUM - shall pass) */
+        "J+047*?JK6+?49RM?F?N????", /* (WM - VALID) */
+        "1T64R3786???16X3WW7M6?? ", /* (WM - INVALID INPUT - shall not pass) */
+        "8004SS8P62!HSNH4W*956???", /* (WM - VALID) */
+        "*S54++R6X?????SCWN46????", /* (WM - VALID) */
+        "*S040*-P6????N8KWY?R????", /* (WM - INVALID CHECKSUM - shall pass) */
+        "*0T4R37/T???F7!/WCP+????", /* (WM - VALID) */
+        "*0T4R37/T???A7!/WCP+????", /* (WM - INVALID INPUT - shall not pass) */
+        ".Y5JMF0PXC!?123WW.PS????", /* (WM - VALID - SPECIAL EVOLVE) */
+        "YY58?N4R.NN7F+YQW.JN????"  /* (WM - VALID - SPECIAL FOOD) */
+    };
+    const char* input2[ARRAY_SIZE] = { /* lookup tables */
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W",
+        "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W"
+    };
+    const int input3[ARRAY_SIZE] = { 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24 };
+    char input4[ARRAY_SIZE][54 + 1] = {0};
+
+    int actualResults[ARRAY_SIZE];
+
+    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError, NoError, NoError };
+    const int expected2[ARRAY_SIZE][24] = {
+        { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 24,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
+        { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 25,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
+        { 21, 10,  9, 16,  2, 27,  0, 21, 23,  1, 10,  0, 16,  7,  5, 18,  0,  8,  0,  3,  0,  0,  0,  0 },
+        {},
+        {  6,  9,  9, 16, 12, 12,  6,  4,  1, 25, 26, 20, 12,  3, 20, 16, 31, 27,  7, 17,  1,  0,  0,  0 },
+        { 27, 12, 17, 16, 10, 10,  5,  1, 14,  0,  0,  0,  0,  0, 12, 19, 31,  3, 16,  1,  0,  0,  0,  0 },
+        { 27, 12,  9, 16,  9, 27, 22,  4,  1,  0,  0,  0,  0,  3,  6, 23, 31, 15,  0,  5,  0,  0,  0,  0 },
+        { 27,  9, 13, 16,  5, 28,  2, 30, 13,  0,  0,  0,  8,  2, 26, 30, 31, 19,  4, 10,  0,  0,  0,  0 },
+        {},
+        { 11, 15, 17, 21, 18,  8,  9,  4, 14, 19, 26,  0, 24, 25, 28, 31, 31, 11,  4, 12,  0,  0,  0,  0 },
+        { 15, 15, 17,  6,  0,  3, 16,  5, 11,  3,  3,  2,  8, 10, 15, 29, 31, 11, 21,  3,  0,  0,  0,  0 }
+    };
+
+    int i, j;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        actualResults[i] = mapPasswordByPositionInLookupTable(input1[i], input2[i], input3[i], input4[i]);
+        CuAssertIntEquals(tc, expected1[i], actualResults[i]);
+        if (actualResults[i] != NoError) {
+            continue;
+        }
+        for (j = 0; j < input3[i]; ++j) {
+            CuAssertIntEquals(tc, expected2[i][j], input4[i][j]);
+        }
     }
 #undef ARRAY_SIZE
 }

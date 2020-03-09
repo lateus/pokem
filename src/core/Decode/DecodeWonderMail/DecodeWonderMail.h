@@ -5,9 +5,6 @@
 
 /* DECODING WONDER MAIL FUNCTIONS */
 int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult);
-int wonderMailIsInvalid(const char *password, char *packed15BytesPassword);
-void reallocateBytesDecodingWonderMail(const char *unallocatedPassword, char *allocatedPassword);
-int lookupTableDecodingWonderMail(const char *allocatedPassword, char *passwordIntegers);
 void bitUnpackingDecodingWonderMail(const char *packed14BytesPassword, struct WonderMail* mail);
 void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo);
 void setFlavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo);

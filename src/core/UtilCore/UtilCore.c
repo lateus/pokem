@@ -519,3 +519,40 @@ int entryErrorsSosMail(const struct SosMail *sos)
 
     return errorsFound;
 }
+
+
+
+void reallocateBytes(const char* unallocatedBytes, const int newPositions[], int n, char* allocatedBytes)
+{
+    int i;
+    for (i = 0; i < n; ++i) { /* the array above has 54 elements */
+        allocatedBytes[i] = unallocatedBytes[ newPositions[i] ];
+    }
+}
+
+
+
+int mapPasswordByPositionInLookupTable(const char* password, const char* lookupTable, int n, char* newPassword)
+{
+    char *characterLocation = NULL;
+    int i;
+    for (i = 0; i < n; ++i) {
+        characterLocation = strchr(lookupTable, password[i]);
+        if (characterLocation) {
+            newPassword[i] = characterLocation - lookupTable;
+        } else {
+#if DEBUG
+            fprintf(stderr, "ERROR: INVALID character: '%c' found at index [%d].\n"
+                            "Valid characters are:\n"
+                            "    > Numbers: '0' to '9'.\n"
+                            "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
+                            "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
+                            "THE PASSWORD CAN'T BE DECODED.\n\n", password[i], i);
+            fflush(stderr);
+#endif
+            return InputError;
+        }
+    }
+
+    return NoError;
+}

@@ -16,5 +16,7 @@ int computeMoneyReward(int difficulty, int rewardType);
 int computeChecksum(const char* packedPassword, int bytes);
 int entryErrorsWonderMail(const struct WonderMail *wm);
 int entryErrorsSosMail(const struct SosMail *sos);
+void reallocateBytes(const char* unallocatedBytes, const int newPositions[], int n, char* allocatedBytes);
+int mapPasswordByPositionInLookupTable(const char* password, const char* lookupTable, int n, char* newPassword);
 
 #endif /* UTILCORE_H */

@@ -8,9 +8,7 @@
 CuSuite* DecodeWonderMailGetTestSuite(void);
 
 void decodeWonderMail_test(CuTest *tc);
-void wonderMailIsInvalid_test(CuTest *tc);
 void reallocateBytesDecodingWonderMail_test(CuTest *tc);
-void lookupTableDecodingWonderMail_test(CuTest *tc);
 void bitUnpackingDecodingWonderMail_test(CuTest *tc);
 void setFlavorText_test(CuTest *tc);
 void setFlavorTextHead_test(CuTest *tc);
@@ -22,9 +20,6 @@ CuSuite* DecodeWonderMailGetTestSuite()
 {
     CuSuite *suite = CuSuiteNew();
     SUITE_ADD_TEST(suite, decodeWonderMail_test);
-    SUITE_ADD_TEST(suite, wonderMailIsInvalid_test);
-    SUITE_ADD_TEST(suite, reallocateBytesDecodingWonderMail_test);
-    SUITE_ADD_TEST(suite, lookupTableDecodingWonderMail_test);
     SUITE_ADD_TEST(suite, bitUnpackingDecodingWonderMail_test);
     SUITE_ADD_TEST(suite, setFlavorText_test);
     SUITE_ADD_TEST(suite, setFlavorTextHead_test);
@@ -102,116 +97,6 @@ void decodeWonderMail_test(CuTest *tc)
 #undef ARRAY_SIZE
 }
 
-void wonderMailIsInvalid_test(CuTest *tc)
-{
-#define ARRAY_SIZE 11
-    const char input1[ARRAY_SIZE][24 + 1] = {
-        { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
-        { "2?J9N/X?4P?34??764?0P??W" }, /* (WM - INVALID CHECKSUM) */
-        { "4?6F7M+?4JNRJ*??K??0+9??" }, /* (WM - VALID) */
-        { "16?WR3T 48MX13?767?6?6?W" }, /* (WM - INVALID INPUT) */
-        { "S62*S40?4P5H8S?869H0!N?W" }, /* (WM - VALID) */
-        { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
-        { "???Y0KS?4PR8**?-6??0?N?W" }, /* (WM - INVALID CHECKSUM) */
-        { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
-        { "A??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - INVALID INPUT) */
-        { "1?C.MWY?JPS3.F?0XP?5!2?W" }, /* (WM - VALID - SPECIAL EVOLVE) */
-        { "F?N.?QY?8RNYYN?4.J75N+?W" }  /* (WM - VALID - SPECIAL FOOD) */
-    };
-    char input2[ARRAY_SIZE][15] = {0};
-
-    int actualResults[ARRAY_SIZE];
-    const int expected[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError, NoError, NoError };
-
-    int i;
-    for (i = 0; i < ARRAY_SIZE; ++i) {
-        actualResults[i] = wonderMailIsInvalid(input1[i], input2[i]);
-        CuAssertIntEquals(tc, expected[i], actualResults[i]);
-    }
-#undef ARRAY_SIZE
-}
-
-void reallocateBytesDecodingWonderMail_test(CuTest *tc)
-{
-#define ARRAY_SIZE 7
-    const char input1[ARRAY_SIZE][24 + 1] = {
-        { "1?J9N/X?4P?34??764?0P??W" }, /* (WM - VALID) */
-        { "4?6F7M+?4JNRJ*??K??0+9??" }, /* (WM - VALID) */
-        { "S62*S40?4P5H8S?869H0!N?W" }, /* (WM - VALID) */
-        { "???N+CS?466S*+?RX4?5???W" }, /* (WM - VALID) */
-        { "F??CR/0?4/+!*3?7TP?T?7?W" }, /* (WM - VALID) */
-        { "1?C.MWY?JPS3.F?0XP?5!2?W" }, /* (WM - VALID - SPECIAL EVOLVE) */
-        { "F?N.?QY?8RNYYN?4.J75N+?W" }  /* (WM - VALID - SPECIAL FOOD) */
-    };
-    char input2[ARRAY_SIZE][24 + 1] = {0};
-
-    const char expected[ARRAY_SIZE][24 + 1] = {
-        { "4X04N?7P6JP?1?3/W94?????" },
-        { "J+047*?JK6+?49RM?F?N????" },
-        { "8004SS8P62!HSNH4W*956???" },
-        { "*S54++R6X?????SCWN46????" },
-        { "*0T4R37/T???F7!/WCP+????" },
-        { ".Y5JMF0PXC!?123WW.PS????" },
-        { "YY58?N4R.NN7F+YQW.JN????" }
-    };
-
-    int i;
-    for (i = 0; i < ARRAY_SIZE; ++i) {
-        reallocateBytesDecodingWonderMail(input1[i], input2[i]);
-        CuAssertStrEquals(tc, expected[i], input2[i]);
-    }
-#undef ARRAY_SIZE
-}
-
-void lookupTableDecodingWonderMail_test(CuTest *tc)
-{
-#define ARRAY_SIZE 11
-    const char input1[ARRAY_SIZE][24 + 1] = {
-        { "4X04N?7P6JP?1?3/W94?????" }, /* (WM - VALID) */
-        { "4X04N?7P6JP?2?3/W94?????" }, /* (WM - INVALID CHECKSUM - shall pass) */
-        { "J+047*?JK6+?49RM?F?N????" }, /* (WM - VALID) */
-        { "1T64R3786???16X3WW7M6?? " }, /* (WM - INVALID INPUT - shall not pass) */
-        { "8004SS8P62!HSNH4W*956???" }, /* (WM - VALID) */
-        { "*S54++R6X?????SCWN46????" }, /* (WM - VALID) */
-        { "*S040*-P6????N8KWY?R????" }, /* (WM - INVALID CHECKSUM - shall pass) */
-        { "*0T4R37/T???F7!/WCP+????" }, /* (WM - VALID) */
-        { "*0T4R37/T???A7!/WCP+????" }, /* (WM - INVALID INPUT - shall not pass) */
-        { ".Y5JMF0PXC!?123WW.PS????" }, /* (WM - VALID - SPECIAL EVOLVE) */
-        { "YY58?N4R.NN7F+YQW.JN????" }  /* (WM - VALID - SPECIAL FOOD) */
-    };
-    char input2[ARRAY_SIZE][24 + 1] = {0};
-
-    int actualResults[ARRAY_SIZE];
-
-    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError, NoError, NoError };
-    const int expected2[ARRAY_SIZE][24] = {
-        { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 24,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
-        { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 25,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
-        { 21, 10,  9, 16,  2, 27,  0, 21, 23,  1, 10,  0, 16,  7,  5, 18,  0,  8,  0,  3,  0,  0,  0,  0 },
-        {},
-        {  6,  9,  9, 16, 12, 12,  6,  4,  1, 25, 26, 20, 12,  3, 20, 16, 31, 27,  7, 17,  1,  0,  0,  0 },
-        { 27, 12, 17, 16, 10, 10,  5,  1, 14,  0,  0,  0,  0,  0, 12, 19, 31,  3, 16,  1,  0,  0,  0,  0 },
-        { 27, 12,  9, 16,  9, 27, 22,  4,  1,  0,  0,  0,  0,  3,  6, 23, 31, 15,  0,  5,  0,  0,  0,  0 },
-        { 27,  9, 13, 16,  5, 28,  2, 30, 13,  0,  0,  0,  8,  2, 26, 30, 31, 19,  4, 10,  0,  0,  0,  0 },
-        {},
-        { 11, 15, 17, 21, 18,  8,  9,  4, 14, 19, 26,  0, 24, 25, 28, 31, 31, 11,  4, 12,  0,  0,  0,  0 },
-        { 15, 15, 17,  6,  0,  3, 16,  5, 11,  3,  3,  2,  8, 10, 15, 29, 31, 11, 21,  3,  0,  0,  0,  0 }
-    };
-
-    int i, j;
-    for (i = 0; i < ARRAY_SIZE; ++i) {
-        actualResults[i] = lookupTableDecodingWonderMail(input1[i], input2[i]);
-        CuAssertIntEquals(tc, expected1[i], actualResults[i]);
-        if (actualResults[i] != NoError) {
-            continue;
-        }
-        for (j = 0; j < 24; ++j) {
-            CuAssertIntEquals(tc, expected2[i][j], input2[i][j]);
-        }
-    }
-#undef ARRAY_SIZE
-}
-
 void bitUnpackingDecodingWonderMail_test(CuTest *tc)
 {
 #define ARRAY_SIZE 7
@@ -235,13 +120,13 @@ void bitUnpackingDecodingWonderMail_test(CuTest *tc)
     };
 
     const struct WonderMail expected[ARRAY_SIZE] = {
-        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3, 238, 255,  1,  1 },
-        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158,  34,   1,  2,  6 },
-        { 5, 2, 0, 281,  25,   9, 9,  53, 37,  13,  10, 255, 62, 98 },
-        { 5, 4, 0, 149, 149, 112, 0,   0,  0,   0,  54, 255,  0,  3 },
-        { 5, 3, 0, 267, 267, 111, 0,   0,  0,   9, 237, 255, 36, 20 },
-        { 5, 4, 5,  37,  37, 113, 3,  53,  0, 103, 254, 255, 34, 24 },
-        { 5, 4, 6, 192, 192,  89, 3, 134,  0, 169, 215, 255, 42,  7 }
+        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3, 0, 255,  1,  1 },
+        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158, 0,   1,  2,  6 },
+        { 5, 2, 0, 281,  25,   9, 9,  53, 37,  13, 0, 255, 62, 98 },
+        { 5, 4, 0, 149, 149, 112, 0,   0,  0,   0, 0, 255,  0,  3 },
+        { 5, 3, 0, 267, 267, 111, 0,   0,  0,   9, 0, 255, 36, 20 },
+        { 5, 4, 5,  37,  37, 113, 3,  53,  0, 103, 0, 255, 34, 24 },
+        { 5, 4, 6, 192, 192,  89, 3, 134,  0, 169, 0, 255, 42,  7 }
     };
 
     int i;
@@ -256,7 +141,7 @@ void bitUnpackingDecodingWonderMail_test(CuTest *tc)
         CuAssertIntEquals(tc, expected[i].itemReward, input2[i].itemReward);
         CuAssertIntEquals(tc, expected[i].friendAreaReward, input2[i].friendAreaReward);
         CuAssertIntEquals(tc, expected[i].flavorText, input2[i].flavorText);
-        CuAssertIntEquals(tc, expected[i].random, input2[i].random);
+        /* skip the `idk_random2` field (as it is random) */
         CuAssertIntEquals(tc, expected[i].idk_always0xFF, input2[i].idk_always0xFF);
         CuAssertIntEquals(tc, expected[i].dungeon, input2[i].dungeon);
         CuAssertIntEquals(tc, expected[i].floor, input2[i].floor);

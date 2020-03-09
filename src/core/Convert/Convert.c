@@ -81,12 +81,15 @@ int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integ
         return InputError;
     }
 
-    char pswAllocated[54] = {0}; /* Please, initialize all data */
-    reallocateBytesDecodingSos(SOSPassword, pswAllocated);
+    char pswAllocated[54] = {0}; /* always initialize */
+    const int newPositions[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
+    reallocateBytes(SOSPassword, newPositions, 54, pswAllocated);
 
     /* The password that will be converted to integers representation using the lookup table bellow */
-    if (lookupTableDecodingSos(pswAllocated, password54Integers) == InputError) {
-        return InputError;
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    int errorCode = mapPasswordByPositionInLookupTable(pswAllocated, lookupTable, 54, password54Integers);
+    if (errorCode != NoError) {
+        return errorCode;
     }
 
     return NoError;
