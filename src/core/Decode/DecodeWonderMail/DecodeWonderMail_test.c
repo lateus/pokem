@@ -57,15 +57,15 @@ void decodeWonderMail_test(CuTest *tc)
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     };
 
-    int actualResults[ARRAY_SIZE];
+    int actualReturnResults[ARRAY_SIZE];
 
     const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError, NoError, NoError };
     const struct WonderMail expected2[ARRAY_SIZE] = {
-        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3,   0, 255,  1,  1 },
+        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3, 238, 255,  1,  1 },
         { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
-        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158,   0,   1,  2,  6 },
+        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158,  34,   1,  2,  6 },
         { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
-        { 5, 2, 0, 281,  25,   9, 9,   0, 37,  13,   0, 255, 62, 98 },
+        { 5, 2, 0, 281,  25,   9, 9,   0, 37,  13, 250, 255, 62, 98 },
         { 5, 4, 0, 149, 149, 112, 0,   0,  0,   0,  54, 255,  0,  3 },
         { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },
         { 5, 3, 0, 267, 267, 111, 0,   0,  0,   9, 237, 255, 36, 20 },
@@ -76,8 +76,8 @@ void decodeWonderMail_test(CuTest *tc)
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        actualResults[i] = decodeWonderMail(input1[i], &input2[i]);
-        CuAssertIntEquals(tc, expected1[i], actualResults[i]);
+        actualReturnResults[i] = decodeWonderMail(input1[i], &input2[i]);
+        CuAssertIntEquals(tc, expected1[i], actualReturnResults[i]);
         CuAssertIntEquals(tc, expected2[i].mailType,            input2[i].mailType);
         CuAssertIntEquals(tc, expected2[i].missionType,         input2[i].missionType);
         CuAssertIntEquals(tc, expected2[i].specialJobIndicator, input2[i].specialJobIndicator);
@@ -88,7 +88,7 @@ void decodeWonderMail_test(CuTest *tc)
         CuAssertIntEquals(tc, expected2[i].itemReward,          input2[i].itemReward);
         CuAssertIntEquals(tc, expected2[i].friendAreaReward,    input2[i].friendAreaReward);
         CuAssertIntEquals(tc, expected2[i].flavorText,          input2[i].flavorText);
-        /* skip the `random` field (as it is random) */
+        CuAssertIntEquals(tc, expected2[i].random,              input2[i].random);
         CuAssertIntEquals(tc, expected2[i].idk_always0xFF,      input2[i].idk_always0xFF);
         CuAssertIntEquals(tc, expected2[i].dungeon,             input2[i].dungeon);
         CuAssertIntEquals(tc, expected2[i].floor,               input2[i].floor);
@@ -119,31 +119,31 @@ void bitUnpackingDecodingWonderMail_test(CuTest *tc)
     };
 
     const struct WonderMail expected[ARRAY_SIZE] = {
-        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3, 0, 255,  1,  1 },
-        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158, 0,   1,  2,  6 },
-        { 5, 2, 0, 281,  25,   9, 9,  53, 37,  13, 0, 255, 62, 98 },
-        { 5, 4, 0, 149, 149, 112, 0,   0,  0,   0, 0, 255,  0,  3 },
-        { 5, 3, 0, 267, 267, 111, 0,   0,  0,   9, 0, 255, 36, 20 },
-        { 5, 4, 5,  37,  37, 113, 3,  53,  0, 103, 0, 255, 34, 24 },
-        { 5, 4, 6, 192, 192,  89, 3, 134,  0, 169, 0, 255, 42,  7 }
+        { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3, 238, 255,  1,  1 },
+        { 5, 2, 0, 197, 131, 189, 1,  20,  0, 158,  34,   1,  2,  6 },
+        { 5, 2, 0, 281,  25,   9, 9,  53, 37,  13,  10, 255, 62, 98 },
+        { 5, 4, 0, 149, 149, 112, 0,   0,  0,   0,  54, 255,  0,  3 },
+        { 5, 3, 0, 267, 267, 111, 0,   0,  0,   9, 237, 255, 36, 20 },
+        { 5, 4, 5,  37,  37, 113, 3,  53,  0, 103, 254, 255, 34, 24 },
+        { 5, 4, 6, 192, 192,  89, 3, 134,  0, 169, 215, 255, 42,  7 }
     };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         bitUnpackingDecodingWonderMail(input1[i], &input2[i]);
-        CuAssertIntEquals(tc, expected[i].mailType, input2[i].mailType);
+        CuAssertIntEquals(tc, expected[i].mailType,            input2[i].mailType);
         CuAssertIntEquals(tc, expected[i].specialJobIndicator, input2[i].specialJobIndicator);
-        CuAssertIntEquals(tc, expected[i].pkmnClient, input2[i].pkmnClient);
-        CuAssertIntEquals(tc, expected[i].pkmnTarget, input2[i].pkmnTarget);
-        CuAssertIntEquals(tc, expected[i].itemDeliverFind, input2[i].itemDeliverFind);
-        CuAssertIntEquals(tc, expected[i].rewardType, input2[i].rewardType);
-        CuAssertIntEquals(tc, expected[i].itemReward, input2[i].itemReward);
-        CuAssertIntEquals(tc, expected[i].friendAreaReward, input2[i].friendAreaReward);
-        CuAssertIntEquals(tc, expected[i].flavorText, input2[i].flavorText);
-        /* skip the `idk_random2` field (as it is random) */
-        CuAssertIntEquals(tc, expected[i].idk_always0xFF, input2[i].idk_always0xFF);
-        CuAssertIntEquals(tc, expected[i].dungeon, input2[i].dungeon);
-        CuAssertIntEquals(tc, expected[i].floor, input2[i].floor);
+        CuAssertIntEquals(tc, expected[i].pkmnClient,          input2[i].pkmnClient);
+        CuAssertIntEquals(tc, expected[i].pkmnTarget,          input2[i].pkmnTarget);
+        CuAssertIntEquals(tc, expected[i].itemDeliverFind,     input2[i].itemDeliverFind);
+        CuAssertIntEquals(tc, expected[i].rewardType,          input2[i].rewardType);
+        CuAssertIntEquals(tc, expected[i].itemReward,          input2[i].itemReward);
+        CuAssertIntEquals(tc, expected[i].friendAreaReward,    input2[i].friendAreaReward);
+        CuAssertIntEquals(tc, expected[i].flavorText,          input2[i].flavorText);
+        CuAssertIntEquals(tc, expected[i].random,              input2[i].random);
+        CuAssertIntEquals(tc, expected[i].idk_always0xFF,      input2[i].idk_always0xFF);
+        CuAssertIntEquals(tc, expected[i].dungeon,             input2[i].dungeon);
+        CuAssertIntEquals(tc, expected[i].floor,               input2[i].floor);
     }
 #undef ARRAY_SIZE
 }

@@ -280,8 +280,6 @@ void realocateBytesEncodingSos(const char* unallocatedPassword, char* allocatedP
 /* ENCODING WONDER MAIL FUNCTIONS */
 int encodeWonderMail(struct WonderMail *wm, char *finalPassword, int trySpecialWonderMail);
 void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14BytesPassword);
-void lookupTableEncodingWonderMail(const char* password24Integers, char* password24Chars);
-void reallocateBytesEncodingWonderMail(const char* unallocatedPassword, char* allocatedPassword);
 
 
 /* ENCODING COMMON FUNCTIONS */
@@ -302,7 +300,7 @@ int computeMoneyReward(int difficulty, int rewardType);
 int computeChecksum(const char* packedPassword, int bytes);
 int entryErrorsWonderMail(const struct WonderMail *wm);
 int entryErrorsSosMail(const struct SosMail *sos);
-void reallocateBytes(const char* unallocatedBytes, const int newPositions[], int n, char* allocatedBytes);
+void reallocateBytes(const char* unallocatedBytes, const unsigned char newPositions[], int n, char* allocatedBytes);
 int mapPasswordByPositionInLookupTable(const char* password, const char* lookupTable, int n, char* newPassword);
 
 

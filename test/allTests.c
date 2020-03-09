@@ -8,6 +8,7 @@ extern CuSuite* UtilDecodeGetTestSuite(void);
 extern CuSuite* UtilEncodeGetTestSuite(void);
 extern CuSuite* DecodeWonderMailGetTestSuite(void);
 extern CuSuite* DecodeSosMailGetTestSuite(void);
+extern CuSuite* EncodeWonderMailGetTestSuite(void);
 
 int RunAllTests(void);
 
@@ -26,6 +27,7 @@ int RunAllTests()
     CuSuiteAddSuite(suite, UtilEncodeGetTestSuite());
     CuSuiteAddSuite(suite, DecodeWonderMailGetTestSuite());
     CuSuiteAddSuite(suite, DecodeSosMailGetTestSuite());
+    CuSuiteAddSuite(suite, EncodeWonderMailGetTestSuite());
 
     int failedTests = CuSuiteRun(suite);
     CuSuiteSummary(suite, output);

@@ -41,7 +41,7 @@ void decodeSosMail_test(CuTest *tc)
         { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }
     };
 
-    int actualResults[ARRAY_SIZE];
+    int actualReturnResults[ARRAY_SIZE];
 
     const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, InputError };
     const struct SosMail expected2[ARRAY_SIZE] = {
@@ -55,8 +55,8 @@ void decodeSosMail_test(CuTest *tc)
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        actualResults[i] = decodeSosMail(input1[i], &input2[i]);
-        CuAssertIntEquals(tc, expected1[i], actualResults[i]);
+        actualReturnResults[i] = decodeSosMail(input1[i], &input2[i]);
+        CuAssertIntEquals(tc, expected1[i], actualReturnResults[i]);
         CuAssertIntEquals(tc, expected2[i].mailType,          input2[i].mailType);
         CuAssertIntEquals(tc, expected2[i].dungeon,           input2[i].dungeon);
         CuAssertIntEquals(tc, expected2[i].floor,             input2[i].floor);

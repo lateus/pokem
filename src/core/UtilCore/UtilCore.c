@@ -451,7 +451,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* pkmn to rescue check (limits) */
     if (sos->pkmnToRescue == 0 || sos->pkmnToRescue > 414) {
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
                         "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
         fflush(stderr);
@@ -462,7 +462,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* nickname check */
     if (!strlen(sos->pkmnNick)) {
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn nickname).\n"
                         "      The nickname cannot be empty.\n\n", errorsFound);
         fflush(stderr);
@@ -473,21 +473,21 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* dungeon check */
     if (sos->dungeon > 62) {
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
                         "      The dungeon must be a number between 0 and 62.\n\n", errorsFound);
         fflush(stderr);
 #endif
     } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
                         "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, sos->dungeon);
         fflush(stderr);
 #endif
     } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
                         "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
                                     errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
@@ -499,7 +499,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* mail ID check */
     if (sos->mailID > 9999) {
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 5 (Mail ID).\n"
                         "      The mail ID must be a non-negative number with no more than 4 digits.\n\n", errorsFound);
         fflush(stderr);
@@ -510,7 +510,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* rescue chances left check */
     if (sos->chancesLeft < 1 || sos->chancesLeft > 10) {
         ++errorsFound;
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
                         "      The chances left value must be between 1 and 10.\n\n", errorsFound);
         fflush(stderr);
@@ -522,10 +522,10 @@ int entryErrorsSosMail(const struct SosMail *sos)
 
 
 
-void reallocateBytes(const char* unallocatedBytes, const int newPositions[], int n, char* allocatedBytes)
+void reallocateBytes(const char* unallocatedBytes, const unsigned char newPositions[], int n, char* allocatedBytes)
 {
     int i;
-    for (i = 0; i < n; ++i) { /* the array above has 54 elements */
+    for (i = 0; i < n; ++i) {
         allocatedBytes[i] = unallocatedBytes[ newPositions[i] ];
     }
 }

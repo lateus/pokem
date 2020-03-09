@@ -20,7 +20,7 @@ int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
     }
 
     char allocatedPassword[24] = {0};
-    const int newPositions[24] = { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 };
+    const unsigned char newPositions[24] = { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 };
     reallocateBytes(password, newPositions, 24, allocatedPassword);
 
     /* This password will be 'integerized' using the lookup table bellow */

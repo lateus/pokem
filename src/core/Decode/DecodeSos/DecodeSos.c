@@ -2,7 +2,6 @@
 #include "../UtilDecode/UtilDecode.h"
 #include "../../UtilCore/UtilCore.h"
 #include "../../../data/md1database/md1database.h"
-#include "../../../util/md1debugger.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -11,7 +10,7 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 54) {
-#ifdef DEBUG
+#if DEBUG
         fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
                         "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
 #endif
@@ -20,7 +19,7 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 
     char allocatedPassword[54] = {0};
 
-    const int newPositions[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
+    const unsigned char newPositions[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
     reallocateBytes(password, newPositions, 54, allocatedPassword);
 
     /* The password that will be converted to integers representation using the lookup table bellow */

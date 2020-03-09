@@ -8,7 +8,7 @@
 #include <string.h>
 
 
-int encodeWonderMail(struct WonderMail *wm, char *finalPassword, int trySpecialWonderMail)
+int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialWonderMail)
 {
     int errors = entryErrorsWonderMail(wm);
     if (errors) {
@@ -28,18 +28,19 @@ int encodeWonderMail(struct WonderMail *wm, char *finalPassword, int trySpecialW
     char *packed14BytesPassword = packed15BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
     bitPackingEncodingWonderMail(wm, packed14BytesPassword); /* bit packing while decoding are equivalent to bit unpacking while decoding */
 
-    packed15BytesPassword[0] = (char)computeChecksum(packed15BytesPassword, 15);
+    packed15BytesPassword[0] = (char)computeChecksum(packed14BytesPassword, 14);
 
     char password24Integers[24] = {0};
     bitUnpackingEncoding(packed15BytesPassword, password24Integers, 15);
 
     char password24Chars[24] = {0};
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    mapPasswordByPositionInLookupTable(password24Integers, lookupTable, 24, password24Chars);
-    const int newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
+    reallocateBytes(lookupTable, (unsigned char*)password24Integers, 24, password24Chars); /* a tricky one, but we want this: password24Chars[i] = lookupTable[(int)password24Integers[i]]; */
+    
+    const unsigned char newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
     reallocateBytes(password24Chars, newPositions, 24, finalPassword);
 
-    return NoError; /* means ok */
+    return NoError;
 }
 
 

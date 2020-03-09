@@ -181,7 +181,7 @@ void reallocateBytes_test(CuTest *tc)
         { "1?C.MWY?JPS3.F?0XP?5!2?W" }, /* (WM - VALID - SPECIAL EVOLVE) */
         { "F?N.?QY?8RNYYN?4.J75N+?W" }  /* (WM - VALID - SPECIAL FOOD) */
     };
-    const int input2[ARRAY_SIZE][24] = {
+    const unsigned char input2[ARRAY_SIZE][24] = {
         { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
         { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
         { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 },
@@ -243,7 +243,7 @@ void mapPasswordByPositionInLookupTable_test(CuTest *tc)
     const int input3[ARRAY_SIZE] = { 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24 };
     char input4[ARRAY_SIZE][54 + 1] = {0};
 
-    int actualResults[ARRAY_SIZE];
+    int actualReturnResults[ARRAY_SIZE];
 
     const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError, NoError, NoError };
     const int expected2[ARRAY_SIZE][24] = {
@@ -262,9 +262,9 @@ void mapPasswordByPositionInLookupTable_test(CuTest *tc)
 
     int i, j;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        actualResults[i] = mapPasswordByPositionInLookupTable(input1[i], input2[i], input3[i], input4[i]);
-        CuAssertIntEquals(tc, expected1[i], actualResults[i]);
-        if (actualResults[i] != NoError) {
+        actualReturnResults[i] = mapPasswordByPositionInLookupTable(input1[i], input2[i], input3[i], input4[i]);
+        CuAssertIntEquals(tc, expected1[i], actualReturnResults[i]);
+        if (actualReturnResults[i] != NoError) {
             continue;
         }
         for (j = 0; j < input3[i]; ++j) {

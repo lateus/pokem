@@ -12,7 +12,6 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */
     sos->idk_random2 = rand() & 0xFFFF;                /* same as % 65536 */
     sos->idk_0Or1 = 0;                                 /* 1 if Thank-You Mail, 0 otherwise */
-    // sos->itemReward = 0;                               /* 0 if not Thank-You Mail */
     sos->idk_0 = 0;                                    /* as his name suggest */
     sos->teamSeekingHelpID = (unsigned int)rand() & 0xFFFFFFFF;
     sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
