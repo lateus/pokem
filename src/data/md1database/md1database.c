@@ -75,6 +75,7 @@
 
 
 /* Difficulties characters */
+const int difficultiesCharsCount = 7;
 const char* difficultiesChars = "EDCBAS*";
 
 

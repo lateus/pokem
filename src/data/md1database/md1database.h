@@ -21,6 +21,7 @@
 extern const int difficulties[][100];
 
 /* Difficulties characters */
+extern const int difficultiesCharsCount;
 extern const char* difficultiesChars;
 
 /* Dungeon-up or dungeon-down */

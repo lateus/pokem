@@ -23,6 +23,7 @@
 extern const int difficulties[][100];
 
 /* Difficulties characters */
+extern const int difficultiesCharsCount;
 extern const char* difficultiesChars;
 
 /* Dungeon-up or dungeon-down */
@@ -248,20 +249,14 @@ void convertAOkToThankYouMail(char *password54Integers, int item);
 
 
 /* DECODING SOS MAIL FUNCTIONS */
-int decodeSosMail(const char *sosPassword, struct SosMail *sosMailResult);
-int sosMailIsInvalid(const char *password, char *packed34BytesPassword);
-void reallocateBytesDecodingSos(const char *unallocatedPassword, char *allocatedPassword);
-int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers);
-void bitUnpackingDecodingSos(const char *packed14BytesPassword, struct SosMail* mail);
+int decodeSosMail(const char *password, struct SosMail *sosMailResult);
+void bitUnpackingDecodingSosMail(const char *packed14BytesPassword, struct SosMail* mail);
 void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo);
 
 
 
 /* DECODING WONDER MAIL FUNCTIONS */
 int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult);
-int wonderMailIsInvalid(const char *password, char *packed15BytesPassword);
-void reallocateBytesDecodingWonderMail(const char *unallocatedPassword, char *allocatedPassword);
-int lookupTableDecodingWonderMail(const char *allocatedPassword, char *passwordIntegers);
 void bitUnpackingDecodingWonderMail(const char *packed14BytesPassword, struct WonderMail* mail);
 void setFlavorText(const struct WonderMail *wm, struct WonderMailInfo *mailInfo);
 void setFlavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo);
@@ -307,6 +302,8 @@ int computeMoneyReward(int difficulty, int rewardType);
 int computeChecksum(const char* packedPassword, int bytes);
 int entryErrorsWonderMail(const struct WonderMail *wm);
 int entryErrorsSosMail(const struct SosMail *sos);
+void reallocateBytes(const char* unallocatedBytes, const int newPositions[], int n, char* allocatedBytes);
+int mapPasswordByPositionInLookupTable(const char* password, const char* lookupTable, int n, char* newPassword);
 
 
 #endif /* POKEM_H */
