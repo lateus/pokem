@@ -9,13 +9,6 @@
 
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
-    sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */
-    sos->idk_random2 = rand() & 0xFFFF;                /* same as % 65536 */
-    sos->idk_0Or1 = 0;                                 /* 1 if Thank-You Mail, 0 otherwise */
-    sos->idk_0 = 0;                                    /* as his name suggest */
-    sos->teamSeekingHelpID = (unsigned int)rand() & 0xFFFFFFFF;
-    sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
-    sos->idk_last3Bits = 0;
 
     int errors = entryErrorsSosMail(sos);
     if (errors) {
@@ -25,6 +18,14 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
 #endif
         return InputError; /* to use the NOT operator */
     }
+
+    sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */
+    sos->idk_random2 = rand() & 0xFFFF;                /* same as % 65536 */
+    sos->idk_0Or1 = 0;                                 /* 1 if Thank-You Mail, 0 otherwise */
+    sos->idk_0 = 0;                                    /* as his name suggest */
+    sos->teamSeekingHelpID = (unsigned int)rand() & 0xFFFFFFFF;
+    sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
+    sos->idk_last3Bits = 0;
 
     char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
     char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
@@ -36,34 +37,18 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     bitUnpackingEncoding(packed34BytesPassword, password54Integers, 34);
 
     char password54Chars[54] = {0};
-    lookupTableEncodingSos(password54Integers, password54Chars);
 
-    realocateBytesEncodingSos(password54Chars, finalPassword);
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, password54Chars); /* a tricky one, but we want this: password54Chars[i] = lookupTable[(int)password54Integers[i]]; */
+
+    const unsigned char newPositions[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
+    reallocateBytes(password54Chars, newPositions, 54, finalPassword);
 
     return NoError;
 }
 
 void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPassword)
 {
-    /*
-        The structure of the SOS Mail struct is the following (see md1global.h):
-        unsigned int mailType:4; ----------------  4 bits: Must equal 1 for SOS Mail, 4 for A-OK Mail, and 5 for Thank-You Mail
-        unsigned int dungeon:7; -----------------  7 bits: Dungeon
-        unsigned int floor:7; -------------------  7 bits: Floor (e.g. set to 2 for 2nd floor). The game will turn the floor negative if necesary
-        unsigned int idk_random:24; ------------- 24 bits: 3 bytes for unknown purpose
-        unsigned int pkmnToRescue:9; ------------  9 bits: Pokemon to be rescued
-        unsigned int mailID:16; ----------------- 16 bits: Mail ID
-        unsigned int idk_random2:16; ------------ 16 bits: 2 bytes for unknown purpose
-        char         pkmnNick[10]; -------------- 80 bits: Pokemon's nickname, 0 marks end of name if shorter than 10 bytes
-        unsigned int idk_0Or1:8; ----------------  8 bits: Unknown purpose. Safe to set to 1 if Thank-You Mail, else set to 0
-        unsigned int itemReward:8; --------------  8 bits: Item reward. Safe to set to 0 if not Thank-You Mail
-        unsigned int idk_0:8; -------------------  8 bits: Unknown purpose. Safe to set to 0
-        unsigned int teamSeekingHelpID:32; ------ 32 bits: ID of rescue team seeking help
-        unsigned int teamGivingHelpID:32; ------- 32 bits: ID of rescue team giving help. For SOS Mail, this is 0; for A-OK Mail, safe to set to rescue team seeking help
-        unsigned int chancesLeft:8; -------------  8 bits: Rescue chances left; when converting to A-OK Mail, subtract 1 from this
-        unsigned int idk_last3Bits:3; -----------  3 bits: Unknown. Safe to set to 0
-    */
-
     /* I wrote the bits that a field must store, assign more will cause an overflow. I'll use Standard C Bit Fields. */
     /* As final observation, I only will read the bits in the array, without destroying bits, instead I'll shift bits: non-destructive read is faster and safer than destructive read */
 
@@ -157,26 +142,5 @@ void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPasswo
     packed33BytesPassword[32]  = ((mail->chancesLeft >> 29) & 0x07); /* get 3 bits */
     packed33BytesPassword[32] |= ((mail->idk_last3Bits & 0x07) << 3); /* get 2 bits. NOTE: Always 0 */
 
-    /* The remaining bits in index 33 were filled with 0 during array initialization, so there is no need to do it now */
-}
-
-
-void lookupTableEncodingSos(const char* password54Integers, char* password54Chars)
-{
-    const char table[] = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    int i;
-    for (i = 0; i < 54; ++i) {
-        password54Chars[i] = table[(int)password54Integers[i]];
-    }
-}
-
-
-void realocateBytesEncodingSos(const char* unallocatedPassword, char* allocatedPassword)
-{
-    const int newPos[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
-
-    int i;
-    for (i = 0; i < 54; ++i) {
-        allocatedPassword[i] = unallocatedPassword[ newPos[i] ];
-    }
+    /* The remaining bits beyond index 32 were filled with 0 during array initialization, so there is no need to do it now */
 }

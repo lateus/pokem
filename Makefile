@@ -40,7 +40,8 @@ TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
 				src/core/Encode/UtilEncode/UtilEncode_test.c \
 				src/core/Decode/DecodeWonderMail/DecodeWonderMail_test.c \
 				src/core/Decode/DecodeSos/DecodeSos_test.c \
-				src/core/Encode/EncodeWonderMail/EncodeWonderMail_test.c
+				src/core/Encode/EncodeWonderMail/EncodeWonderMail_test.c \
+				src/core/Encode/EncodeSos/EncodeSos_test.c
 TEST_RESULT	:=	$(BUILDDIR)/tests
 
 # Library header

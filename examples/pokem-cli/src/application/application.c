@@ -294,9 +294,6 @@ int encodeSOSM(int argc, const char *argv[])
     setSosInfo(&sos, &sosInfo);
     strncpy(sosInfo.password, finalPassword, 54);
     printSOSData(&sosInfo, &sos);
-    if (sos.dungeon == 10 || sos.dungeon == 12 || sos.dungeon == 14 || sos.dungeon == 16 || sos.dungeon == 18 || sos.dungeon == 22 || sos.dungeon == 47 || sos.dungeon == 48 || sos.dungeon == 52) {
-        fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n", stderr);
-    }
     fflush(stdout);
     fflush(stderr);
 

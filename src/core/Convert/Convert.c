@@ -42,8 +42,12 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     }
     bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
     char passwordUnallocated[54] = {0};
-    lookupTableEncodingSos(password54Integers, passwordUnallocated);
-    realocateBytesEncodingSos(passwordUnallocated, resultAOKMail);
+
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, passwordUnallocated); /* a tricky one, but we want this: passwordUnallocated[i] = lookupTable[(int)password54Integers[i]]; */
+
+    const unsigned char newPositions[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
+    reallocateBytes(passwordUnallocated, newPositions, 54, resultAOKMail);
 
     /* SECOND: THANK-YOU MAIL */
     if (item <= 0 || item > 239) {
@@ -66,8 +70,9 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
         passwordUnallocated[i] = 0;
     }
     bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
-    lookupTableEncodingSos(password54Integers, passwordUnallocated);
-    realocateBytesEncodingSos(passwordUnallocated, resultThankYouMail);
+
+    reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, passwordUnallocated); /* a tricky one, but we want this: passwordUnallocated[i] = lookupTable[(int)password54Integers[i]]; */
+    reallocateBytes(passwordUnallocated, newPositions, 54, resultThankYouMail);
 
     return NoError;
 }
