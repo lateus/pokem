@@ -204,6 +204,23 @@ unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionT
 }
 
 
+/* TODO: This does not works in Wonder Mails */
+int getMailType(const char* password)
+{
+    const size_t passwordLength = strlen(password);
+    if (/*passwordLength != 24 && */passwordLength != 54) {
+        return -1;
+    }
+    // int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    const char firstChar  = password[passwordLength == 24 ? 20 :  7];
+    const char secondChar = password[passwordLength == 24 ?  9 : 25];
+    const char* firstCharPtr = strchr(lookupTable, firstChar);
+    const char* secondCharPtr = strchr(lookupTable, secondChar);
+    return (!firstCharPtr || !secondCharPtr) ? -1 : (((firstCharPtr - lookupTable) >> 3) & 0x03) | ((secondCharPtr - lookupTable) & 0x03) << 2;
+}
+
+
 
 int findItemByDungeon(int item, int dungeon)
 {
@@ -255,8 +272,8 @@ int computeMoneyReward(int difficulty, int rewardType)
 int computeChecksum(const char* packedPassword, int bytes)
 {
     int i, checksum = 0;
-    for (i = 1; i < bytes; ++i) { /* the first byte is ignored in the calculation, cuz is merely for a checksum */
-        checksum += (packedPassword[i]) + i;
+    for (i = 0; i < bytes; ++i) {
+        checksum += (packedPassword[i]) + i + 1;
         checksum &= 0xFF; /* make the checksum variable a single byte long */
     }
 

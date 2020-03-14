@@ -89,8 +89,9 @@ void showHelp(const char *programName)
                     "\n"
                     LIGHT "Convert SOS Mail in A-OK and Thank-You Mail:\n" RESET \
                     LIGHT "Usage: " LGREEN "%s [password1] [item1] [password2] [item2]...\n" RESET \
-                    "Convert all entered passwords in A-OK and Thank-You Mail passwords. Invalid ones are skipped.\n" \
-                    "The password specified must belong to an SOS Mail.\n" \
+                    "Convert all entered SOS passwords in A-OK and Thank-You Mail passwords. Invalid ones are skipped.\n" \
+                    "The input is not restricted to an SOS Mail. If you enter an A-OK Mail, it will be converted to Thank-You Mail,\n" \
+                    "and if you enter a Thank-You Mail, its reward item will be replaced with the received one.\n" \
                     "The item specified is set as reward in the Thank-You Mail password.\n" \
                     "If the item specified does not exists, the most similar in terms of writing is assumed.\n" \
                     "Check the database to know the available items.\n" \
@@ -643,7 +644,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
 int requestAndParseSOSMailConvertion(char *password, int *item)
 {
-    if (requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS or A-OK Mail's " LGREEN "password" RESET LIGHT " (54 characters)\n" RESET) != NoError) {
+    if (requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS, A-OK or Thank-You Mail's " LGREEN "password" RESET LIGHT " (54 characters)\n" RESET) != NoError) {
         return InputError;
     }
 

@@ -10,6 +10,7 @@ int areLovers(int pkmnClient, int pkmnTarget);
 int canEvolveWithItem(int pkmn, int item);
 int isFood(int item);
 unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionType, int trySpecialJobIndicator, int itemToFindDeliver);
+int getMailType(const char* password);
 int findItemByDungeon(int item, int dungeon);
 int computeDifficulty(int dungeon, int dungeonFloor, int missionType);
 int computeMoneyReward(int difficulty, int rewardType);

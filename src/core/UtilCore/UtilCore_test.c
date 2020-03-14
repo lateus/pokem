@@ -10,6 +10,7 @@ CuSuite* UtilCoreGetTestSuite(void);
 void areParents_test(CuTest *tc);
 void arePairs_test(CuTest *tc);
 void areLovers_test(CuTest *tc);
+void getMailType_test(CuTest *tc);
 void findItemByDungeon_test(CuTest *tc);
 void computeDifficulty_test(CuTest *tc);
 void computeMoneyReward_test(CuTest *tc);
@@ -24,6 +25,7 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, areParents_test);
     SUITE_ADD_TEST(suite, arePairs_test);
     SUITE_ADD_TEST(suite, areLovers_test);
+    SUITE_ADD_TEST(suite, getMailType_test);
     SUITE_ADD_TEST(suite, findItemByDungeon_test);
     SUITE_ADD_TEST(suite, computeDifficulty_test);
     SUITE_ADD_TEST(suite, computeMoneyReward_test);
@@ -90,6 +92,44 @@ void areLovers_test(CuTest *tc)
 #undef ARRAY_SIZE
 }
 
+void getMailType_test(CuTest *tc)
+{
+#define ARRAY_SIZE 10 /*20*/
+    char input[ARRAY_SIZE][55 + 1] = {
+        /* "4X04N?7P6JP?1?3/W94?????",  (WM - VALID) */
+        /* "4X04N?7P6JP?1?3/W94????",   (WM - INVALID) */
+        /* "4X04N?7P6JP?1?3/W94??????", (WM - INVALID) */
+        /* "4X04N?7P6JP?1?3/W94????A",  (WM - INVALID) */
+        /* "J+047*?JK6+?49RM?F?N????",  (WM - VALID) */
+        /* "8004SS8P62!HSNH4W*956???",  (WM - VALID) */
+        /* "*S54++R6X?????SCWN46????",  (WM - VALID) */
+        /* "*0T4R37/T???F7!/WCP+????",  (WM - VALID) */
+        /* ".Y5JMF0PXC!?123WW.PS????",  (WM - VALID - SPECIAL EVOLVE) */
+        /* "YY58?N4R.NN7F+YQW.JN????",  (WM - VALID - SPECIAL FOOD) */
+        "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T.",  /* (SOS - VALID) */
+        "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T",   /* (SOS - INVALID) */
+        "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T..", /* (SOS - INVALID) */
+        "?8?653?0KN4??599/M2.??4R313P?*?8+3H5??TN!T!/X/.??2/Q02",  /* (SOS - VALID) */
+        "????6+7SHX???1?4???H??4?NP???4???TR?????X25??PJ??07?C?",  /* (SOS - VALID) */
+        "?M?P?.P766??Y*FC?!?R7?M?3JCP?-H?32H??0Y?M4C??1J-?NQ04?",  /* (AOK - VALID) */
+        "???16+67HX??F4?4???HT?M?NR???40??TR??2??X25??PJ-?07?C?",  /* (AOK - VALID) */
+        "?M1P?.PS66??Y*FC?!?R7?M?3JCP?-H?32H?30Y?M4C??1J-4NQ04?",  /* (THX - VALID) */
+        "??F16+6THX??FT?4???HT?M?NR???40??TR?52??X25??PJ-407?C?",  /* (THX - VALID) */
+        ""                                                         /* (INVALID) */
+    };
+
+    int actual[ARRAY_SIZE];
+
+    int expected[ARRAY_SIZE] = { /* WonderMailType, -1, -1, -1, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType */ SosMailType, -1, -1, SosMailType, SosMailType, AOkMailType, AOkMailType, ThankYouMailType, ThankYouMailType, -1 };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        actual[i] = getMailType(input[i]);
+        CuAssertIntEquals(tc, expected[i], actual[i]);
+    }
+#undef ARRAY_SIZE
+}
+
 void findItemByDungeon_test(CuTest *tc)
 {
 #define ARRAY_SIZE 4
@@ -148,23 +188,21 @@ void computeMoneyReward_test(CuTest *tc)
 
 void computeChecksum_test(CuTest *tc)
 {
-#define ARRAY_SIZE 5
+#define ARRAY_SIZE 4
     unsigned char input1[ARRAY_SIZE][34] = {
         { 0xD0, 0x25, 0x38, 0x80, 0x20, 0xA1, 0x12, 0x80, 0x01, 0xF7, 0xFF, 0x40, 0x00, 0x00, 0x00 }, /* 1?J9N/X?4P?34??764?0P??W (WM - VALID) */
-        { 0xD0, 0x25, 0x38, 0x80, 0x20, 0xA1, 0x12, 0x90, 0x01, 0xF7, 0xFF, 0x40, 0x00, 0x00, 0x00 }, /* 2?J9N/X?4P?34??764?0P??W (WM - INVALID) */
         { 0x55, 0x25, 0x28, 0x36, 0xA8, 0x37, 0x28, 0x00, 0x4F, 0x91, 0x00, 0x81, 0x01, 0x00, 0x00 }, /* 4?6F7M+?4JNRJ*??K??0+9?? (WM - VALID) */
         { 0x39, 0xD1, 0x09, 0xEC, 0x1C, 0xA1, 0x60, 0x8E, 0x26, 0x81, 0x92, 0x67, 0xAA, 0xD3, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x7D, 0x49, 0x58, 0x01, 0x00, 0x00, 0x00, 0x50, 0x00 }, /* ?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04? (SOS - VALID) */
         { 0x03, 0x61, 0x0A, 0x4C, 0x11, 0x60, 0x5E, 0xFA, 0xF5, 0xA9, 0xE1, 0x0A, 0x12, 0x2B, 0x63, 0x03, 0x91, 0x7A, 0x13, 0x2B, 0x63, 0x03, 0x00, 0x00, 0x08, 0x7D, 0x49, 0x58, 0x01, 0x00, 0x00, 0x00, 0x50, 0x00 }  /* S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N (SOS - VALID) */
     };
-    int input2[ARRAY_SIZE] = { 15, 15, 15, 34, 34 };
+    int input2[ARRAY_SIZE] = { 14, 14, 33, 33 };
 
     int actual[ARRAY_SIZE];
-    int expected[ARRAY_SIZE] = { 0xD0, 0xE0, 0x55, 0x39, 0x03 };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        actual[i] = computeChecksum((char*)input1[i], input2[i]);
-        CuAssertIntEquals(tc, expected[i], actual[i]);
+        actual[i] = computeChecksum((char*)(input1[i] + 1), input2[i]); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
+        CuAssertIntEquals(tc, input1[i][0], actual[i]);
     }
 #undef ARRAY_SIZE
 }

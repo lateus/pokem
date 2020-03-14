@@ -31,7 +31,7 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
     bitPackingEncodingSos(sos, packed33BytesPassword); /* bit packing while decoding are equivalent to bit unpacking while encoding */
 
-    packed34BytesPassword[0] = (char)computeChecksum(packed34BytesPassword, 34);
+    packed34BytesPassword[0] = (char)computeChecksum(packed34BytesPassword + 1, 33);
 
     char password54Integers[54] = {0};
     bitUnpackingEncoding(packed34BytesPassword, password54Integers, 34);

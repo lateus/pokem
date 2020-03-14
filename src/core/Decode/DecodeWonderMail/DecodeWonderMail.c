@@ -36,7 +36,7 @@ int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
     bitPackingDecoding(packed15BytesPassword, password24Integers, 24); /* Pack the password */
 
     /* Checksum */
-    int checksum = computeChecksum(packed15BytesPassword, 15);
+    int checksum = computeChecksum(packed15BytesPassword + 1, 14);
     if (checksum != (packed15BytesPassword[0] & 0xFF)) {
 #if DEBUG
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"

@@ -35,7 +35,7 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
     bitPackingDecoding(packed34BytesPassword, password54Integers, 54); /* Pack the password */
 
     /* Checksum */
-    int checksum = computeChecksum(packed34BytesPassword, 34);
+    int checksum = computeChecksum(packed34BytesPassword + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
     if (checksum != (packed34BytesPassword[0] & 0xFF)) {
 #if DEBUG
         fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"

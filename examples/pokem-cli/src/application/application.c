@@ -334,15 +334,26 @@ int convertSOS(int argc, const char *argv[])
     int i, j, count;
     int mostSimilarIndex = 0;
     int errorCode;
+    int mailType = SosMailType; /* default type */
 
-    if  (argc <= 1) {
+    if (argc <= 1) {
         requestAndParseSOSMailConvertion(SOSPassword, &itemReward);
+        mailType = getMailType(SOSPassword);
+        if (mailType == AOkMailType) {
+            strncpy(AOKPassword, SOSPassword, 54);
+        } else if (mailType == ThankYouMailType) {
+            strncpy(ThankYouPassword, SOSPassword, 54);
+        }
     }
 
     for (i = 1, count = 1; i < argc || i == 1; i += 2, ++count) {
         if (argc > 1) {
             fprintf(stdout, LIGHT "%d.\n" RESET, count);
-            strncpy(SOSPassword, argv[i], 54);
+            if (mailType == AOkMailType) {
+                strncpy(AOKPassword, argv[i], 54);
+            } else if (mailType == ThankYouMailType) {
+                strncpy(ThankYouPassword, argv[i], 54);
+            }
         }
 
         if (argc > 1 && i + 1 >= argc) {
@@ -375,26 +386,41 @@ int convertSOS(int argc, const char *argv[])
             continue;
         }
 
-        if (decodeSosMail(SOSPassword, &SOSMail) != NoError || decodeSosMail(AOKPassword, &AOKMail) != NoError || decodeSosMail(ThankYouPassword, &ThxMail) != NoError) {
-            continue;
-        }
         /* Bulking the mail's data... */
-        setSosInfo(&SOSMail, &SOSInfo);
-        strncpy(SOSInfo.password, SOSPassword, 54);
-        setSosInfo(&AOKMail, &AOKInfo);
-        strncpy(AOKInfo.password, AOKPassword, 54);
-        setSosInfo(&ThxMail, &ThxInfo);
-        strncpy(ThxInfo.password, ThankYouPassword, 54);
-
-        fputs(RESET "================== SOS Mail ====================\n", stdout);
-        printSOSData(&SOSInfo, &SOSMail);
-        fputs("\n================== A-OK Mail ===================\n", stdout);
-        printSOSData(&AOKInfo, &AOKMail);
-        fputs("\n================ Thank-You Mail ================\n", stdout);
-        printSOSData(&ThxInfo, &ThxMail);
-        fputc('\n', stdout);
+        if (mailType != SosMailType) {
+            SOSPassword[0] = '\0';
+        }
+        if (strlen(SOSPassword) == 54) {
+            fputs(RESET "================== SOS Mail ====================\n", stdout);
+            if (decodeSosMail(SOSPassword, &SOSMail) != NoError) {
+                continue;
+            }
+            setSosInfo(&SOSMail, &SOSInfo);
+            strncpy(SOSInfo.password, SOSPassword, 54);
+            printSOSData(&SOSInfo, &SOSMail);
+            fputc('\n', stdout);
+        }
+        if (strlen(AOKPassword) == 54) {
+            fputs(RESET "================== A-OK Mail ===================\n", stdout);
+            if (decodeSosMail(AOKPassword, &AOKMail) != NoError) {
+                continue;
+            }
+            setSosInfo(&AOKMail, &AOKInfo);
+            strncpy(AOKInfo.password, AOKPassword, 54);
+            printSOSData(&AOKInfo, &AOKMail);
+            fputc('\n', stdout);
+        }
+        if (strlen(ThankYouPassword) == 54) {
+            fputs(RESET "================ Thank-You Mail ================\n", stdout);
+            if (decodeSosMail(ThankYouPassword, &ThxMail) != NoError) {
+                continue;
+            }
+            setSosInfo(&ThxMail, &ThxInfo);
+            strncpy(ThxInfo.password, ThankYouPassword, 54);
+            printSOSData(&ThxInfo, &ThxMail);
+        }
         fflush(stdout);
-    }
+    } /* for loop */
     fflush(stdout);
 
     return NoError;
