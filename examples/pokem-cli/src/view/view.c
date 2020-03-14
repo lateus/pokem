@@ -635,7 +635,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     unsigned int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
     unsigned int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
     forever {
-        fprintf(stdout, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (%d to %d, leave blank for %d).\n" RESET, minChancesLeft, maxChancesLeft, maxChancesLeft)
+        fprintf(stdout, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (%d to %d, leave blank for %d).\n" RESET, minChancesLeft, maxChancesLeft, maxChancesLeft);
         if (requestAndValidateIntegerInput(&selection, 1, maxChancesLeft, "") == NoError && selection >= minChancesLeft && selection <= maxChancesLeft) {
             break; /* input is ok */
         }
@@ -958,12 +958,12 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty:   " RESET COLOR_BACKGROUND "%s%c%-30s" COLOR_BORDER "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:       " RESET COLOR_BACKGROUND "%-69s" COLOR_BORDER "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "ID:           " RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Chances left: " RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "*" RESET "\n"
+                    COLOR_BORDER COLOR_BACKGROUND "%s" WHITE COLOR_BACKGROUND "%s"             RESET COLOR_BACKGROUND "%-31s" COLOR_BORDER "%s" RESET "%s"
                     COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:     " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-18s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-18s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-18s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n",
-            mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mailInfo->chancesLeft, temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
+            mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mail->mailType == SosMailType ? "* " : "\r", mail->mailType == SosMailType ? "Chances left: " : "\r", mail->mailType == SosMailType ? mailInfo->chancesLeft : "\r", mail->mailType == SosMailType ? "*" : "\r", mail->mailType == SosMailType ? "\n" : "\r", temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
 }
 
 
