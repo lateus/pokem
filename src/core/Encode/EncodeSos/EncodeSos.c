@@ -7,15 +7,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern int printMessages;
+
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
 
     int errors = entryErrorsSosMail(sos);
     if (errors) {
-#if DEBUG
-        fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE.\a\n\n", errors);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE.\a\n\n", errors);
+            fflush(stderr);
+        }
         return InputError; /* to use the NOT operator */
     }
 

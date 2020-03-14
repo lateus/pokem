@@ -8,10 +8,14 @@
 
 #define VERSION_STRING "0.1"
 
+extern int printMessages;
+
 int autodetect(int argc, const char *argv[]);
 
 int main(int argc, const char *argv[])
 {
+    printMessages = 1; /* enable messages */
+
     /* Copyright notice */
     fputs(LIGHT "PokeM " RESET DRED "v" VERSION_STRING DGREEN "   Copyright 2018-2020 Carlos Enrique Perez Sanchez.\n"
           RESET "Based on the tools written by Peter O.\n"

@@ -6,14 +6,16 @@
 #include <stdio.h>
 #include <string.h>
 
+extern int printMessages;
+
 int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 54) {
-#if DEBUG
-        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
+                            "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+        }
         return InputError;
     }
 
@@ -37,11 +39,11 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
     /* Checksum */
     int checksum = computeChecksum(packed34BytesPassword + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
     if (checksum != (packed34BytesPassword[0] & 0xFF)) {
-#if DEBUG
-        fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n");
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
+                            "THE PASSWORD CAN'T BE DECODED.\n\n");
+            fflush(stderr);
+        }
         return ChecksumError;
     }
 
@@ -53,10 +55,10 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
     bitUnpackingDecodingSosMail(packed33BytesPassword, &sosm);
     int errors = entryErrorsSosMail(&sosm);
     if (errors) {
-#if DEBUG
-        fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+            fflush(stderr);
+        }
         return InputError; /* to use the NOT operator */
     }
     
@@ -161,7 +163,7 @@ void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
     int mailType = mail->mailType;
     strcpy(sosInfo->head, mailType == AOkMailType ? SOS_GoHelp1 : mailType == ThankYouMailType ? SOS_Thanks1 : SOS_AskHelp1);
     strcpy(sosInfo->body, mailType == AOkMailType ? SOS_GoHelp2 : mailType == ThankYouMailType ? SOS_Thanks2 : SOS_AskHelp2);
-    strcpy(sosInfo->nickname, mail->pkmnNick);
+    strncpy(sosInfo->nickname, mail->pkmnNick, 10);  /* ensure not buffer overflow */
     strcpy(sosInfo->client, mail->pkmnToRescue >= pkmnSpeciesCount ? "[INVALID]" : pkmnSpeciesStr[mail->pkmnToRescue]);
     strcpy(sosInfo->objective, missionTypeObjectiveStr[FriendRescue]);
     strcpy(sosInfo->place, mail->dungeon >= dungeonsCount ? "[INVALID]" : dungeonsStr[mail->dungeon]);

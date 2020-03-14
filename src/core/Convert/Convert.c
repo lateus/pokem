@@ -5,25 +5,43 @@
 #include "../Encode/UtilEncode/UtilEncode.h"
 #include "../UtilCore/UtilCore.h"
 #include "../../data/md1global/md1global.h"
+#include "../../data/md1database/md1database.h"
 
 #include <stdio.h>
 #include <string.h>
 
+extern int printMessages;
+
 int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 {
-    char password54Integers[54] = {0};
     struct SosMail mailTest = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
     int errorCode = decodeSosMail(SOSPassword, &mailTest);
     if (errorCode != NoError) {
+        if (printMessages) {
+            fprintf(stderr, "Invalid SOS Mail (%s): Error %d\n", SOSPassword, errorCode);
+            fflush(stderr);
+        }
         return errorCode;
+    } else if (item < 0 || (unsigned)item >= itemsCount) {
+        if (printMessages) {
+            fputs("Error: The specified item is invalid.\n", stderr);
+            fflush(stderr);
+        }
+        return InputError;
     }
 
     char allocatedPassword[54] = {0}; /* always initialize */
     const unsigned char newPositionsToDecode[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
     reallocateBytes(SOSPassword, newPositionsToDecode, 54, allocatedPassword);
+
+    char password54Integers[54] = {0};
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 54, password54Integers);
-    if (errorCode) { /* this cannot happen because we already decoded the mail */
+    if (errorCode != NoError) { /* this cannot happen because we already decoded the mail */
+        if (printMessages) {
+            fputs("Invalid character found.\n", stderr);
+            fflush(stderr);
+        }
         return errorCode;
     }
 
@@ -55,16 +73,16 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
         /* Update the mail type */
         mailType = getMailType(resultAOKMail);
         if (mailType != AOkMailType) { /* Conversion error */
+            if (printMessages) {
+                fputs("Error: The converted mail is not an A-OK Mail.\n", stderr);
+                fflush(stderr);
+            }
             return InputError;
         }
     }
 
     /* SECOND: THANK-YOU MAIL */
     if (mailType == AOkMailType) {
-        if (item <= 0 || item > 239) {
-            fputs("The specified item is invalid. Default to nothing.\n", stderr);
-            item = 0;
-        }
         convertAOkToThankYouMail(password54Integers, item);
 
         /* Bit packing */
@@ -119,7 +137,7 @@ void convertSosToAOkMail(char *password54Integers)
      * again. But that is very inefficient, however, that's the idea. I'll directly
      * change the bytes of the password by tracking the location of the bits I must
      * change:
-     * UPDATE: It's very hard to track bits before the password has been relocated and
+     * UPDATE: It's very hard to track bits before the password has been reallocated and
      *         converted back to integers and I do not have enough time to check it out,
      *         so I'll track the bits after that. If someone help me track the bits, I
      *         will be sincerely grateful.

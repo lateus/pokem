@@ -7,15 +7,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern int printMessages;
 
 int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialWonderMail)
 {
     int errors = entryErrorsWonderMail(wm);
     if (errors) {
-#if DEBUG
-        fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE\a\n\n", errors);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE\a\n\n", errors);
+            fflush(stderr);
+        }
         return InputError;
     }
 

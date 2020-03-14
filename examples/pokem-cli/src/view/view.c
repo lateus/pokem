@@ -490,9 +490,11 @@ int requestAndParseSosMailData(struct SosMail *sos)
             fputs(mailTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        if (requestAndValidateIntegerInput(&selection, 0, 0, "") == NoError && selection < 3) { /* as `selection` is unsigned, it is always >= 0 */
+        if (requestAndValidateIntegerInput(&selection, 0, 0, "") == NoError) {
             --selection;
-            break; /* input is ok */
+            if (selection < 3) { /* as `selection` is unsigned, it is always >= 0 */
+                break; /* input is ok */
+            }
         }
         fprintf(stderr, LRED "INPUT ERROR\n" RESET);
     }
@@ -630,8 +632,11 @@ int requestAndParseSosMailData(struct SosMail *sos)
     sos->mailID = selection;
 
     /* Chances left */
+    unsigned int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
+    unsigned int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
     forever {
-        if (requestAndValidateIntegerInput(&selection, 1, 10, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (1 to 10, leave blank for 10).\n" RESET) == NoError && selection >= 1 && selection <= 10) {
+        fprintf(stdout, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (%d to %d, leave blank for %d).\n" RESET, minChancesLeft, maxChancesLeft, maxChancesLeft)
+        if (requestAndValidateIntegerInput(&selection, 1, maxChancesLeft, "") == NoError && selection >= minChancesLeft && selection <= maxChancesLeft) {
             break; /* input is ok */
         }
     }

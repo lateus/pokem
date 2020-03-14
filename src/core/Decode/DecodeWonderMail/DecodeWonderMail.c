@@ -7,15 +7,17 @@
 #include <stdio.h>
 #include <string.h>
 
+extern int printMessages;
+
 int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
 {
     size_t pswLenght = strlen(password);
     if (pswLenght != 24) {
-#if DEBUG
-        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
+                            "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
+            fflush(stderr);
+        }
         return InputError;
     }
 
@@ -38,11 +40,11 @@ int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
     /* Checksum */
     int checksum = computeChecksum(packed15BytesPassword + 1, 14);
     if (checksum != (packed15BytesPassword[0] & 0xFF)) {
-#if DEBUG
-        fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n");
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
+                            "THE PASSWORD CAN'T BE DECODED.\n\n");
+            fflush(stderr);
+        }
         return ChecksumError;
     }
 
@@ -56,10 +58,10 @@ int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
     /* Checking errors */
     int errors = entryErrorsWonderMail(&wm);
     if (errors) {
-#if DEBUG
-        fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+            fflush(stderr);
+        }
         return InputError;
     }
 

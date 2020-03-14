@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+int printMessages = 0;
+
 int areParents(int pkmnClient, int pkmnTarget)
 {
     int i;
@@ -209,7 +211,7 @@ int getMailType(const char* password)
 {
     const size_t passwordLength = strlen(password);
     if (/*passwordLength != 24 && */passwordLength != 54) {
-        return -1;
+        return InvalidMailType;
     }
     // int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
@@ -217,7 +219,7 @@ int getMailType(const char* password)
     const char secondChar = password[passwordLength == 24 ?  9 : 25];
     const char* firstCharPtr = strchr(lookupTable, firstChar);
     const char* secondCharPtr = strchr(lookupTable, secondChar);
-    return (!firstCharPtr || !secondCharPtr) ? -1 : (((firstCharPtr - lookupTable) >> 3) & 0x03) | ((secondCharPtr - lookupTable) & 0x03) << 2;
+    return (!firstCharPtr || !secondCharPtr) ? InvalidMailType : (((firstCharPtr - lookupTable) >> 3) & 0x03) | ((secondCharPtr - lookupTable) & 0x03) << 2;
 }
 
 
@@ -289,21 +291,21 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     /* mission type check */
     if (wm->missionType > 4) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 1 (Mission type).\n"
-                        "      The mission type must be a number between 0 and 4.\n"
-                        "      Current value: %u [INVALID]\n\n", errorsFound, wm->missionType);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 1 (Mission type).\n"
+                            "      The mission type must be a number between 0 and 4.\n"
+                            "      Current value: %u [INVALID]\n\n", errorsFound, wm->missionType);
+        }
     }
 
     /* pkmn client check (limits) */
     if (wm->pkmnClient == 0 || wm->pkmnClient >= pkmnSpeciesCount) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn client).\n"
-                        "      Pkmns must be numbers between 1 and %d (not necessarily match pkdex numbers).\n"
-                        "      Current value: %u [INVALID]\n\n", errorsFound, pkmnSpeciesCount - 1, wm->pkmnClient);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn client).\n"
+                            "      Pkmns must be numbers between 1 and %d (not necessarily match pkdex numbers).\n"
+                            "      Current value: %u [INVALID]\n\n", errorsFound, pkmnSpeciesCount - 1, wm->pkmnClient);
+        }
     }
     /* pkmn client check (legendaries) */
     else if ( (wm->pkmnClient >= 144 && wm->pkmnClient <= 146) /* birds */ || (wm->pkmnClient >= 150 && wm->pkmnClient <= 151) /* mewtwo and mew */ ||
@@ -311,22 +313,22 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
               (wm->pkmnClient >= 274 && wm->pkmnClient <= 276) /* lugia and ho-oh */ ||
               (wm->pkmnClient >= 405 && wm->pkmnClient <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn client).\n"
-                        "      Legendaries are not valid values.\n"
-                        "      Current value: %u [%s]\n\n", errorsFound, wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn client).\n"
+                            "      Legendaries are not valid values.\n"
+                            "      Current value: %u [%s]\n\n", errorsFound, wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
+        }
     }
 
     if (wm->missionType == Find || wm->missionType == Escort) {
         /* pkmn target check (limits) */
         if (wm->pkmnTarget == 0 || wm->pkmnTarget >= pkmnSpeciesCount) {
             ++errorsFound;
-#if DEBUG
-            fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
-                            "      Pkmns must be numbers between 1 and %d (not necessarily match pkdex numbers).\n"
-                            "      Current value: %u [INVALID]\n\n", errorsFound, pkmnSpeciesCount - 1, wm->pkmnTarget);
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
+                                "      Pkmns must be numbers between 1 and %d (not necessarily match pkdex numbers).\n"
+                                "      Current value: %u [INVALID]\n\n", errorsFound, pkmnSpeciesCount - 1, wm->pkmnTarget);
+            }
         }
 
         /* pkmn target check (legendaries) */
@@ -335,11 +337,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
              (wm->pkmnTarget >= 274 && wm->pkmnTarget <= 276) /* lugia and ho-oh */ ||
              (wm->pkmnTarget >= 405 && wm->pkmnTarget <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
             ++errorsFound;
-#if DEBUG
-            fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
-                            "      Legendaries are not valid values.\n"
-                            "      Current value: %u [%s]\n\n", errorsFound, wm->pkmnTarget, pkmnSpeciesStr[wm->pkmnTarget]);
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 3 (Pkmn target).\n"
+                                "      Legendaries are not valid values.\n"
+                                "      Current value: %u [%s]\n\n", errorsFound, wm->pkmnTarget, pkmnSpeciesStr[wm->pkmnTarget]);
+            }
         }
     }
 
@@ -348,29 +350,29 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
         if (wm->itemDeliverFind < 1 || wm->itemDeliverFind >= (itemsCount - 8)) { /* the last 8 are not valid */
             ++errorsFound;
-#if DEBUG
-            fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
-                            "      Invalid item index %d. Items to find or deliver must be numbers between 1 and %d.\n"
-                            "      Current value: %u [INVALID]\n\n", errorsFound, wm->itemDeliverFind, (itemsCount - 8), wm->itemDeliverFind);
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
+                                "      Invalid item index %d. Items to find or deliver must be numbers between 1 and %d.\n"
+                                "      Current value: %u [INVALID]\n\n", errorsFound, wm->itemDeliverFind, (itemsCount - 8), wm->itemDeliverFind);
+            }
         }
 
         /* item to deliver/find check (existence) */
         if (wm->missionType == FindItem) {
             if (!findItemByDungeon(wm->itemDeliverFind, wm->dungeon)) {
-            ++errorsFound;
-#if DEBUG
-                fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
-                                "      The item %u [%s] can't be found in the dungeon %u [%s].\n"
-                                "      To accept a job about finding an item inside a dungeon, the item must exist on that dungeon.\n"
-                                "      The items that can be found in that dungeon are listed bellow:\n",
-                        errorsFound, wm->itemDeliverFind, itemsStr[wm->itemDeliverFind], wm->dungeon, dungeonsStr[wm->dungeon]);
-                unsigned short i;
-                for (i = 1; i < itemsInDungeons[wm->dungeon][0]; ++i) {
-                    fprintf(stderr, "%u [%s]\n", itemsInDungeons[wm->dungeon][i], itemsStr[itemsInDungeons[wm->dungeon][i]]);
+                ++errorsFound;
+                if (printMessages) {
+                    fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
+                                    "      The item %u [%s] can't be found in the dungeon %u [%s].\n"
+                                    "      To accept a job about finding an item inside a dungeon, the item must exist on that dungeon.\n"
+                                    "      The items that can be found in that dungeon are listed bellow:\n",
+                            errorsFound, wm->itemDeliverFind, itemsStr[wm->itemDeliverFind], wm->dungeon, dungeonsStr[wm->dungeon]);
+                    unsigned short i;
+                    for (i = 1; i < itemsInDungeons[wm->dungeon][0]; ++i) {
+                        fprintf(stderr, "%u [%s]\n", itemsInDungeons[wm->dungeon][i], itemsStr[itemsInDungeons[wm->dungeon][i]]);
+                    }
+                    fprintf(stderr, "\n\n");
                 }
-                fprintf(stderr, "\n\n");
-#endif
             }
         }
     }
@@ -379,53 +381,53 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     /* dungeon check */
     if (wm->dungeon >= dungeonsCount) {
         ++errorsFound;
-#if DEBUG
+        if (printMessages) {
         fprintf(stderr, "ERROR No. %d in argument 5 (Dungeon).\n"
                         "      The dungeon must be a number between 0 and %d.\n"
                         "      Current value: %u [INVALID]\n\n", errorsFound, dungeonsCount - 1, wm->dungeon);
-#endif
+        }
     } else if (strcmp(dungeonsStr[wm->dungeon], "[INVALID]") == 0) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 5 (Dungeon).\n"
-                        "      The dungeon with index %u isn't a valid dungeon.\n", errorsFound, wm->dungeon);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 5 (Dungeon).\n"
+                            "      The dungeon with index %u isn't a valid dungeon.\n", errorsFound, wm->dungeon);
+        }
     }
 
 
     /* floor check (floor 0) */
     if (wm->floor == 0) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
-                        "      Floor 0 does not exists.\n\n", errorsFound);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                            "      Floor 0 does not exists.\n\n", errorsFound);
+        }
     }
     /* floor check (limit) */
     if (wm->floor > difficulties[wm->dungeon][0]) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
-                        "      The dungeon %u [%s] only has %d floors. Your entry exceed that value.\n\n",
-                        errorsFound, wm->dungeon, dungeonsStr[wm->dungeon], difficulties[wm->dungeon][0]);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                            "      The dungeon %u [%s] only has %d floors. Your entry exceed that value.\n\n",
+                            errorsFound, wm->dungeon, dungeonsStr[wm->dungeon], difficulties[wm->dungeon][0]);
+        }
     }
 
 
     /* reward type check */
     if (wm->rewardType > 9) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
-                        "      The reward type must be a number between 0 and 9.\n\n"
-                        "      Current value: %u [INVALID]\n\n", errorsFound, wm->rewardType);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
+                            "      The reward type must be a number between 0 and 9.\n\n"
+                            "      Current value: %u [INVALID]\n\n", errorsFound, wm->rewardType);
+        }
         if (!computeDifficulty(wm->dungeon, wm->floor, wm->missionType)) { /* 0 means 'E' difficulty */
             ++errorsFound;
-#if DEBUG
-            fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
-                            "      To receive a friend area reward, the mission must have at least \"D\" difficulty.\n\n", errorsFound);
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
+                                "      To receive a friend area reward, the mission must have at least \"D\" difficulty.\n\n", errorsFound);
+            }
         }
     }
 
@@ -434,11 +436,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     if ( (wm->rewardType >= 1 && wm->rewardType <= 3) || (wm->rewardType >= 6 && wm->rewardType <= 8) ) {
         if (wm->itemReward >= itemsCount) {
             ++errorsFound;
-#if DEBUG
-            fprintf(stderr, "ERROR No. %d in argument 8 (Reward item).\n"
-                            "      Reward item must be a number between 0 and %d.\n"
-                            "      Current value: %u [INVALID]\n\n", errorsFound, itemsCount - 1, wm->itemReward);
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 8 (Reward item).\n"
+                                "      Reward item must be a number between 0 and %d.\n"
+                                "      Current value: %u [INVALID]\n\n", errorsFound, itemsCount - 1, wm->itemReward);
+            }
         }
     }
 
@@ -447,11 +449,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     if (wm->rewardType == 9) {
         if (wm->friendAreaReward != 9 && wm->friendAreaReward != 10 && wm->friendAreaReward != 15 && wm->friendAreaReward != 37) {
             ++errorsFound;
-#if DEBUG
-            fprintf(stderr, "ERROR No. %d in argument 9 (Friend area reward).\n"
-                            "      Valid friend area values are: [%d (%s), %d (%s), %d (%s), %d (%s)].\n"
-                            "      Current value: %u [%s]\n\n", errorsFound, 9, friendAreasStr[9], 10, friendAreasStr[10], 15, friendAreasStr[15], 37, friendAreasStr[37], wm->friendAreaReward, wm->friendAreaReward < friendAreasCount ? friendAreasStr[wm->friendAreaReward] : "INVALID");
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 9 (Friend area reward).\n"
+                                "      Valid friend area values are: [%d (%s), %d (%s), %d (%s), %d (%s)].\n"
+                                "      Current value: %u [%s]\n\n", errorsFound, 9, friendAreasStr[9], 10, friendAreasStr[10], 15, friendAreasStr[15], 37, friendAreasStr[37], wm->friendAreaReward, wm->friendAreaReward < friendAreasCount ? friendAreasStr[wm->friendAreaReward] : "INVALID");
+            }
         }
     }
 
@@ -468,70 +470,72 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* pkmn to rescue check (limits) */
     if (sos->pkmnToRescue == 0 || sos->pkmnToRescue > 414) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
-                        "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
+                            "      Pkmns must be numbers between 1 and 404 (not necessarily match pkdex numbers).\n\n", errorsFound);
+            fflush(stderr);
+        }
     }
 
 
     /* nickname check */
     if (!strlen(sos->pkmnNick)) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn nickname).\n"
-                        "      The nickname cannot be empty.\n\n", errorsFound);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 2 (Pkmn nickname).\n"
+                            "      The nickname cannot be empty.\n\n", errorsFound);
+            fflush(stderr);
+        }
     }
 
 
     /* dungeon check */
     if (sos->dungeon > 62) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
-                        "      The dungeon must be a number between 0 and 62.\n\n", errorsFound);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
+                            "      The dungeon must be a number between 0 and 62.\n\n", errorsFound);
+            fflush(stderr);
+        }
     } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
-                        "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, sos->dungeon);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
+                            "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, sos->dungeon);
+            fflush(stderr);
+        }
     } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
-                        "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
-                                    errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
+                            "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
+                                        errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
+            fflush(stderr);
+        }
     }
 
 
     /* mail ID check */
     if (sos->mailID > 9999) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 5 (Mail ID).\n"
-                        "      The mail ID must be a non-negative number with no more than 4 digits.\n\n", errorsFound);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 5 (Mail ID).\n"
+                            "      The mail ID must be a non-negative number with no more than 4 digits.\n\n", errorsFound);
+            fflush(stderr);
+        }
     }
 
 
     /* rescue chances left check */
-    if (sos->chancesLeft < 1 || sos->chancesLeft > 10) {
+    int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
+    int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
+    if (sos->chancesLeft < minChancesLeft || sos->chancesLeft > maxChancesLeft) {
         ++errorsFound;
-#if DEBUG
-        fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
-                        "      The chances left value must be between 1 and 10.\n\n", errorsFound);
-        fflush(stderr);
-#endif
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"
+                            "      The chances left for %s value must be between %d and %d.\n\n", errorsFound, sos->mailType == SosMailType ? "SOS mails" : "AOK and Thank-You mails", minChancesLeft, maxChancesLeft);
+            fflush(stderr);
+        }
     }
 
     return errorsFound;
@@ -558,15 +562,15 @@ int mapPasswordByPositionInLookupTable(const char* password, const char* lookupT
         if (characterLocation) {
             newPassword[i] = characterLocation - lookupTable;
         } else {
-#if DEBUG
-            fprintf(stderr, "ERROR: INVALID character: '%c' found at index [%d].\n"
-                            "Valid characters are:\n"
-                            "    > Numbers: '0' to '9'.\n"
-                            "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
-                            "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n", password[i], i);
-            fflush(stderr);
-#endif
+            if (printMessages) {
+                fprintf(stderr, "ERROR: INVALID character: '%c' found at index [%d].\n"
+                                "Valid characters are:\n"
+                                "    > Numbers: '0' to '9'.\n"
+                                "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
+                                "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
+                                "THE PASSWORD CAN'T BE DECODED.\n\n", password[i], i);
+                fflush(stderr);
+            }
             return InputError;
         }
     }

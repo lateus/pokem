@@ -120,7 +120,7 @@ void getMailType_test(CuTest *tc)
 
     int actual[ARRAY_SIZE];
 
-    int expected[ARRAY_SIZE] = { /* WonderMailType, -1, -1, -1, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType */ SosMailType, -1, -1, SosMailType, SosMailType, AOkMailType, AOkMailType, ThankYouMailType, ThankYouMailType, -1 };
+    int expected[ARRAY_SIZE] = { /* WonderMailType, -1, -1, -1, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType */ SosMailType, InvalidMailType, InvalidMailType, SosMailType, SosMailType, AOkMailType, AOkMailType, ThankYouMailType, ThankYouMailType, InvalidMailType };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {

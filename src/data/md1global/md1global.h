@@ -7,7 +7,7 @@
 /* Data definitions */
 
 /* Mail type */
-enum MailType { SosMailType = 1, AOkMailType = 4, ThankYouMailType = 5, WonderMailType = ThankYouMailType };
+enum MailType { SosMailType = 1, AOkMailType = 4, ThankYouMailType = 5, WonderMailType = ThankYouMailType, InvalidMailType = 0xFF };
 
 /* Error codes */
 enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };
