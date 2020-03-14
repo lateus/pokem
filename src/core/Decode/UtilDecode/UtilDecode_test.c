@@ -6,6 +6,7 @@
 
 
 CuSuite* UtilDecodeGetTestSuite(void);
+
 void bitPackingDecoding_test(CuTest *tc);
 
 

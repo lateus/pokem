@@ -3,7 +3,6 @@
 #include "EncodeSos.h"
 
 #include <stdlib.h>
-#include <stdio.h>
 
 
 CuSuite* EncodeSosMailGetTestSuite(void);
@@ -49,7 +48,6 @@ void encodeSosMail_test(CuTest *tc)
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        fflush(stderr);
         actualReturnResults[i] = encodeSosMail(&input1[i], input2[i]);
         CuAssertIntEquals(tc, expected[i], actualReturnResults[i]);
     }
@@ -81,7 +79,6 @@ void bitPackingEncodingSosMail_test(CuTest *tc)
 
     int i, j;
     for (i = 0; i < ARRAY_SIZE; ++i) {
-        fflush(stderr);
         bitPackingEncodingSos(&input1[i], input2[i]);
         for (j = 0; j < 14; ++j) {
             CuAssertIntEquals(tc, expected[i][j], input2[i][j]);
