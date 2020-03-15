@@ -14,6 +14,7 @@ void arePairs_test(CuTest *tc);
 void areLovers_test(CuTest *tc);
 void canEvolveWithItem_test(CuTest *tc);
 void isFood_test(CuTest *tc);
+void getSpecialJobIndicator_test(CuTest *tc);
 void getMailType_test(CuTest *tc);
 void findItemByDungeon_test(CuTest *tc);
 void computeDifficulty_test(CuTest *tc);
@@ -31,6 +32,7 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, areLovers_test);
     SUITE_ADD_TEST(suite, canEvolveWithItem_test);
     SUITE_ADD_TEST(suite, isFood_test);
+    SUITE_ADD_TEST(suite, getSpecialJobIndicator_test);
     SUITE_ADD_TEST(suite, getMailType_test);
     SUITE_ADD_TEST(suite, findItemByDungeon_test);
     SUITE_ADD_TEST(suite, computeDifficulty_test);
@@ -125,21 +127,21 @@ void canEvolveWithItem_test(CuTest *tc)
     int testResult, expectedResult;
     int itm, itmEvol, pkm, pkmEvol;
     for (itm = 0; itm < itemsCount; ++itm) {
-        for (itmEvol = 1; itmEvol < itemsToTest[0]; ++itmEvol) {
+        for (itmEvol = 1; itmEvol <= itemsToTest[0]; ++itmEvol) {
             if (itemsToTest[itmEvol] == itm) {
                 break;
             }
         }
         for (pkm = 0; pkm < pkmnSpeciesCount; ++pkm) {
-            if (itmEvol < itemsToTest[0]) {
-                for (pkmEvol = 1; pkmEvol < pkmnsToTest[itmEvol - 1][0]; ++pkmEvol) {
+            if (itmEvol <= itemsToTest[0]) {
+                for (pkmEvol = 1; pkmEvol <= pkmnsToTest[itmEvol - 1][0]; ++pkmEvol) {
                     if (pkmnsToTest[itmEvol - 1][pkmEvol] == pkm) {
                         break;
                     }
                 }
             }
             testResult = canEvolveWithItem(pkm, itm);
-            expectedResult = itmEvol < itemsToTest[0] && pkmEvol < pkmnsToTest[itmEvol - 1][0];
+            expectedResult = itmEvol <= itemsToTest[0] && pkmEvol <= pkmnsToTest[itmEvol - 1][0];
             CuAssertIntEquals(tc, expectedResult, testResult);
         }
     }
@@ -158,6 +160,27 @@ void isFood_test(CuTest *tc)
                          (itm >= 86 && itm <= 102); /* Gummis */;
         CuAssertIntEquals(tc, expectedResult, testResult);
     }
+}
+
+void getSpecialJobIndicator_test(CuTest *tc)
+{
+#define ARRAY_SIZE 30
+    /* Tests comments:                          /0 - From here, test validspecial jobs                                                         /11 - From here test same inputs but with wrong mission types                                 /22 - Disable trying of special job              /26 - Wrong pkmn combinations */
+    const int input1[ARRAY_SIZE]            = {  176,  169,   49,  266,  172,    266,    337,       25,         123,      102,         300,       176,    169,       49,         266,    172,  266,    337,     25,    123,  102,    300,          25,         123,      102,         300,     175,  169,  200,     21 };
+    const int input2[ARRAY_SIZE]            = {  175,   41,  294,  128,  172,    128,    336,        0,         321,      200,           1,       175,     41,      294,         128,    172,  128,    336,      0,    321,  200,      1,           0,         321,      200,           1,     176,   69,  172,     18 };
+    const int input3[ARRAY_SIZE]            = { Find, Find, Find, Find, Find, Escort, Escort, FindItem, DeliverItem, FindItem, DeliverItem,    HelpMe, Escort, FindItem, DeliverItem, Escort, FindItem, HelpMe, HelpMe, Escort, Find, HelpMe,    FindItem, DeliverItem, FindItem, DeliverItem,    Find, Find, Find, Escort };
+    const int input4[ARRAY_SIZE]            = {    0,    1,    0,    1,    0,      1,      0,        1,           1,        1,           1,         0,      1,        0,           1,      0,    1,      0,      1,      1,    1,      1,           0,           0,        0,           0,       0,    1,    0,      1 };
+    const int input5[ARRAY_SIZE]            = {  102,  250,   68,    0,  111,     31,    100,      108,         115,       82,          99,       102,    250,       68,           0,    111,   31,    100,    108,    115,   82,     99,         108,         115,       82,          99,     102,  250,  111,     31 };
+
+    unsigned int actualResults[ARRAY_SIZE];
+    const unsigned int expected[ARRAY_SIZE] = { 0x0F, 0x0F, 0x09, 0x09, 0x09,   0x0A,   0x0A,     0x05,        0x05,     0x06,        0x06,         0,      0,        0,           0,      0,    0,      0,      0,      0,    0,      0,           0,           0,        0,           0,       0,    0,    0,      0 };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        actualResults[i] = getSpecialJobIndicator(input1[i], input2[i], input3[i], input4[i], input5[i]);
+        CuAssertIntEquals(tc, expected[i], actualResults[i]);
+    }
+#undef ARRAY_SIZE
 }
 
 void getMailType_test(CuTest *tc)
