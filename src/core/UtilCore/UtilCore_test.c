@@ -2,14 +2,18 @@
 
 #include "UtilCore.h"
 #include "../../data/md1global/md1global.h"
+#include "../../data/md1database/md1database.h"
 
 #include <stdlib.h>
 
 
 CuSuite* UtilCoreGetTestSuite(void);
+
 void areParents_test(CuTest *tc);
 void arePairs_test(CuTest *tc);
 void areLovers_test(CuTest *tc);
+void canEvolveWithItem_test(CuTest *tc);
+void isFood_test(CuTest *tc);
 void getMailType_test(CuTest *tc);
 void findItemByDungeon_test(CuTest *tc);
 void computeDifficulty_test(CuTest *tc);
@@ -25,6 +29,8 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, areParents_test);
     SUITE_ADD_TEST(suite, arePairs_test);
     SUITE_ADD_TEST(suite, areLovers_test);
+    SUITE_ADD_TEST(suite, canEvolveWithItem_test);
+    SUITE_ADD_TEST(suite, isFood_test);
     SUITE_ADD_TEST(suite, getMailType_test);
     SUITE_ADD_TEST(suite, findItemByDungeon_test);
     SUITE_ADD_TEST(suite, computeDifficulty_test);
@@ -90,6 +96,68 @@ void areLovers_test(CuTest *tc)
         CuAssertIntEquals(tc, expected[i], actual[i]);
     }
 #undef ARRAY_SIZE
+}
+
+void canEvolveWithItem_test(CuTest *tc)
+{
+    const int pkmnsToTest[16][6] = {
+        /* the first index is the size of the respective array */
+        { 2, 25, 133 }, /* thunderStone (108) - Pikachu and Eevee */
+        { 3, 37, 58, 133 }, /* fireStone (113) - Vulpix, Growlithe and Eevee */
+        { 5, 61, 90, 120, 133, 296 }, /* waterStone (114) - Poliwhirl, Shellder, Staryu, Eevee and Lombre */
+        { 4, 44, 70, 102, 299 }, /* leafStone (116) - Gloom, Weepinbell, Exeggcute and Nuzleaf */
+        { 2, 44, 191 }, /* sunStone (111) - Gloom and Sunkern */
+        { 5, 30, 33, 35, 39, 325 }, /* moonStone (112) - Nidorina, Nidorino, Clefairy, Jigglypuff and Skitty */
+        { 4, 64, 67, 75, 93 }, /* linkCable (118) - Kadabra, Machoke, Graveler and Haunter */
+        { 1, 394 }, /* deepSeaScale (109) - Clamperl */
+        { 1, 394 }, /* deepSeaTooth (110) - Same as `deepSeaScale`: Clamperl */
+        { 1, 117 }, /* dragonScale (117) - Seadra */
+        { 1, 80 }, /* kingsRock (107) - Slowbro */
+        { 2, 95, 123 }, /* metalCoat (115) - Onix and Scyther */
+        { 1, 137 }, /* upgrade (106) - Porygon */
+        { 1, 133 }, /* sunRibbon (48) - Eevee */
+        { 1, 133 }, /* lunarRibbon (49) - Same as `sunRibbonPkmn`: Eevee */
+        { 1, 374 } /* beautyScarf (47) - Feebas */
+    };
+    /* the items mentioned above, in the same order */
+    const int itemsToTest[] = { 16, 108, 113, 114, 116, 111, 112, 118, 109, 110, 117, 107, 115, 106, 48, 49, 47 };
+
+    int testResult, expectedResult;
+    int itm, itmEvol, pkm, pkmEvol;
+    for (itm = 0; itm < itemsCount; ++itm) {
+        for (itmEvol = 1; itmEvol < itemsToTest[0]; ++itmEvol) {
+            if (itemsToTest[itmEvol] == itm) {
+                break;
+            }
+        }
+        for (pkm = 0; pkm < pkmnSpeciesCount; ++pkm) {
+            if (itmEvol < itemsToTest[0]) {
+                for (pkmEvol = 1; pkmEvol < pkmnsToTest[itmEvol - 1][0]; ++pkmEvol) {
+                    if (pkmnsToTest[itmEvol - 1][pkmEvol] == pkm) {
+                        break;
+                    }
+                }
+            }
+            testResult = canEvolveWithItem(pkm, itm);
+            expectedResult = itmEvol < itemsToTest[0] && pkmEvol < pkmnsToTest[itmEvol - 1][0];
+            CuAssertIntEquals(tc, expectedResult, testResult);
+        }
+    }
+}
+
+void isFood_test(CuTest *tc)
+{
+    int testResult, expectedResult;
+    int itm;
+    for (itm = 0; itm < itemsCount; ++itm) {
+        testResult = isFood(itm);
+        expectedResult = itm == 82  || /* Apple */
+                         itm == 83  || /* Big Apple */
+                         itm == 85  || /* Huge Apple */
+                         itm == 103 || /* Banana */
+                         (itm >= 86 && itm <= 102); /* Gummis */;
+        CuAssertIntEquals(tc, expectedResult, testResult);
+    }
 }
 
 void getMailType_test(CuTest *tc)
