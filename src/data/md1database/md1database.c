@@ -421,27 +421,27 @@ const char* msgBodyStandard_2Of2_FindDeliverItem[] = {
 
 /* Parents */
 const int parents[] = {
-     15,  13,
-     18,  16,
-     20,  19,
-     26, 172,
-     36, 173,
-     40, 174,
-    169,  41,
-     45,  43,
-     62,  60,
-    176, 175,
-    184, 323,
-    242, 241,
-    257, 256,
-    125, 264,
-    126, 265,
-    273, 271,
-    292, 290,
-    331, 329,
-    355, 353,
-    393, 391,
-    302, 301
+     15,  13, /* Beedrill   -> Kakuna */
+     18,  16, /* Pidgeot    -> Pidgey */
+     20,  19, /* Raticate   -> Rattata */
+     26, 172, /* Raichu     -> Pichu */
+     36, 173, /* Clefable   -> Cleffa */
+     40, 174, /* Wigglytuff -> Igglybuff */
+    169,  41, /* Crobat     -> Zubat */
+     45,  43, /* Vileplume  -> Oddish */
+     62,  60, /* Poliwrath  -> Poliwag */
+    176, 175, /* Togetic    -> Togepi */
+    184, 323, /* Azumarill  -> Azurill */
+    242, 241, /* Ursaring   -> Teddiursa */
+    257, 256, /* Donphan    -> Phanpy */
+    125, 264, /* Electabuzz -> Elekid */
+    126, 265, /* Magmar     -> Magby */
+    273, 271, /* Tyranitar  -> Larvitar */
+    292, 290, /* Beautifly  -> Wurmple */
+    331, 329, /* Aggron     -> Aron */
+    355, 353, /* Flygon     -> Trapinch */
+    393, 391, /* Walrein    -> Spheal */
+    302, 301  /* Swellow    -> Taillow */
 };
 
 const char* parentsHead = "Save my child!";
@@ -496,51 +496,51 @@ const char* parentsBody2Of2[] = {
 
 /* Pairs */
 const int pairs[] = {
-    103,  85,
-     22, 112,
-     90, 394,
-     89, 342,
-     52, 325,
-    129, 374,
-     13, 290,
-    293, 291,
-    301,  16,
-     37, 347,
-    174, 173,
-     49, 294,
-    313,  57,
-    286,  58,
-     69, 238,
-     86, 392,
-     97, 122,
-     98, 366,
-    143, 314,
-    127, 239,
-    240, 360,
-    323, 175,
-    132, 185,
-    241, 352,
-     79, 312,
-    164, 198,
-    340, 182,
-    250, 304,
-    397,  38,
-    197, 386,
-    200, 381,
-    247, 398,
-    176, 267,
-     32,  29,
-     33,  30,
-     34,  31,
-    128, 266,
-    338, 339,
-    337, 336,
-    360, 361,
-    106, 107,
-    362, 363,
-    138, 140,
-    370, 372,
-    172, 172
+    103,  85, /* Exeggutor  <-> Dodrio */
+     22, 112, /* Fearow     <-> Rhydon */
+     90, 394, /* Shellder   <-> Clamperl */
+     89, 342, /* Muk        <-> Swalot */
+     52, 325, /* Meowth     <-> Skitty */
+    129, 374, /* Magikarp   <-> Feebas */
+     13, 290, /* Weedle     <-> Wurmple */
+    293, 291, /* Cascoon    <-> Silcoon */
+    301,  16, /* Taillow    <-> Pidgey */
+     37, 347, /* Vulpix     <-> Numel */
+    174, 173, /* Igglybuff  <-> Cleffa */
+     49, 294, /* Venomoth   <-> Dustox */
+    313,  57, /* Vigoroth   <-> Primeape */
+    286,  58, /* Poochyena  <-> Growlithe */
+     69, 238, /* Bellsprout <-> Shuckle */
+     86, 392, /* Seel       <-> Sealeo */
+     97, 122, /* Hypno      <-> Mr. Mime */
+     98, 366, /* Krabby     <-> Corphish */
+    143, 314, /* Snorlax    <-> Slaking */
+    127, 239, /* Pinsir     <-> Heracross */
+    240, 360, /* Sneasel    <-> Zangoose */
+    323, 175, /* Azurill    <-> Togepi */
+    132, 185, /* Ditto      <-> Sudowoodo */
+    241, 352, /* Teddiursa  <-> Spinda */
+     79, 312, /* Slowpoke   <-> Slakoth */
+    164, 198, /* Noctowl    <-> Murkrow */
+    340, 182, /* Roselia    <-> Bellossom */
+    250, 304, /* Delibird   <-> Wingull */
+    397,  38, /* Relicanth  <-> Ninetales */
+    197, 386, /* Umbreon    <-> Chimecho */
+    200, 381, /* Misdreavus <-> Shuppet */
+    247, 398, /* Corsola    <-> Luvdisc */
+    176, 267, /* Togetic    <-> Blissey */
+     32,  29, /* NidoranM   <-> NidoranF */
+     33,  30, /* Nidorino   <-> Nidorina */
+     34,  31, /* Nidoking   <-> Nidoqueen */
+    128, 266, /* Tauros     <-> Miltank */
+    338, 339, /* Volbeat    <-> Illumise */
+    337, 336, /* Minum      <-> Plusle */
+    360, 361, /* Zangoose   <-> Seviper */
+    106, 107, /* Hitmonlee  <-> Hitmonchan */
+    362, 363, /* Lunatone   <-> Solrock */
+    138, 140, /* Omanyte    <-> Kabuto */
+    370, 372, /* Lileep     <-> Anorith */
+    172, 172  /* Pichu      <-> Pichu */
 };
 
 const char* friendsHead  = "Please save my friend!";  /* first 33 */
@@ -647,12 +647,12 @@ const char* pairsBody2Of2[] = {
 
 /* Lovers flavor text - Escort missions */
 const int lovers[] = {
-     32,  29,
-     33,  30,
-     34,  31,
-    128, 266,
-    338, 339,
-    337, 336
+     32,  29, /* NidoranM <-> NidoranF */
+     33,  30, /* Nidorino <-> Nidorina */
+     34,  31, /* Nidoking <-> Nidoqueen */
+    128, 266, /* Tauros   <-> Miltank */
+    338, 339, /* Volbeat  <-> Illumise */
+    337, 336  /* Minum    <-> Plusle */
 };
 
 const char* loversEscortHead = "Escort me to my love!";
