@@ -159,7 +159,7 @@ extern const char* nearPlaceText;
 /* Data definitions */
 
 /* Mail type */
-enum MailType { SosMailType = 1, AOkMailType = 4, ThankYouMailType = 5, WonderMailType = ThankYouMailType, InvalidMailType = 0xFF };
+enum MailType { SosMailType = 1, AOkMailType = 4, ThankYouMailType = 5, WonderMailType = ThankYouMailType, InvalidMailType = 0x0F };
 
 /* Error codes */
 enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };
@@ -204,7 +204,7 @@ struct SosMail {
     unsigned int teamSeekingHelpID:32;    /* 32 bits: ID of rescue team seeking help */
     unsigned int teamGivingHelpID:32;     /* 32 bits: ID of rescue team giving help. For SOS Mail, this is 0; for A-OK Mail, safe to set to rescue team seeking help */
     unsigned int chancesLeft:8;           /*  8 bits: Rescue chances left; when converting to A-OK Mail, subtract 1 from this */
-    unsigned int idk_last3Bits:3;         /*  3 bits: Three bits for unknown. Safe to set to 0 */
+    unsigned int idk_last3Bits:3;         /*  3 bits: Three bits for unknown purpose. Safe to set to 0 */
 };
 
 /* Contains the human-readable information of a Wonder Mail */
