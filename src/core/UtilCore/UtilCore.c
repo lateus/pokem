@@ -405,16 +405,13 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
                             "      The dungeon with index %u isn't a valid dungeon.\n", errorsFound, wm->dungeon);
         }
     } else { /* Check the floor only if the dungeon is valid */
-        /* floor check (floor 0) */
-        if (wm->floor == 0) {
+        if (wm->floor == 0) { /* floor check (floor 0) */
             ++errorsFound;
             if (printMessages) {
                 fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
                                 "      Floor 0 does not exists.\n\n", errorsFound);
             }
-        }
-        /* floor check (limit) */
-        if (wm->floor > difficulties[wm->dungeon][0]) {
+        } else if (wm->floor > difficulties[wm->dungeon][0]) { /* floor check (limit) */
             ++errorsFound;
             if (printMessages) {
                 fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
@@ -525,13 +522,21 @@ int entryErrorsSosMail(const struct SosMail *sos)
                             "      The dungeon with index %u isn't a valid dungeon.\n\n", errorsFound, sos->dungeon);
             fflush(stderr);
         }
-    } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check */
-        ++errorsFound;
-        if (printMessages) {
-            fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
-                            "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
-                                        errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
-            fflush(stderr);
+    } else {
+        if (sos->floor == 0) { /* floor check (floor 0) */
+            ++errorsFound;
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
+                                "      Floor 0 does not exists.\n\n", errorsFound);
+            }
+        } else if (sos->floor > difficulties[sos->dungeon][0]) { /* floor check (limit) */
+            ++errorsFound;
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 4 (Floor).\n"
+                                "      The dungeon %s (index %u) only has %d floors. Your entry exceed that value.\n\n",
+                                            errorsFound, dungeonsStr[sos->dungeon], sos->dungeon, difficulties[sos->dungeon][0]);
+                fflush(stderr);
+            }
         }
     }
 
@@ -550,7 +555,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* rescue chances left check */
     int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
     int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
-    if (sos->chancesLeft < minChancesLeft || sos->chancesLeft > maxChancesLeft) {
+    if (sos->mailType >= SosMailType && sos->mailType <= ThankYouMailType && (sos->chancesLeft < minChancesLeft || sos->chancesLeft > maxChancesLeft)) {
         ++errorsFound;
         if (printMessages) {
             fprintf(stderr, "ERROR No. %d in argument 6 (Chances left).\n"

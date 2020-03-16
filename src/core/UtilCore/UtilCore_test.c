@@ -20,6 +20,8 @@ void findItemByDungeon_test(CuTest *tc);
 void computeDifficulty_test(CuTest *tc);
 void computeMoneyReward_test(CuTest *tc);
 void computeChecksum_test(CuTest *tc);
+void entryErrorsWonderMail_test(CuTest *tc);
+void entryErrorsSosMail_test(CuTest *tc);
 void reallocateBytes_test(CuTest *tc);
 void mapPasswordByPositionInLookupTable_test(CuTest *tc);
 
@@ -38,6 +40,8 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, computeDifficulty_test);
     SUITE_ADD_TEST(suite, computeMoneyReward_test);
     SUITE_ADD_TEST(suite, computeChecksum_test);
+    SUITE_ADD_TEST(suite, entryErrorsWonderMail_test);
+    SUITE_ADD_TEST(suite, entryErrorsSosMail_test);
     SUITE_ADD_TEST(suite, reallocateBytes_test);
     SUITE_ADD_TEST(suite, mapPasswordByPositionInLookupTable_test);
     return suite;
@@ -294,6 +298,59 @@ void computeChecksum_test(CuTest *tc)
     for (i = 0; i < ARRAY_SIZE; ++i) {
         actual[i] = computeChecksum((char*)(input1[i] + 1), input2[i]); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
         CuAssertIntEquals(tc, input1[i][0], actual[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void entryErrorsWonderMail_test(CuTest *tc)
+{
+#define ARRAY_SIZE 8
+    const struct WonderMail input[ARRAY_SIZE] = {
+        /*         Mail type,    Mission type,  Special job, Pkmn Client, Pkmn target, Item F/D,    Reward type, Reward item, Friend area, Flavor, Random, 0xFF, Dungeon, Floor */
+        {     WonderMailType,          HelpMe,         0x00,           1,           0,        9,          Money,           0,           0,      0,   0x00, 0x00,       0,     1 },
+        {     WonderMailType,     DeliverItem,         0x01,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,      62,    98 },
+        {     WonderMailType,     DeliverItem,         0x02,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,       0,     1 }, /* Friend area ('E' difficulty) */
+        {        SosMailType,            Find,         0x03,         405,         415,      255, FriendArea + 1,         240,          60,      0,      0, 0xFF,      63,    99 }, /* Mail type, pkmn client, pkmn target, reward type and dungeon */
+        {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, item to deliver, friend area and floor  */
+        {   ThankYouMailType, DeliverItem + 1,         0x05,         210,         511,      240,      MoneyItem,           0,          63,      0,      0, 0xFF,       0,     4 }, /* Mission type, pkmn client, reward item and floor. Note: Not the Mail type cuz ThankYouMail == WonderMail */
+        { WonderMailType + 1,          Escort,         0x0E,         150,         151,        0,      MoneyItem,         240,          19,      0,      0, 0xFF,      10,     4 }, /* Mail type, pkmn client, pkmn target, item reward and floor */
+        {    InvalidMailType,        FindItem,         0x0F,         201,           0,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* (!!! TODO: Cannot do a mission in floor 99 of Western Cave) Mail type, pkmn client, item to find and friend area */
+    };
+
+    int actualResults[ARRAY_SIZE];
+
+    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 5, 4, 5, 4 };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        actualResults[i] = entryErrorsWonderMail(&input[i]);
+        CuAssertIntEquals(tc, expectedResults[i], actualResults[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void entryErrorsSosMail_test(CuTest *tc)
+{
+#define ARRAY_SIZE 7
+    const struct SosMail input[ARRAY_SIZE] = {
+        /*           Mail type, Dungeon, Floor, Random 1, Pkmn to rescue, Mail ID, Random 2,     Nickname, 0/1, Reward item, 0, team seeking help, team giving help, chances left, last 3 bits */
+        {          SosMailType,       0,     1,        0,              1,       0,        0,          ".",   0,           0, 0,                 0,                0,            1,           0 },
+        {     ThankYouMailType,      62,    98, 0xFFFFFF,            414,    9999,   0xFFFF, "Niiickname",   1,         239, 0,              9999,             9999,            9,           0 },
+        {      SosMailType + 1,      63,     0,        0,              0,   10000,        0,           "",   0,         240, 0,             10000,            10000,          255,           0 }, /* Mail type, Dungeon, Pkmn to rescue, Mail ID, Nickname and Reward item */
+        {          SosMailType,       0,     0,        0,            150,    5555,        0,          ".",   0,           1, 0,                 1,                2,            0,           0 }, /* Floor and chances left */
+        {          SosMailType,       0,     4,        0,            150,    1234,        0,          ".",   0,           1, 0,              1000,             1000,           11,           0 }, /* Floor and chances left */
+        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* (!!! TODO: Cannot do a mission in floor 99 of Western Cave) Chances left */
+        { ThankYouMailType + 1,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,          100,           0 }  /* Mail type */
+    };
+
+    int actualResults[ARRAY_SIZE];
+
+    const int expectedResults[ARRAY_SIZE] = { 0, 0, 6, 2, 2, 1, 1 };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        actualResults[i] = entryErrorsSosMail(&input[i]);
+        CuAssertIntEquals(tc, expectedResults[i], actualResults[i]);
     }
 #undef ARRAY_SIZE
 }
