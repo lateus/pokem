@@ -1066,7 +1066,7 @@ int checkFloorForDungeon(int floor, int dungeonIndex, int printErrorMessages)
 int checkItemToFindDeliverRangeInWonderMail(int index, int printErrorMessages)
 {
     /* item check (limits) */
-    if (index < 1 || (unsigned int)index >= (itemsCount - 8)) { /* the last 8 are not valid */
+    if (index < 1 || (unsigned int)index > (itemsCount - 8)) { /* the last 7 are not valid */
         if (printErrorMessages) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Items must be numbers between 1 and %d.\n"
                             "       Current value: " LRED "%u" RESET LIGHT " [" LRED "INVALID" RESET LIGHT "]\n\n" RESET, (itemsCount - 9), index);

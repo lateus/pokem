@@ -288,13 +288,25 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 {
     int errorsFound = 0;
 
+    /* mail type check */
+    if (wm->mailType != WonderMailType) {
+        ++errorsFound;
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d (Mail type).\n"
+                            "      The mail type must be a Wonder Mail.\n"
+                            "      Current value: %u [%s]\n\n", errorsFound, wm->mailType,
+                            wm->mailType == SosMailType ? "SOS Mail" :
+                            wm->mailType == AOkMailType ? "AOK Mail" : "INVALID");
+        }
+    } 
+
     /* mission type check */
     if (wm->missionType > 4) {
         ++errorsFound;
         if (printMessages) {
             fprintf(stderr, "ERROR No. %d in argument 1 (Mission type).\n"
                             "      The mission type must be a number between 0 and 4.\n"
-                            "      Current value: %u [INVALID]\n\n", errorsFound, wm->missionType);
+                            "      Current value: %u [%s]\n\n", errorsFound, wm->missionType, wm->missionType == FriendRescue ? "Friend rescue" : "INVALID");
         }
     }
 
@@ -348,7 +360,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 
     /* item to deliver/find check (limits) */
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
-        if (wm->itemDeliverFind < 1 || wm->itemDeliverFind >= (itemsCount - 8)) { /* the last 8 are not valid */
+        if (wm->itemDeliverFind < 1 || wm->itemDeliverFind > (itemsCount - 8)) { /* the last 7 are not valid */
             ++errorsFound;
             if (printMessages) {
                 fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
@@ -392,29 +404,27 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             fprintf(stderr, "ERROR No. %d in argument 5 (Dungeon).\n"
                             "      The dungeon with index %u isn't a valid dungeon.\n", errorsFound, wm->dungeon);
         }
-    }
-
-
-    /* floor check (floor 0) */
-    if (wm->floor == 0) {
-        ++errorsFound;
-        if (printMessages) {
-            fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
-                            "      Floor 0 does not exists.\n\n", errorsFound);
+    } else { /* Check the floor only if the dungeon is valid */
+        /* floor check (floor 0) */
+        if (wm->floor == 0) {
+            ++errorsFound;
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                                "      Floor 0 does not exists.\n\n", errorsFound);
+            }
+        }
+        /* floor check (limit) */
+        if (wm->floor > difficulties[wm->dungeon][0]) {
+            ++errorsFound;
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                                "      The dungeon %u [%s] only has %d floors. Your entry exceed that value.\n\n",
+                                errorsFound, wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID", difficulties[wm->dungeon][0]);
+            }
         }
     }
-    /* floor check (limit) */
-    if (wm->floor > difficulties[wm->dungeon][0]) {
-        ++errorsFound;
-        if (printMessages) {
-            fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
-                            "      The dungeon %u [%s] only has %d floors. Your entry exceed that value.\n\n",
-                            errorsFound, wm->dungeon, dungeonsStr[wm->dungeon], difficulties[wm->dungeon][0]);
-        }
-    }
 
-
-    /* reward type check */
+    /* reward type check (range) */
     if (wm->rewardType > 9) {
         ++errorsFound;
         if (printMessages) {
@@ -422,19 +432,20 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
                             "      The reward type must be a number between 0 and 9.\n\n"
                             "      Current value: %u [INVALID]\n\n", errorsFound, wm->rewardType);
         }
-        if (!computeDifficulty(wm->dungeon, wm->floor, wm->missionType)) { /* 0 means 'E' difficulty */
-            ++errorsFound;
-            if (printMessages) {
-                fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
-                                "      To receive a friend area reward, the mission must have at least \"D\" difficulty.\n\n", errorsFound);
-            }
+    }
+    /* reward type check (enable friend area reward) */
+    if (wm->rewardType == FriendArea && computeDifficulty(wm->dungeon, wm->floor, wm->missionType) == 0) { /* 0 means 'E' difficulty */
+        ++errorsFound;
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d in argument 7 (Reward type).\n"
+                            "      To receive a friend area reward, the mission must have at least \"D\" difficulty.\n\n", errorsFound);
         }
     }
 
 
     /* reward item check */
     if ( (wm->rewardType >= 1 && wm->rewardType <= 3) || (wm->rewardType >= 6 && wm->rewardType <= 8) ) {
-        if (wm->itemReward >= itemsCount) {
+        if (wm->itemReward == 0 || wm->itemReward >= itemsCount) {
             ++errorsFound;
             if (printMessages) {
                 fprintf(stderr, "ERROR No. %d in argument 8 (Reward item).\n"
@@ -467,8 +478,18 @@ int entryErrorsSosMail(const struct SosMail *sos)
 {
     int errorsFound = 0;
 
+    /* mail type check */
+    if (sos->mailType != SosMailType && sos->mailType != AOkMailType && sos->mailType != ThankYouMailType) {
+        ++errorsFound;
+        if (printMessages) {
+            fprintf(stderr, "ERROR No. %d (Mail type).\n"
+                            "      The mail type must be a SOS Mail, A-OK Mail or Thank-You Mail.\n"
+                            "      Current value: %u [INVALID]\n\n", errorsFound, sos->mailType);
+        }
+    } 
+
     /* pkmn to rescue check (limits) */
-    if (sos->pkmnToRescue == 0 || sos->pkmnToRescue > 414) {
+    if (sos->pkmnToRescue == 0 || sos->pkmnToRescue >= pkmnSpeciesCount) {
         ++errorsFound;
         if (printMessages) {
             fprintf(stderr, "ERROR No. %d in argument 1 (Pkmn to rescue).\n"
@@ -490,7 +511,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
 
 
     /* dungeon check */
-    if (sos->dungeon > 62) {
+    if (sos->dungeon >= dungeonsCount) {
         ++errorsFound;
         if (printMessages) {
             fprintf(stderr, "ERROR No. %d in argument 3 (Dungeon).\n"
