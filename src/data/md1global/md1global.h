@@ -1,9 +1,6 @@
 #ifndef MD1GLOBAL_H
 #define MD1GLOBAL_H
 
-/* Enable (1) or disable (0) debug messages */
-#define DEBUG 1
-
 /* Data definitions */
 
 /* Mail type */

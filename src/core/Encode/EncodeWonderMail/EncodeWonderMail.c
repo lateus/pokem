@@ -22,7 +22,9 @@ int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialW
 
     wm->specialJobIndicator = getSpecialJobIndicator(wm->pkmnClient, wm->pkmnTarget, wm->missionType, trySpecialWonderMail, wm->itemDeliverFind);
     wm->flavorText = (15 - (wm->dungeon % 15)) % 15; /* obtained empirically */
-    wm->random = rand() & 0xFF; /* same as % 256 */
+    if (wm->random == 0) {
+        wm->random = rand() & 0xFF; /* same as % 256 */
+    }
     wm->idk_always0xFF = 0xFF; /* as his name suggest */
 
     char packed15BytesPassword[15] = {0}; /* the first byte is merely a checksum */

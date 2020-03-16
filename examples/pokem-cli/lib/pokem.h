@@ -32,6 +32,9 @@ extern const char* dungeonUpOrDown;
 /* Items in dungeons */
 extern const int itemsInDungeons[][145];
 
+/* Forbidden floors in dungeons */
+extern const int forbiddenFloorsInDungeons[][3];
+
 /* Evolution checking */
 extern const int thunderStonePkmn[];
 extern const int fireStonePkmn[];
@@ -152,9 +155,6 @@ extern const char* friendAreasStr[];
 extern const char* friendZoneText;
 extern const char* nearPlaceText;
 
-
-/* Enable (1) or disable (0) debug messages */
-#define DEBUG 1
 
 /* Data definitions */
 
