@@ -45,6 +45,7 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
 int encodeWM(int argc, const char *argv[])
 {
     struct WonderMail wm;
+    wm.mailType = WonderMailType;
 
     if (argc != 10 || argv == NULL) {
         requestAndParseWonderMailData(&wm);
@@ -276,7 +277,7 @@ int encodeSOSM(int argc, const char *argv[])
 {
     struct SosMail sos;
 
-    if (argc != 7 || argv == NULL) {
+    if (argc != 8 || argv == NULL) {
         requestAndParseSosMailData(&sos);
     } else if (parseSOSData(argv, &sos) != NoError) {
         fputs("Aborting...\n", stderr);
@@ -302,13 +303,15 @@ int encodeSOSM(int argc, const char *argv[])
 
 int parseSOSData(const char *argv[], struct SosMail *sos)
 {
-    sos->pkmnToRescue = (unsigned int)atoi(argv[1]);
-    sos->dungeon = (unsigned int)atoi(argv[3]);
-    sos->floor = (unsigned int)atoi(argv[4]);
-    sos->mailID = (unsigned int)atoi(argv[5]);
-    sos->chancesLeft = (unsigned int)atoi(argv[6]);
-    if (strlen(argv[2])) {
-        strncpy(sos->pkmnNick, argv[2], 10);
+    int hold = (unsigned int)atoi(argv[1]);
+    sos->mailType = hold == 0 ? SosMailType : (hold == 1) ? AOkMailType : (hold == 2) ? ThankYouMailType : InvalidMailType;
+    sos->pkmnToRescue = (unsigned int)atoi(argv[2]);
+    sos->dungeon = (unsigned int)atoi(argv[4]);
+    sos->floor = (unsigned int)atoi(argv[5]);
+    sos->mailID = (unsigned int)atoi(argv[6]);
+    sos->chancesLeft = (unsigned int)atoi(argv[7]);
+    if (strlen(argv[3])) {
+        strncpy(sos->pkmnNick, argv[3], 10);
     } else {
         sos->pkmnNick[0] = '\0';
     }

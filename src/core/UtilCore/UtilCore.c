@@ -418,6 +418,13 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
                                 "      The dungeon %u [%s] only has %d floors. Your entry exceed that value.\n\n",
                                 errorsFound, wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID", difficulties[wm->dungeon][0]);
             }
+        } else if (wm->floor == forbiddenFloorsInDungeons[wm->dungeon][1] || wm->floor == forbiddenFloorsInDungeons[wm->dungeon][2]) {
+            ++errorsFound;
+            if (printMessages) {
+                fprintf(stderr, "ERROR No. %d in argument 6 (Floor).\n"
+                                "      A mission cannot be made in floor %d of dungeon %u [%s].\n\n",
+                                errorsFound, wm->floor, wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID");
+            }
         }
     }
 

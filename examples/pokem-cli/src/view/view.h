@@ -11,7 +11,7 @@
 #define COLOR_CYAN COLOR(0, 248, 248)
 #define COLOR_RED COLOR(248, 128, 88)
 
-enum DatabaseType { PokemonDB, ItemsDB, DungeonDB, FriendAreaDB, MissionDB, RewardTypeDB };
+enum DatabaseType { PokemonDB, ItemsDB, DungeonDB, FriendAreaDB, MissionDB, RewardTypeDB, SosMailTypeDB };
 
 int showSelectionScreen(void);
 

@@ -1,7 +1,6 @@
 # Known bugs
 
-1. The last floor of a dungeon can always be selected, even if you can't make a mission there (for example, floor `99` of *Purity Forest*). The same applies to intermediate floors in some dungeons like floor `20` of *Which Cave*.
-
+1. Enlarge the mail width by 1 cell in the view of *PokéM-CLI*.
 ---------------------------------------------
 
 ## Bug tracker

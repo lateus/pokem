@@ -25,7 +25,7 @@ int main(int argc, const char *argv[])
     int i; /* iterations */
 
     /* Basics command line options */
-    const char* databaseTypesStr[] = { "pokemon", "items", "dungeons", "areas", "missions", "rewards" };
+    const char* databaseTypesStr[] = { "pokemon", "items", "dungeons", "areas", "missions", "rewards", "mails" };
     if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))) {
         showHelp(argv[0]);
         return 0;
@@ -35,18 +35,18 @@ int main(int argc, const char *argv[])
     } else if (argc > 1 && (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--database"))) {
         if (argc <= 2) {
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Missing argument.\n" RESET \
-                       "       Expected type [pokemon|items|dungeons|areas|missions|rewards]\n" \
+                       "       Expected type [pokemon|items|dungeons|areas|missions|rewards|mails]\n" \
                        "       Example: " LGREEN "%s --database pokemon\n" RESET, argv[0]);
             return InputError;
         } else {
-            for (i = 0; i < 6; ++i) {
+            for (i = 0; i < 7; ++i) {
                 if (!strcmp(argv[2], databaseTypesStr[i])) {
                     showDatabase(i);
                     return 0;
                 }
             }
             fprintf(stderr, LRED "ERROR:" RESET LIGHT " Unknown database type " LGREEN "%s" RESET LIGHT ".\n" RESET \
-                                 "       Available types: [pokemon|items|dungeons|areas|missions|rewards]\n", argv[2]);
+                                 "       Available types: [pokemon|items|dungeons|areas|missions|rewards|mails]\n", argv[2]);
             return InputError;
         }
     }
@@ -106,7 +106,7 @@ int autodetect(int argc, const char *argv[])
     } else if (argc == 10) {
         fprintf(stdout, "Encode WM\n\n");
         return encodeWM(argc, argv);
-    } else if (argc == 7) {
+    } else if (argc == 8) {
         fprintf(stdout, "Encode SOS\n\n");
         return encodeSOSM(argc, argv);
     } else {

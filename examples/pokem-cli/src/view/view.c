@@ -23,13 +23,13 @@ void showHelp(const char *programName)
                     LYELLOW "-h, --help              " RESET "display this help and exit\n" \
                     LYELLOW "-v, --version           " RESET "display version information and exit\n" \
                     LYELLOW "-d, --database <type>   " RESET "display the database of the selected type,\n" \
-                    "                        which can be one of [pokemon|items|dungeons|areas|missions|rewards]\n\n" \
+                    "                        which can be one of [pokemon|items|dungeons|areas|missions|rewards|mails]\n\n" \
                     LIGHT "Generic:\n" RESET \
                     "This program will try to autodetect what do you want to do based\n" \
                     "on your input. If you enter a Wonder Mail or SOS Mail, this program\n" \
                     "will try to decode it. If you enter an SOS Mail and an item, this\n" \
                     "program will try to convert it in a A-OK Mail and then in a Thank-You\n" \
-                    "Mail. If you enter exactly 9 or 6 arguments, this program will try\n" \
+                    "Mail. If you enter exactly 9 or 7 arguments, this program will try\n" \
                     "to encode a Wonder Mail or a SOS Mail respectively.\n" \
                     "\n" \
                     LIGHT "Conventions:\n" RESET \
@@ -75,15 +75,15 @@ void showHelp(const char *programName)
                     LGREEN "%s \'????6+7SHX???1?4???H??4?NP???4???TR?????X25??PJ??07?C?\'\n" RESET \
                     "\n" \
                     LIGHT "Encode SOS Mail:\n" RESET \
-                    LIGHT "Usage: " LGREEN "%s [Pkmn client] [Pkmn nickname] [Dungeon] [Floor] [Mail ID] [Rescue chances]\n" RESET \
+                    LIGHT "Usage: " LGREEN "%s [Mail type] [Pkmn client] [Pkmn nickname] [Dungeon] [Floor] [Mail ID] [Rescue chances]\n" RESET \
                     "Encode a SOS Mail using the entered arguments.\n" \
-                    "You must enter exactly 6 arguments.\n" \
+                    "You must enter exactly 7 arguments.\n" \
                     "You can use both numeric or text values for pokemon, items and dungeons.\n" \
                     "For the remaining fields, only numeric values are accepted.\n" \
                     "Check the database to know the available pokemon, items, dungeons, etc.\n" \
                     "Example of valid entries:\n" \
-                    LGREEN "%s Chansey Nurcy \'Joyous Tower\' 50 1234 10\n" RESET \
-                    LIGHT "NOTE: " RESET "Rescue a Chansey named Nurcy at Joyous Tower floor 50.\n" \
+                    LGREEN "%s 0 Chansey Nurcy \'Joyous Tower\' 50 1234 10\n" RESET \
+                    LIGHT "NOTE: " RESET "Rescue (SOS Mail) a Chansey named \"Nurcy\" at Joyous Tower floor 50.\n" \
                     "      The Mail ID is 1234 and you can try 10 times.\n" \
                     "--It is very unlikely that you ever need to encode a SOS Mail, but, still, I want to support it.\n" \
                     "\n"
@@ -149,6 +149,12 @@ void showDatabase(enum DatabaseType type)
               "(" LGREEN "6" RESET ") Item\n" \
               "(" LGREEN "7" RESET ") Item + ?\n" \
               "(" LGREEN "8" RESET ") Friend area\n", stdout);
+        break;
+    case SosMailTypeDB:
+        fputs(LIGHT "Mail types database\n" RESET \
+              "(" LGREEN "0" RESET ") SOS Mail\n" \
+              "(" LGREEN "1" RESET ") A-Ok Mail\n" \
+              "(" LGREEN "2" RESET ") Thank-You Mail\n", stdout);
         break;
     default:
         fprintf(stderr, LRED "ERROR:" RESET LIGHT " Invalid request\n" RESET);   /* this should never happen */
@@ -286,7 +292,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
         } /* forever */
         wm->pkmnTarget = selection;
     } else {
-        wm->pkmnTarget = 0;
+        wm->pkmnTarget = wm->pkmnClient;
     }
 
     /* dungeon */

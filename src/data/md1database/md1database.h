@@ -30,6 +30,9 @@ extern const char* dungeonUpOrDown;
 /* Items in dungeons */
 extern const int itemsInDungeons[][145];
 
+/* Forbidden floors in dungeons */
+extern const int forbiddenFloorsInDungeons[][3];
+
 /* Evolution checking */
 extern const int thunderStonePkmn[];
 extern const int fireStonePkmn[];

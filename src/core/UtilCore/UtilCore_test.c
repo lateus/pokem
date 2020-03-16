@@ -314,12 +314,12 @@ void entryErrorsWonderMail_test(CuTest *tc)
         {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, item to deliver, friend area and floor  */
         {   ThankYouMailType, DeliverItem + 1,         0x05,         210,         511,      240,      MoneyItem,           0,          63,      0,      0, 0xFF,       0,     4 }, /* Mission type, pkmn client, reward item and floor. Note: Not the Mail type cuz ThankYouMail == WonderMail */
         { WonderMailType + 1,          Escort,         0x0E,         150,         151,        0,      MoneyItem,         240,          19,      0,      0, 0xFF,      10,     4 }, /* Mail type, pkmn client, pkmn target, item reward and floor */
-        {    InvalidMailType,        FindItem,         0x0F,         201,           0,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* (!!! TODO: Cannot do a mission in floor 99 of Western Cave) Mail type, pkmn client, item to find and friend area */
+        {    InvalidMailType,        FindItem,         0x0F,         201,           0,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* Mail type, pkmn client, item to find and friend area and floor */
     };
 
     int actualResults[ARRAY_SIZE];
 
-    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 5, 4, 5, 4 };
+    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 5, 4, 5, 5 };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -339,7 +339,7 @@ void entryErrorsSosMail_test(CuTest *tc)
         {      SosMailType + 1,      63,     0,        0,              0,   10000,        0,           "",   0,         240, 0,             10000,            10000,          255,           0 }, /* Mail type, Dungeon, Pkmn to rescue, Mail ID, Nickname and Reward item */
         {          SosMailType,       0,     0,        0,            150,    5555,        0,          ".",   0,           1, 0,                 1,                2,            0,           0 }, /* Floor and chances left */
         {          SosMailType,       0,     4,        0,            150,    1234,        0,          ".",   0,           1, 0,              1000,             1000,           11,           0 }, /* Floor and chances left */
-        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* (!!! TODO: Cannot do a mission in floor 99 of Western Cave) Chances left */
+        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* Chances left. Note: Floor-specific prohibitions do not apply in not Wonder Mail requests */
         { ThankYouMailType + 1,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,          100,           0 }  /* Mail type */
     };
 
