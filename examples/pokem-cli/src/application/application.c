@@ -399,7 +399,7 @@ int convertSOS(int argc, const char *argv[])
             SOSPassword[0] = '\0';
         }
         if (strlen(SOSPassword) == 54) {
-            fputs(RESET "================== SOS Mail ====================\n", stdout);
+            fputs(RESET "=================== SOS Mail =====================\n", stdout);
             if (decodeSosMail(SOSPassword, &SOSMail) != NoError) {
                 fprintf(stderr, "Cannot show SOS Mail. Errors ocurr.\n");
                 continue;
@@ -413,7 +413,7 @@ int convertSOS(int argc, const char *argv[])
             if (decodeSosMail(AOKPassword, &AOKMail) != NoError) {
                 continue;
             }
-            fputs(RESET "================== A-OK Mail ===================\n", stdout);
+            fputs(RESET "=================== A-OK Mail ====================\n", stdout);
             setSosInfo(&AOKMail, &AOKInfo);
             strncpy(AOKInfo.password, AOKPassword, 54);
             printSOSData(&AOKInfo, &AOKMail);
@@ -423,7 +423,7 @@ int convertSOS(int argc, const char *argv[])
             if (decodeSosMail(ThankYouPassword, &ThxMail) != NoError) {
                 continue;
             }
-            fputs(RESET "================ Thank-You Mail ================\n", stdout);
+            fputs(RESET "================= Thank-You Mail =================\n", stdout);
             setSosInfo(&ThxMail, &ThxInfo);
             strncpy(ThxInfo.password, ThankYouPassword, 54);
             printSOSData(&ThxInfo, &ThxMail);
