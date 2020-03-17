@@ -186,7 +186,7 @@ int showSelectionScreen()
 
 int requestWonderMailPassword(char *password)
 {
-    return requestAndValidateStringInput(password, 24, 0, NULL, LIGHT "Enter the Wonder Mail's password\n" RESET);
+    return requestAndValidateStringInput(password, 24, 0, NULL, LIGHT "Enter the Wonder Mail's password (case sensitive)\n" RESET);
 }
 
 
@@ -202,13 +202,13 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
     /* mission type */
     forever {
-        fputs(LIGHT "Select the " LGREEN "type of mission" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "type of mission" RESET LIGHT " (leave it blank for \"Help Me!\").\n" RESET, stdout);
         for (i = 0; i < 5; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fprintf(stdout, missionTypeObjectiveStr[i], i == FindItem || i == DeliverItem ? "item" : "pokemon");
             fputc('\n', stdout);
         }
-        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % 5, "") != NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, 1, "") != NoError) {
             continue;
         }
         --selection;
@@ -224,7 +224,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
         do {
             randomHolder = rand() % pkmnSpeciesCount;
         } while (checkPkmnInWonderMail(randomHolder, 0) != NoError);
-        if (requestAndValidateStringInput(stringInput, 100, 1, pkmnSpeciesStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "client pokemon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+        if (requestAndValidateStringInput(stringInput, 100, 1, pkmnSpeciesStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "client pokemon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
             continue;
         }
         selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -262,7 +262,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             do {
                 randomHolder = rand() % pkmnSpeciesCount;
             } while (checkPkmnInWonderMail(randomHolder, 0) != NoError);
-            if (requestAndValidateStringInput(stringInput, 100, 1, pkmnSpeciesStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "target pokemon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+            if (requestAndValidateStringInput(stringInput, 100, 1, pkmnSpeciesStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "target pokemon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
                 continue;
             }
             selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -302,7 +302,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
         do {
             randomHolder = rand() % dungeonsCount;
         } while (checkDungeonInWonderMail(randomHolder, 0) != NoError);
-        if (requestAndValidateStringInput(stringInput, 100, 1, dungeonsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+        if (requestAndValidateStringInput(stringInput, 100, 1, dungeonsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
             continue;
         }
         selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -346,7 +346,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
         forever {
             randomHolder = wm->missionType == FindItem ? (unsigned int)itemsInDungeons[wm->dungeon][1 + rand() % (itemsInDungeons[wm->dungeon][0] - 1)] : 1 + rand() % (itemsCount - 8);
-            fprintf(stdout, LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "item to %s" RESET LIGHT " (leave it blank for random).\n" RESET, wm->missionType == FindItem ? "find" : "deliver");
+            fprintf(stdout, LIGHT "Enter the name or room index of the " LGREEN "item to %s" RESET LIGHT " (leave it blank for random).\n" RESET, wm->missionType == FindItem ? "find" : "deliver");
             if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], "") != NoError) {
                 continue;
             }
@@ -390,13 +390,13 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     const enum RewardType rewardTypes[] = { MoneyMoney, Item2, MoneyMoneyItem, ItemItem2, FriendArea };
     const char* rewardTypesStr[] = { "Money", "Item", "Money + (?)", "Item + (?)", "Friend Area" };
     forever {
-        fputs(LIGHT "Select the " LGREEN "reward type" RESET LIGHT " (leave it blank for random).\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "reward type" RESET LIGHT " (leave it blank for \"Money + (?)\").\n" RESET, stdout);
         for (i = 0; i < 5; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fputs(rewardTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        if (requestAndValidateIntegerInput(&selection, 1, 1 + rand() % 5, "") != NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, 3, "") != NoError) {
             continue;
         }
         --selection;
@@ -411,7 +411,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
     if (wm->rewardType == Item || wm->rewardType == ItemItem || wm->rewardType == Item2 || wm->rewardType == ItemItem2 || wm->rewardType == MoneyItem || wm->rewardType == MoneyMoneyItem) {
         forever {
             randomHolder = 1 + rand() % (itemsCount - 1);
-            if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+            if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "reward item" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
                 continue;
             }
             selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -477,7 +477,7 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
 
 int requestSOSMailPassword(char *password)
 {
-    return requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS Mail's password\n" RESET);
+    return requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS Mail's password (case sensitive)\n" RESET);
 }
 
 
@@ -495,13 +495,13 @@ int requestAndParseSosMailData(struct SosMail *sos)
     const enum MailType mailTypes[] = { SosMailType, AOkMailType, ThankYouMailType };
     const char* mailTypesStr[] = { "SOS Mail", "A-Ok Mail", "Thank-You Mail" };
     forever {
-        fputs(LIGHT "Select the " LGREEN "type of mail" RESET LIGHT ".\n" RESET, stdout);
+        fputs(LIGHT "Select the " LGREEN "type of mail" RESET LIGHT " (leave it blank for SOS Mail).\n" RESET, stdout);
         for (i = 0; i < 3; ++i) {
             fprintf(stdout, LGREEN "%u" RESET " - ", i + 1);
             fputs(mailTypesStr[i], stdout);
             fputc('\n', stdout);
         }
-        if (requestAndValidateIntegerInput(&selection, 0, 0, "") == NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, 1, "") == NoError) {
             --selection;
             if (selection < 3) { /* as `selection` is unsigned, it is always >= 0 */
                 break; /* input is ok */
@@ -513,7 +513,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* pokemon to rescue */
     forever {
-        if (requestAndValidateStringInput(stringInput, 100, 1, pkmnSpeciesStr[rand() % pkmnSpeciesCount], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "pokemon to rescue" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+        if (requestAndValidateStringInput(stringInput, 100, 1, pkmnSpeciesStr[rand() % pkmnSpeciesCount], LIGHT "Enter the name or room index of the " LGREEN "pokemon to rescue" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
             continue;
         }
         selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -558,7 +558,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
         do {
             randomHolder = rand() % dungeonsCount;
         } while (checkDungeonInSosMail(randomHolder, 0) != NoError);
-        if (requestAndValidateStringInput(stringInput, 100, 1, dungeonsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+        if (requestAndValidateStringInput(stringInput, 100, 1, dungeonsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
             continue;
         }
         selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -602,7 +602,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     if (sos->mailType == ThankYouMailType) {
         forever {
             randomHolder = 1 + rand() % (itemsCount - 1);
-            if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
+            if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "reward item" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
                 continue;
             }
             selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -639,7 +639,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
     /* mail ID */
     forever {
-        if (requestAndValidateIntegerInput(&selection, 1, rand() % 10000, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (0 to 9999, leave blank for random).\n" RESET) == NoError && checkMailID(selection, 0) == NoError) {
+        if (requestAndValidateIntegerInput(&selection, 1, rand() % 10000, LIGHT "Enter the " LGREEN "Mail ID" RESET LIGHT " (0 to 9999, leave it blank for random).\n" RESET) == NoError && checkMailID(selection, 0) == NoError) {
             break; /* input is ok */
         }
     }
@@ -649,7 +649,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
     unsigned int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
     unsigned int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
     forever {
-        fprintf(stdout, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (%d to %d, leave blank for %d).\n" RESET, minChancesLeft, maxChancesLeft, maxChancesLeft);
+        fprintf(stdout, LIGHT "Enter the number of " LGREEN "chances left" RESET LIGHT " (%d to %d, leave it blank for %d).\n" RESET, minChancesLeft, maxChancesLeft, maxChancesLeft);
         if (requestAndValidateIntegerInput(&selection, 1, maxChancesLeft, "") == NoError && selection >= minChancesLeft && selection <= maxChancesLeft) {
             break; /* input is ok */
         }
@@ -663,7 +663,7 @@ int requestAndParseSosMailData(struct SosMail *sos)
 
 int requestAndParseSOSMailConvertion(char *password, int *item)
 {
-    if (requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS, A-OK or Thank-You Mail's " LGREEN "password" RESET LIGHT " (54 characters)\n" RESET) != NoError) {
+    if (requestAndValidateStringInput(password, 54, 0, NULL, LIGHT "Enter the SOS, A-OK or Thank-You Mail's " LGREEN "password" RESET LIGHT " (case sensitive)\n" RESET) != NoError) {
         return InputError;
     }
 
@@ -676,7 +676,7 @@ int requestAndParseSOSMailConvertion(char *password, int *item)
 
     forever {
         randomHolder = 1 + rand() % (itemsCount - 1);
-        if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name (case sensitive) or room index of the " LGREEN "reward item for the Thank-You mail" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
+        if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "reward item for the Thank-You mail" RESET LIGHT " (type \"" LGREEN "0" RESET LIGHT "\" or \"" LGREEN "Nothing" RESET LIGHT "\" for no reward, or leave it blank for random).\n" RESET) != NoError) {
             continue;
         }
         selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
@@ -1098,17 +1098,21 @@ int checkFloorForDungeon(int floor, int dungeonIndex, int printErrorMessages)
     /* floor check (floor 0) */
     if (floor <= 0) {
         if (printErrorMessages) {
-            fprintf(stderr, LIGHT "ERROR:" RESET LIGHT " Floor %d does not exists.\n", floor);
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " Floor %d does not exists.\n", floor);
         }
         return InputError;
-    }
-    /* floor check (limit) */
-    if (floor > difficulties[dungeonIndex][0]) {
+    } else if (floor > difficulties[dungeonIndex][0]) { /* floor check (limit) */
         if (printErrorMessages) {
-            fprintf(stderr, LIGHT "ERROR:" RESET LIGHT " The dungeon " LGREEN "%u" RESET LIGHT " [" LGREEN "%s" RESET LIGHT "] only has " LRED "%d" RESET LIGHT " floors. Your entry exceed that value.\n\n",
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " The dungeon " LGREEN "%u" RESET LIGHT " [" LGREEN "%s" RESET LIGHT "] only has " LRED "%d" RESET LIGHT " floors. Your entry exceed that value.\n\n",
                             dungeonIndex, dungeonsStr[dungeonIndex], difficulties[dungeonIndex][0]);
         }
         return InputError;
+    } else if (floor == forbiddenFloorsInDungeons[dungeonIndex][1] || floor == forbiddenFloorsInDungeons[dungeonIndex][2]) {
+        if (printErrorMessages) {
+            fprintf(stderr, LRED "ERROR:" RESET LIGHT " A mission cannot be made in floor " LGREEN "%u" RESET LIGHT " of dungeon %u [" LGREEN "%s" RESET LIGHT "].\n\n",
+                            floor, dungeonIndex, dungeonsStr[dungeonIndex]);
+            return InputError;
+        }
     }
 
     return NoError;
