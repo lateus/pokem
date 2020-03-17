@@ -1,6 +1,6 @@
 # Known bugs
 
-1. Enlarge the mail width by 1 cell in the view of *PokéM-CLI*.
+**None until now.**
 ---------------------------------------------
 
 ## Bug tracker
