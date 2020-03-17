@@ -238,14 +238,15 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             }
 
             if (selection == pkmnSpeciesCount) {
-                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                 mostSimilarIndex = findMostSimilarStringInArray(stringInput, pkmnSpeciesStr, pkmnSpeciesCount);
                 if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
                 } else {
-                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
                 }
-                continue;
             }
         }
 
@@ -275,14 +276,15 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 }
 
                 if (selection == pkmnSpeciesCount) {
-                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     mostSimilarIndex = findMostSimilarStringInArray(stringInput, pkmnSpeciesStr, pkmnSpeciesCount);
                     if (mostSimilarIndex == -1) {
+                        fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                         fputs("Re-check your spelling.\n" RESET, stderr);
+                        continue;
                     } else {
-                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
+                        selection = mostSimilarIndex;
+                        fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
                     }
-                    continue;
                 }
             }
 
@@ -314,14 +316,15 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
             }
 
             if (selection == dungeonsCount) {
-                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find dungeon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                 mostSimilarIndex = findMostSimilarStringInArray(stringInput, dungeonsStr, dungeonsCount);
                 if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find dungeon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
                 } else {
-                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, dungeonsStr[mostSimilarIndex]);
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, dungeonsStr[mostSimilarIndex]);
                 }
-                continue;
             }
         }
 
@@ -358,14 +361,15 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 }
 
                 if (selection == itemsCount) {
-                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
                     if (mostSimilarIndex == -1) {
+                        fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                         fputs("Re-check your spelling.\n" RESET, stderr);
+                        continue;
                     } else {
-                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
+                        selection = mostSimilarIndex;
+                        fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                     }
-                    continue;
                 }
             }
 
@@ -421,14 +425,15 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                 }
 
                 if (selection == itemsCount) {
-                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
                     if (mostSimilarIndex == -1) {
+                        fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                         fputs("Re-check your spelling.\n" RESET, stderr);
+                        continue;
                     } else {
-                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
+                        selection = mostSimilarIndex;
+                        fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                     }
-                    continue;
                 }
             }
 
@@ -522,14 +527,15 @@ int requestAndParseSosMailData(struct SosMail *sos)
             }
 
             if (selection == pkmnSpeciesCount) {
-                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                 mostSimilarIndex = findMostSimilarStringInArray(stringInput, pkmnSpeciesStr, pkmnSpeciesCount);
                 if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find pokemon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
                 } else {
-                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
                 }
-                continue;
             }
         }
 
@@ -566,14 +572,15 @@ int requestAndParseSosMailData(struct SosMail *sos)
             }
 
             if (selection == dungeonsCount) {
-                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find dungeon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                 mostSimilarIndex = findMostSimilarStringInArray(stringInput, dungeonsStr, dungeonsCount);
                 if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find dungeon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
                 } else {
-                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, dungeonsStr[mostSimilarIndex]);
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, dungeonsStr[mostSimilarIndex]);
                 }
-                continue;
             }
         }
 
@@ -609,14 +616,15 @@ int requestAndParseSosMailData(struct SosMail *sos)
                 }
 
                 if (selection == itemsCount) {
-                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
                     if (mostSimilarIndex == -1) {
+                        fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                         fputs("Re-check your spelling.\n" RESET, stderr);
+                        continue;
                     } else {
-                        fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
+                        selection = mostSimilarIndex;
+                        fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                     }
-                    continue;
                 }
             }
 
@@ -682,14 +690,15 @@ int requestAndParseSOSMailConvertion(char *password, int *item)
             }
 
             if (selection == itemsCount) {
-                fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                 mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
                 if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
                     fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
                 } else {
-                    fprintf(stderr, RESET LIGHT "Do you mean " LGREEN "\"%s\"" RESET LIGHT "?\n" RESET, itemsStr[mostSimilarIndex]);
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                 }
-                continue;
             }
         }
 
