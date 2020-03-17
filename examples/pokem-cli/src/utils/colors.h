@@ -55,7 +55,7 @@ C++:
 /** SGR (Select Graphic Rendition) parameters */
 /* SGR syntax is: \x1B[#;...m */
 
-#ifndef NO_USE_COLORS
+#if !defined(NO_USE_COLORS)
 
     #define RESET   "\x1B[0m"   /* all attributes off */
 
@@ -193,5 +193,5 @@ C++:
     #define INVERSE     ""
     #define INVERSE_OFF ""
 
-#endif
+#endif /* NO_USE_COLORS */
 #endif /* COLORS_H */

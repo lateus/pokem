@@ -1,7 +1,8 @@
 # Compiler
 CC			:=	gcc
 # Compiler flags
-CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
+DEFINES		:=	#-DNO_USE_COLORS
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic $(DEFINES)
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
 CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
