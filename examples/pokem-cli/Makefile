@@ -1,3 +1,6 @@
+# Compiler
+CC			:=	gcc
+# Compiler flags
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
@@ -27,7 +30,7 @@ OBJS		:=	$(BUILDDIR)/view.o \
 				$(BUILDDIR)/utils.o \
 				$(BUILDDIR)/main.o
 
-RC_FILE		:=	res/manifest.rc
+RC_FILE		:=	resources/manifest.rc
 RC_OBJ		:=	$(BUILDDIR)/res.o
 
 # If no `windres` tool available, the RC object file must be skipped
@@ -38,7 +41,7 @@ endif
 EXECUTABLE	:=	$(BINDIR)/pokeM
 
 # Messages
-MSG			:=	echo -n
+MSG			:=	printf
 # Colors
 NOCOLOR		:=	\033[0m
 BLACK		:=	\033[0;30m

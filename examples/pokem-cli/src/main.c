@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define PROGRAM_STRING "PokeM"
 #define VERSION_STRING "0.1"
 
 extern int printMessages;
@@ -16,8 +17,12 @@ int main(int argc, const char *argv[])
 {
     printMessages = 1; /* enable messages */
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    system("title " PROGRAM_STRING " v" VERSION_STRING);
+#endif
+
     /* Copyright notice */
-    fputs(LIGHT "PokeM " RESET DRED "v" VERSION_STRING DGREEN "   Copyright 2018-2020 Carlos Enrique Perez Sanchez.\n"
+    fputs(LIGHT PROGRAM_STRING RESET DRED " v" VERSION_STRING DGREEN "   Copyright 2018-2020 Carlos Enrique Perez Sanchez.\n"
           RESET "Based on the tools written by Peter O.\n"
           ".................................................................\n", stdout);
     fflush(stdout);
@@ -54,27 +59,42 @@ int main(int argc, const char *argv[])
     /* A seed to generate random numbers */
     srand((unsigned int)time(NULL));
 
-    int selection;
+    int selection, result = 0;
     int autodetectResult = autodetect(argc, argv);
     if (autodetectResult == -1) {
-        selection = showSelectionScreen();
-        switch (selection) {
-        case 1:
-            return decodeWM(0, NULL);
-        case 2:
-            return encodeWM(0, NULL);
-        case 3:
-            return decodeSOSM(0, NULL);
-        case 4:
-            return encodeSOSM(0, NULL);
-        case 5:
-            return convertSOS(0, NULL);
-        case 6:
-            showHelp(argv[0]);
-            return 0;
-        default:
-            fputs("Exiting...\n", stdout);
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+        (void)result;
+        for (;;) {
+#endif
+            selection = showSelectionScreen();
+            switch (selection) {
+            case 1:
+                result = decodeWM(0, NULL);
+                break;
+            case 2:
+                result = encodeWM(0, NULL);
+                break;
+            case 3:
+                result = decodeSOSM(0, NULL);
+                break;
+            case 4:
+                result = encodeSOSM(0, NULL);
+                break;
+            case 5:
+                result = convertSOS(0, NULL);
+                break;
+            case 6:
+                showHelp(argv[0]);
+                break;
+            default:
+                fputs("Exiting...\n", stdout);
+                return 0;
+            }
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
         }
+#else
+        return result;
+#endif
     } else {
         return autodetectResult;
     }

@@ -1,3 +1,5 @@
+# Compiler
+CC			:=	gcc
 # Compiler flags
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
@@ -59,7 +61,7 @@ STATIC_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(STATIC_LIB_NAME)
 LIB_HEADER_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(LIB_HEADER_NAME)
 
 # Messages
-MSG			:=	echo -n
+MSG			:=	printf
 # Colors
 NOCOLOR		:=	\033[0m
 BLACK		:=	\033[0;30m
