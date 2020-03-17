@@ -84,6 +84,21 @@ int main(int argc, const char *argv[])
                 result = convertSOS(0, NULL);
                 break;
             case 6:
+                fputs(LIGHT "What kind of database?\n" \
+                      LGREEN  "1" RESET " - Pokemon\n" \
+                      LGREEN  "2" RESET " - Items\n" \
+                      LGREEN  "3" RESET " - Dungeons\n" \
+                      LGREEN  "4" RESET " - Friend areas\n" \
+                      LGREEN  "5" RESET " - Mission types\n"
+                      LGREEN  "6" RESET " - Reward types\n"
+                      LGREEN  "7" RESET " - SOS Mail types\n"
+                      LGREEN  "[Other]:" LRED " Cancel\n" RESET, stdout);
+                if (requestAndValidateIntegerInput((unsigned int*)&selection, 0, 0, "") != NoError) {
+                    break;
+                }
+                showDatabase(selection - 1);
+                break;
+            case 7:
                 showHelp(argv[0]);
                 break;
             default:

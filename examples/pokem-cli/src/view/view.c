@@ -172,11 +172,13 @@ int showSelectionScreen()
           LGREEN  "3" RESET " - Decode a SOS Mail\n" \
           LGREEN  "4" RESET " - Encode a SOS Mail\n" \
           LGREEN  "5" RESET " - Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n"
-          LGREEN  "6" RESET " - Show Help\n"
+          DGRAY   "-----------------------------------------------------\n"
+          LGREEN  "6" RESET " - Show Database\n"
+          LGREEN  "7" RESET " - Show Help\n"
           LGREEN  "[Other]:" LRED " Exit\n" RESET, stdout);
     unsigned int selection;
     if (requestAndValidateIntegerInput(&selection, 0, 0, "") != NoError) {
-        return 7; /* exit */
+        return 8; /* exit */
     } else {
         return selection;
     }
