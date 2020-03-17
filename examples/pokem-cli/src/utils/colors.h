@@ -55,6 +55,8 @@ C++:
 /** SGR (Select Graphic Rendition) parameters */
 /* SGR syntax is: \x1B[#;...m */
 
+#ifndef NO_USE_COLORS
+
     #define RESET   "\x1B[0m"   /* all attributes off */
 
     /* *** TEXT COLOR (TX) *** */
@@ -122,4 +124,74 @@ C++:
     #define INVERSE     "\x1B[7m"   /* swap foreground and background */
     #define INVERSE_OFF "\x1B[27m"  /* restore the inverted foreground and background */
 
+#else
+
+#define RESET   ""
+
+    /* *** TEXT COLOR (TX) *** */
+    /* dark colors (RGB palette defined by the implementation) */
+    #define DRED        ""
+    #define DGREEN      ""
+    #define DYELLOW     ""
+    #define DBLUE       ""
+    #define DMAGENTA    ""
+    #define DCYAN       ""
+    #define DGRAY       ""
+
+    /* light colors (RGB palette defined by the implementation) */
+    #define LRED        ""
+    #define LGREEN      ""
+    #define LYELLOW     ""
+    #define LBLUE       ""
+    #define LMAGENTA    ""
+    #define LCYAN       ""
+    #define LGRAY       ""
+
+    /* black and white */
+    #define WHITE       ""
+    #define BLACK       ""
+
+    /* light */
+    #define LIGHT       ""
+
+
+    /* *** BACKGROUNG COLOR (BG) *** */
+    /* dark colors (RGB palette defined by the implementation) */
+    #define DRED_BG     ""
+    #define DGREEN_BG   ""
+    #define DYELLOW_BG  ""
+    #define DBLUE_BG    ""
+    #define DMAGENTA_BG ""
+    #define DCYAN_BG    ""
+    #define DGRAY_BG    ""
+
+    /* light colors (RGB palette defined by the implementation) */
+    #define LRED_BG     ""
+    #define LGREEN_BG   ""
+    #define LYELLOW_BG  ""
+    #define LBLUE_BG    ""
+    #define LMAGENTA_BG ""
+    #define LCYAN_BG    ""
+    #define LGRAY_BG    ""
+
+    /* black and white */
+    #define WHITE_BG    ""
+    #define BLACK_BG    ""
+
+
+    /* *** CUSTOM COLORS *** */
+    /* 256 colors */
+        #define COLOR256(N)     ""
+        #define COLOR256_BG(N)  ""
+    /* RGB palette (0 <= R,G,B <= 255 (0xFF) ) */
+        #define COLOR(R,G,B)    ""
+        #define COLOR_BG(R,G,B) ""
+
+
+    /* *** ADVANCED HANDLING *** */
+    #define UNDERLINE   ""
+    #define INVERSE     ""
+    #define INVERSE_OFF ""
+
+#endif
 #endif /* COLORS_H */

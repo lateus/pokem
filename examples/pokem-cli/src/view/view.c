@@ -878,6 +878,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
         temp[i + j] = mailInfo->password[i];
     }
 
+#ifndef NO_USE_COLORS
     fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-58s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\n"
@@ -893,6 +894,23 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n",
             newHead, "", newBody1, newBody2, "", mailInfo->client, newObjective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, temp, temp + 5, temp + 10, temp + 15, temp + 20, temp + 25);
+#else
+    fprintf(stdout, "************************************************\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* Client:     %-32s *\n"
+                    "* Objective:  %-32s *\n"
+                    "* Place:      %-32s *\n"
+                    "* Difficulty: %s%c%-31s *\n"
+                    "* Reward:     %-32s *\n"
+                    "* Password:   %s%s%-24s *\n"
+                    "*             %s%s%-24s *\n"
+                    "************************************************\n",
+            newHead, "", newBody1, newBody2, "", mailInfo->client, newObjective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, temp, temp + 5, temp + 10, temp + 15, temp + 20, temp + 25);
+#endif
 }
 
 
@@ -962,6 +980,7 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
         temp[i + j] = mailInfo->password[i];
     }
 
+#ifndef NO_USE_COLORS
     fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-46s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-47s*" RESET "\n"
@@ -979,6 +998,25 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET "\n",
             mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mail->mailType == SosMailType ? "* " : "\r", mail->mailType == SosMailType ? "Chances left: " : "\r", mail->mailType == SosMailType ? mailInfo->chancesLeft : "\r", mail->mailType == SosMailType ? "*" : "\r", mail->mailType == SosMailType ? "\n" : "\r", temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
+#else
+    fprintf(stdout, "**************************************************\n"
+                    "* %-46s *\n"
+                    "* %-46s *\n"
+                    "* %-46s *\n"
+                    "* %-46s *\n"
+                    "* Client:       %-32s *\n"
+                    "* Objective:    %-32s *\n"
+                    "* Place:        %-32s *\n"
+                    "* Difficulty:   %s%c%-31s *\n"
+                    "* Reward:       %-32s *\n"
+                    "* ID:           %-32s *\n"
+                    "%s%s"          "%-33s%s%s"
+                    "* Password:     %s%s%-19s *\n"
+                    "*               %s%s%-19s *\n"
+                    "*               %s%s%-19s *\n"
+                    "**************************************************\n",
+            mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mail->mailType == SosMailType ? "* " : "\r", mail->mailType == SosMailType ? "Chances left: " : "\r", mail->mailType == SosMailType ? mailInfo->chancesLeft : "\r", mail->mailType == SosMailType ? "*" : "\r", mail->mailType == SosMailType ? "\n" : "\r", temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
+#endif
 }
 
 
