@@ -434,3 +434,149 @@ int convertSOS(int argc, const char *argv[])
 
     return NoError;
 }
+
+int generateMassiveItemMissions(int dungeon, int item, int amount)
+{
+    int errorCode = checkDungeonInWonderMail(dungeon, 1);
+    if (errorCode != NoError) {
+        return NoError;
+    } else if (amount > (difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0])) {
+        fprintf(stderr, LYELLOW "WARNING:" RESET LIGHT " No enough floors. Truncated to %d.\n", difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0]);
+        amount = difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0];
+    }
+
+    struct WonderMail wm = { WonderMailType, HelpMe, 0, 0, 0, 0, MoneyMoneyItem, item, 0, 0, 0, 0xFF, dungeon, 0 };
+    struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
+    char password[25] = {0};
+    int i;
+    for (i = 0; i < amount; ++i) {
+        wm.floor = i + 1;
+        while (checkFloorForDungeon(wm.floor, wm.dungeon, 0) != NoError) {
+            wm.floor++;
+        }
+        while (checkPkmnInWonderMail(wm.pkmnClient, 0)) {
+            wm.pkmnClient = rand() % pkmnSpeciesCount;
+        }
+        wm.pkmnTarget = wm.pkmnClient;
+        encodeWonderMail(&wm, password, 1);
+        setWonderMailInfo(&wm, &wmInfo);
+        strncpy(wmInfo.password, password, 24);
+        printWonderMailData(&wmInfo, &wm);
+        if (i < amount - 1) {
+            fputc('\n', stdout);
+        }
+    }
+    return NoError;
+}
+
+int generateMassiveHighRankMissions(int dungeon, int item, int amount)
+{
+    int errorCode = checkDungeonInWonderMail(dungeon, 1);
+    if (errorCode != NoError) {
+        return NoError;
+    } else if (amount > (difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0])) {
+        fprintf(stderr, LYELLOW "WARNING:" RESET LIGHT " No enough floors. Truncated to %d.\n", difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0]);
+        amount = difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0];
+    }
+
+    struct WonderMail wm = { WonderMailType, HelpMe, 0, 0, 0, 0, MoneyMoneyItem, item, 0, 0, 0, 0xFF, dungeon, 0 };
+    struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
+    char password[25] = {0};
+
+    char calculatedDiffChar = 'E';
+    char diffColor[50] = {0};
+    int targetRank = 12;
+    int i;
+    /* locate the first appareance of a high rank floor */
+    for (i = 1; i <= difficulties[dungeon][0]; ++i) {
+        if (difficulties[dungeon][i] >= targetRank) {
+            break;
+        } else if (i == difficulties[dungeon][0] && targetRank > 1) {
+            calculatedDiffChar = difficultiesChars[(targetRank >> 1) > 6 ? 6 : (targetRank >> 1)];
+            strcpy(diffColor, calculatedDiffChar == 'E' ? RESET : calculatedDiffChar == 'D' || calculatedDiffChar == 'C' ? COLOR_GREEN : calculatedDiffChar == 'B' || calculatedDiffChar == 'A' ? COLOR_CYAN : calculatedDiffChar == 'S' ? COLOR_RED : LYELLOW);
+            fprintf(stderr, LYELLOW "WARNING:" RESET LIGHT " The dungeon " LGREEN "%u" RESET LIGHT " [" LGREEN "%s" RESET LIGHT "] cannot provide %s%c" RESET LIGHT " rank missions.\n", dungeon, ((unsigned int)dungeon >= dungeonsCount) ? "INVALID" : dungeonsStr[dungeon], diffColor, calculatedDiffChar);
+            while (calculatedDiffChar == difficultiesChars[(targetRank >> 1) > 6 ? 6 : (targetRank >> 1)]) {
+                targetRank--; /* try again with a lower rank */
+            }
+            i = 0; /* it is increased to 1 for the next iterations */
+        }
+    }
+    /* if `i` is too close to the end of the dungeon, assign an appropriate value to `i` */
+    if ((i + amount + forbiddenFloorsInDungeons[dungeon][0] - 1) > (difficulties[dungeon][0])) {
+        i = difficulties[dungeon][0] - forbiddenFloorsInDungeons[dungeon][0] - amount + 1;
+    }
+    /* now generate the mails */
+    int top = i + amount;
+    for (; i < top; ++i) {
+        wm.floor = i;
+        while (checkFloorForDungeon(wm.floor, wm.dungeon, 0) != NoError) {
+            wm.floor++;
+        }
+        while (checkPkmnInWonderMail(wm.pkmnClient, 0)) {
+            wm.pkmnClient = rand() % pkmnSpeciesCount;
+        }
+        wm.pkmnTarget = wm.pkmnClient;
+        encodeWonderMail(&wm, password, 1);
+        setWonderMailInfo(&wm, &wmInfo);
+        strncpy(wmInfo.password, password, 24);
+        printWonderMailData(&wmInfo, &wm);
+        if (i < top - 1) {
+            fputc('\n', stdout);
+        }
+    }
+    return NoError;
+}
+
+int unlockExclusivePokemon(enum GameType gameType)
+{
+    if (gameType != RedRescueTeam && gameType != BlueRescueTeam) {
+        fprintf(stderr, LRED "ERROR:" RESET LIGHT " Unrecognized game type.\n");
+        return InputError;
+    }
+    int pokemonRedRescueTeam[]  = { 137, 251, 336, 340, 374 }; /* Porygon, Mantine, Plusle, Roselia and Feebas */
+    int pokemonBlueRescueTeam[] = { 129, 131, 190, 337 }; /* Magikarp, Lapras, Aipom and Minum */
+
+    struct WonderMail wm = { WonderMailType, HelpMe, 0, 0, 0, 0, MoneyMoney, 0x09, 0, 0, 0, 0xFF, 0, 1 };
+    struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
+    char password[25] = {0};
+
+    int i;
+    int top = gameType == RedRescueTeam ? 5 : 4;
+    for (i = 0; i < top; ++i) {
+        wm.pkmnClient = gameType == RedRescueTeam ? pokemonRedRescueTeam[i] : pokemonBlueRescueTeam[i];
+        wm.pkmnTarget = wm.pkmnClient;
+        encodeWonderMail(&wm, password, 1);
+        setWonderMailInfo(&wm, &wmInfo);
+        strncpy(wmInfo.password, password, 24);
+        printWonderMailData(&wmInfo, &wm);
+        if (i < top - 1) {
+            fputc('\n', stdout);
+        }
+    }
+    return NoError;
+}
+
+int unlockDungeons()
+{
+    int dungeonsToUnlock[] = { 44, 45, 46 }; /* Remains Island, Marvelous Sea and Fantasy Strait */
+    struct WonderMail wm = { WonderMailType, HelpMe, 0, 0, 0, 0, MoneyMoney, 0x09, 0, 0, 0, 0xFF, 0, 1 };
+    struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
+    char password[25] = {0};
+
+    int i;
+    for (i = 0; i < 3; ++i) {
+        wm.dungeon = dungeonsToUnlock[i];
+        while (checkPkmnInWonderMail(wm.pkmnClient, 0)) {
+            wm.pkmnClient = rand() % pkmnSpeciesCount;
+        }
+        wm.pkmnTarget = wm.pkmnClient;
+        encodeWonderMail(&wm, password, 1);
+        setWonderMailInfo(&wm, &wmInfo);
+        strncpy(wmInfo.password, password, 24);
+        printWonderMailData(&wmInfo, &wm);
+        if (i < 2) {
+            fputc('\n', stdout);
+        }
+    }
+    return NoError;
+}

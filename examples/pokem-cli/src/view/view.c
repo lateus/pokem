@@ -24,7 +24,7 @@ void showHelp(const char *programName)
                     LYELLOW "-v, --version           " RESET "display version information and exit\n" \
                     LYELLOW "-d, --database <type>   " RESET "display the database of the selected type,\n" \
                     "                        which can be one of [pokemon|items|dungeons|areas|missions|rewards|mails]\n\n" \
-                    LIGHT "Generic:\n" RESET \
+                    LIGHT "Generic: ==================================================================\n" RESET \
                     "This program will try to autodetect what do you want to do based\n" \
                     "on your input. If you enter a Wonder Mail or SOS Mail, this program\n" \
                     "will try to decode it. If you enter an SOS Mail and an item, this\n" \
@@ -32,7 +32,7 @@ void showHelp(const char *programName)
                     "Mail. If you enter exactly 9 or 7 arguments, this program will try\n" \
                     "to encode a Wonder Mail or a SOS Mail respectively.\n" \
                     "\n" \
-                    LIGHT "Conventions:\n" RESET \
+                    LIGHT "Conventions: ==============================================================\n" RESET \
                     LIGHT "1. " RESET "Enter the password in UPPERCASE.\n" \
                     LIGHT "2. " RESET "Enter the names of pokemon, items, dungeons, etc. " LIGHT "C" RESET "apitalized.\n" \
                     LIGHT "3. " RESET "Symbols conventions:\n" \
@@ -43,14 +43,14 @@ void showHelp(const char *programName)
                     "   contains spaces by using \"double quotes\" on Windows and \'single quotes\' on\n" \
                     "   UNIX systems.\n" \
                     "\n", programName);
-    fprintf(stdout, LIGHT "Decode Wonder Mail:\n" RESET \
+    fprintf(stdout, LIGHT "Decode Wonder Mail: =======================================================\n" RESET \
                     LIGHT "Usage: " LGREEN "%s [password1] [password2]...\n" RESET \
                     "Decode all entered passwords. Invalid ones are skipped.\n" \
                     "Examples of valid entries:\n" \
                     LGREEN "%s \'4?6F7M+?4JNRJ*??K??0+9??\' \'16J.8!0?1PS35-?06N?RP8?W\' \'F?N.?QY?8RNYYN?4.J75N+?W\'\n" \
                     LGREEN "%s \'??J9XJX?2P??8??F6H?0P??W\'\n" \
                     "\n" \
-                    LIGHT "Encode Wonder Mail:\n" RESET \
+                    LIGHT "Encode Wonder Mail: =======================================================\n" RESET \
                     LIGHT "Usage: " LGREEN "%s [Mission type] [Pkmn client] [Pkmn target] [Item to find/deliver] [Dungeon] [Floor] [Reward type] [Item reward] [Friend area reward]\n" RESET \
                     "Encode a Wonder Mail using the entered arguments.\n" \
                     "You must enter exactly 9 arguments.\n" \
@@ -67,14 +67,14 @@ void showHelp(const char *programName)
                     "  Red Rescue Team (GBA), and Lapras, Minum, Aipom and Magikarp in Blue Rescue Team (DS).\n" \
                     "--And, of course, you can also create high rescue points rewarding missions to improve your rank.\n" \
                     "\n" \
-                    LIGHT "Decode SOS Mail:\n" RESET \
+                    LIGHT "Decode SOS Mail: ==========================================================\n" RESET \
                     LIGHT "Usage: " LGREEN "%s [password1] [password2]...\n" RESET \
                     "Decode all entered passwords. Invalid ones are skipped.\n" \
                     "Examples of valid entries:\n" \
                     LGREEN "%s \'?M???.R066???2FC?!?R????3HCP?-??32H???Y?M4C??1J??NQ04?\' \'S6???.RF?6F??NWH*5KC???RH1!9?8?JK7P0??SNMJRPSKJ??7QJ4N\'\n" RESET \
                     LGREEN "%s \'????6+7SHX???1?4???H??4?NP???4???TR?????X25??PJ??07?C?\'\n" RESET \
                     "\n" \
-                    LIGHT "Encode SOS Mail:\n" RESET \
+                    LIGHT "Encode SOS Mail: ==========================================================\n" RESET \
                     LIGHT "Usage: " LGREEN "%s [Mail type] [Pkmn client] [Pkmn nickname] [Dungeon] [Floor] [Mail ID] [Rescue chances]\n" RESET \
                     "Encode a SOS Mail using the entered arguments.\n" \
                     "You must enter exactly 7 arguments.\n" \
@@ -87,7 +87,7 @@ void showHelp(const char *programName)
                     "      The Mail ID is 1234 and you can try 10 times.\n" \
                     "--It is very unlikely that you ever need to encode a SOS Mail, but, still, I want to support it.\n" \
                     "\n"
-                    LIGHT "Convert SOS Mail in A-OK and Thank-You Mail:\n" RESET \
+                    LIGHT "Convert SOS Mail in A-OK and Thank-You Mail: ==============================\n" RESET \
                     LIGHT "Usage: " LGREEN "%s [password1] [item1] [password2] [item2]...\n" RESET \
                     "Convert all entered SOS passwords in A-OK and Thank-You Mail passwords. Invalid ones are skipped.\n" \
                     "The input is not restricted to an SOS Mail. If you enter an A-OK Mail, it will be converted to Thank-You Mail,\n" \
@@ -167,18 +167,25 @@ void showDatabase(enum DatabaseType type)
 int showSelectionScreen()
 {
     fputs(LIGHT "What do you want to do?\n" \
-          LGREEN  "1" RESET " - Decode a Wonder Mail\n" \
-          LGREEN  "2" RESET " - Encode a Wonder Mail\n" \
-          LGREEN  "3" RESET " - Decode a SOS Mail\n" \
-          LGREEN  "4" RESET " - Encode a SOS Mail\n" \
-          LGREEN  "5" RESET " - Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n"
-          DGRAY   "-----------------------------------------------------\n"
-          LGREEN  "6" RESET " - Show Database\n"
-          LGREEN  "7" RESET " - Show Help\n"
+          DGRAY   "----------------------- Main Services ------------------------\n" \
+          LGREEN  "1" RESET "  - Decode a Wonder Mail\n" \
+          LGREEN  "2" RESET "  - Encode a Wonder Mail\n" \
+          LGREEN  "3" RESET "  - Decode a SOS Mail\n" \
+          LGREEN  "4" RESET "  - Encode a SOS Mail\n" \
+          LGREEN  "5" RESET "  - Convert a SOS Mail -> A-OK Mail -> Thank-You Mail\n" \
+          DGRAY   "--------------------- Massive Generation ---------------------\n" \
+          LGREEN  "6" RESET "  - Generate 8 easy \"Help Me!\" missions\n" \
+          LGREEN  "7" RESET "  - Generate a maximum of 8 high-rank \"Help Me!\" missions\n" \
+          DGRAY   "--------------------------- Unlock ---------------------------\n" \
+          LGREEN  "8" RESET "  - Unlock pokemon\n" \
+          LGREEN  "9" RESET "  - Unlock dungeons\n" \
+          DGRAY   "---------------------------- Help ----------------------------\n" \
+          LGREEN  "10" RESET " - Show Database\n" \
+          LGREEN  "11" RESET " - Show Help\n" \
           LGREEN  "[Other]:" LRED " Exit\n" RESET, stdout);
     unsigned int selection;
     if (requestAndValidateIntegerInput(&selection, 0, 0, "") != NoError) {
-        return 8; /* exit */
+        return 10; /* exit */
     } else {
         return selection;
     }

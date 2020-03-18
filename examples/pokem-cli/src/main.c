@@ -1,6 +1,7 @@
 #include "application/application.h"
 #include "view/view.h"
 #include "utils/colors.h"
+#include "utils/utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +13,10 @@
 extern int printMessages;
 
 int autodetect(int argc, const char *argv[]);
+void printDatabaseMenu();
+int requestItem();
+int requestDungeon();
+int requestGame();
 
 int main(int argc, const char *argv[])
 {
@@ -24,7 +29,7 @@ int main(int argc, const char *argv[])
     /* Copyright notice */
     fputs(LIGHT PROGRAM_STRING RESET DRED " v" VERSION_STRING DGREEN "   Copyright 2018-2020 Carlos Enrique Perez Sanchez.\n"
           RESET "Based on the tools written by Peter O.\n"
-          ".................................................................\n", stdout);
+          "..............................................................\n", stdout);
     fflush(stdout);
 
     int i; /* iterations */
@@ -59,7 +64,7 @@ int main(int argc, const char *argv[])
     /* A seed to generate random numbers */
     srand((unsigned int)time(NULL));
 
-    int selection, result = 0;
+    int selection, result = 0, item = 0, dungeon = 0, game = 0;
     int autodetectResult = autodetect(argc, argv);
     if (autodetectResult == -1) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -84,21 +89,29 @@ int main(int argc, const char *argv[])
                 result = convertSOS(0, NULL);
                 break;
             case 6:
-                fputs(LIGHT "What kind of database?\n" \
-                      LGREEN  "1" RESET " - Pokemon\n" \
-                      LGREEN  "2" RESET " - Items\n" \
-                      LGREEN  "3" RESET " - Dungeons\n" \
-                      LGREEN  "4" RESET " - Friend areas\n" \
-                      LGREEN  "5" RESET " - Mission types\n"
-                      LGREEN  "6" RESET " - Reward types\n"
-                      LGREEN  "7" RESET " - SOS Mail types\n"
-                      LGREEN  "[Other]:" LRED " Cancel\n" RESET, stdout);
+                item = requestItem();
+                generateMassiveItemMissions(2, item, 8);
+                break;
+            case 7:
+                dungeon = requestDungeon();
+                item = requestItem();
+                generateMassiveHighRankMissions(dungeon, item, 8);
+                break;
+            case 8:
+                game = requestGame();
+                unlockExclusivePokemon(game);
+                break;
+            case 9:
+                unlockDungeons(game);
+                break;
+            case 10:
+                printDatabaseMenu();
                 if (requestAndValidateIntegerInput((unsigned int*)&selection, 0, 0, "") != NoError) {
                     break;
                 }
                 showDatabase(selection - 1);
                 break;
-            case 7:
+            case 11:
                 showHelp(argv[0]);
                 break;
             default:
@@ -148,4 +161,130 @@ int autodetect(int argc, const char *argv[])
         fprintf(stdout, "Nothing.\n\n");
         return -1; /* failed to autodetect */
     }
+}
+
+void printDatabaseMenu()
+{
+    fputs(LIGHT "What kind of database?\n" \
+          LGREEN  "1" RESET " - Pokemon\n" \
+          LGREEN  "2" RESET " - Items\n" \
+          LGREEN  "3" RESET " - Dungeons\n" \
+          LGREEN  "4" RESET " - Friend areas\n" \
+          LGREEN  "5" RESET " - Mission types\n"
+          LGREEN  "6" RESET " - Reward types\n"
+          LGREEN  "7" RESET " - SOS Mail types\n"
+          LGREEN  "[Other]:" LRED " Cancel\n" RESET, stdout);
+    fflush(stdout);
+}
+
+int requestItem()
+{
+    unsigned int i = 0;
+    unsigned int selection = -1; /* holds integers values */
+    char stringInput[101]; /* holds strings values */
+    char *stringEnd;
+    int randomHolder;
+    int mostSimilarIndex = 0;
+
+    for (;;) {
+        randomHolder = 1 + rand() % (itemsCount - 1);
+        if (requestAndValidateStringInput(stringInput, 100, 1, itemsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "reward item" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+            continue;
+        }
+        selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
+        if (*stringEnd) { /* non-digit found */
+            selection = itemsCount; /* invalid name, invalid index */
+            for (i = 0; i < itemsCount; ++i) {
+                if (strcmp(itemsStr[i], stringInput) == 0) {
+                    selection = i;
+                    break; /* item found */
+                }
+            }
+
+            if (selection == itemsCount) {
+                mostSimilarIndex = findMostSimilarStringInArray(stringInput, itemsStr, itemsCount);
+                if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find item " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
+                    fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
+                } else {
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
+                }
+            }
+        }
+
+        if (checkItemRange(selection, 1) == NoError) {
+            break; /* input is ok */
+        }
+    } /* for (;;) */
+    return selection;
+}
+
+int requestDungeon()
+{
+    unsigned int i = 0;
+    unsigned int selection = -1; /* holds integers values */
+    char stringInput[101]; /* holds strings values */
+    char *stringEnd;
+    int randomHolder;
+    int mostSimilarIndex = 0;
+
+    for (;;) {
+        do {
+            randomHolder = rand() % dungeonsCount;
+        } while (checkDungeonInWonderMail(randomHolder, 0) != NoError);
+        if (requestAndValidateStringInput(stringInput, 100, 1, dungeonsStr[randomHolder], LIGHT "Enter the name or room index of the " LGREEN "dungeon" RESET LIGHT " (leave it blank for random).\n" RESET) != NoError) {
+            continue;
+        }
+        selection = (unsigned int)strtol(stringInput, &stringEnd, 10);
+        if (*stringEnd) { /* non-digit found */
+            selection = dungeonsCount; /* invalid name, invalid index */
+            for (i = 0; i < dungeonsCount; ++i) {
+                if (strcmp(dungeonsStr[i], stringInput) == 0) {
+                    selection = i;
+                    break; /* item found */
+                }
+            }
+
+            if (selection == dungeonsCount) {
+                mostSimilarIndex = findMostSimilarStringInArray(stringInput, dungeonsStr, dungeonsCount);
+                if (mostSimilarIndex == -1) {
+                    fprintf(stderr, LRED "ERROR:" RESET LIGHT " Cannot find dungeon " LGREEN "\"%s\"" RESET LIGHT " in the database.\n", stringInput);
+                    fputs("Re-check your spelling.\n" RESET, stderr);
+                    continue;
+                } else {
+                    selection = mostSimilarIndex;
+                    fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, dungeonsStr[mostSimilarIndex]);
+                }
+            }
+        }
+
+        if (checkDungeonInWonderMail(selection, 1) == NoError) {
+            break; /* input is ok */
+        }
+    } /* for (;;) */
+    return selection;
+}
+
+int requestGame()
+{
+    int selection;
+    const char* gamesTypesStr[] = { "Red Rescue Team", "Blue Rescue Team" };
+    int i;
+    for (;;) {
+        fputs(LIGHT "Select the " LGREEN "game type" RESET LIGHT ".\n" RESET, stdout);
+        for (i = 0; i < 2; ++i) {
+            fprintf(stdout, LGREEN "%u" RESET " - %s\n", i + 1, gamesTypesStr[i]);
+        }
+        if (requestAndValidateIntegerInput((unsigned int*)&selection, 0, 0, "") != NoError) {
+            continue;
+        }
+        --selection;
+        if (selection < 5) { /* `selection` is unsigned so it's always >= 0 */
+            break; /* input is ok */
+        }
+        fprintf(stderr, LRED "INPUT ERROR\n" RESET);
+    } /* forever */
+    return selection;
 }
