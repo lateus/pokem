@@ -729,7 +729,7 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
     char newObjective[72] = {0};
     char newPlace[76] = {0};
     char newFloor[57] = {0};
-    char newReward[106] = {0};
+    char newReward[107] = {0};
     strcpy(newHead, mailInfo->head);
     strcpy(newBody1, mailInfo->body1);
     strcpy(newBody2, mailInfo->body2);
