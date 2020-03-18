@@ -1,5 +1,6 @@
 # TODO
 
+* Reorder the parameters of some functions
 * Parameterize all strings (for example, wrap them into macros) in order to allow easy internationalization.
 * Add functions to print messages (debug, info, warning, error, fatal)
 * Add more types of error 
