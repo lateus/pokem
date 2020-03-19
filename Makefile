@@ -85,7 +85,7 @@ WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 # ----------------------------------------------------------------------------------------------------
 
 .DEFAULT_GOAL := all
-.PHONY: all all-without-colors staticlib examples tests clean help
+.PHONY: all all-without-colors staticlib examples test clean help
 
 all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests (default)
 all-no-colors: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests, without color support
@@ -94,7 +94,7 @@ staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static libra
 
 examples: $(EXAMPLES) ## Build examples
 
-tests: $(TEST_RESULT) ## Build and run tests
+test: $(TEST_RESULT) ## Build and run tests
 
 clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(YELLOW)Cleaning Pokem...$(NOCOLOR)\n\n"
