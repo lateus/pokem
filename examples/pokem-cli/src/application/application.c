@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
+#include <time.h>
 
 int decodeWM(int argc, const char *argv[]) /* The passwords are received here: in argv */
 {
@@ -19,7 +20,11 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
     struct WonderMailInfo mailInfo  = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, 0, {0}, {0} }; /* The 8th element is a char */
     int i;
     int errorCode;
-    
+
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
+
     for (i = 1; i < argc || i == 1; ++i) {
         if (argc > 1) {
             fprintf(stdout, LIGHT "%d.\n" RESET, i);
@@ -35,6 +40,20 @@ int decodeWM(int argc, const char *argv[]) /* The passwords are received here: i
         strncpy(mailInfo.password, psw, 24);
         printWonderMailData(&mailInfo, &mail);
         fputc('\n', stdout);
+        f = fopen(LOG_WM_FILENAME, "a");
+        if (f) {
+            // header
+            t = time(NULL);
+            timeStr = ctime(&t);
+            if (timeStr) {
+                timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+            }
+            fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+            printWonderMailDataToFile(&mailInfo, f);
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
+        }
     }
     fflush(stdout);
 
@@ -65,11 +84,28 @@ int encodeWM(int argc, const char *argv[])
     setWonderMailInfo(&wm, &wmInfo);
     strncpy(wmInfo.password, finalPassword, 24);
     printWonderMailData(&wmInfo, &wm);
+    FILE *f = fopen(LOG_WM_FILENAME, "a");
+    time_t t = -1;
+    char *timeStr = NULL;
+    if (f) {
+        // header
+        t = time(NULL);
+        timeStr = ctime(&t);
+        if (timeStr) {
+            timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+        }
+        fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+        printWonderMailDataToFile(&wmInfo, f);
+    }
     if (wm.dungeon == 10 || wm.dungeon == 12 || wm.dungeon == 14 || wm.dungeon == 16 || wm.dungeon == 18 || wm.dungeon == 22 || wm.dungeon == 47 || wm.dungeon == 48 || wm.dungeon == 52) {
         fputs(LYELLOW "WARNING:" RESET " Due to the choosen dungeon, you will not be able to accept the above mission.\n\n", stderr);
+        fputs("WARNING: Due to the choosen dungeon, you will not be able to accept the above mission.\n", f);
+        fflush(stderr);
     }
+    fputs("\n\n\n", f);
+    fflush(f);
+    fclose(f);
     fflush(stdout);
-    fflush(stderr);
 
     return NoError;
 }
@@ -251,6 +287,10 @@ int decodeSOSM(int argc, const char *argv[])
     int i;
     int errorCode;
 
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
+
     for (i = 1; i < argc || i == 1; ++i) {
         if (argc > 1) {
             fprintf(stdout, LIGHT "%d.\n" RESET, i);
@@ -266,6 +306,20 @@ int decodeSOSM(int argc, const char *argv[])
         strncpy(mailInfo.password, psw, 54);
         printSOSData(&mailInfo, &mail);
         fputc('\n', stdout);
+        f = fopen(LOG_SOS_FILENAME, "a");
+        if (f) {
+            // header
+            t = time(NULL);
+            timeStr = ctime(&t);
+            if (timeStr) {
+                timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+            }
+            fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+            printSOSDataToFile(&mailInfo, mail.mailType, f);
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
+        }
     }
     fflush(stdout);
 
@@ -295,8 +349,23 @@ int encodeSOSM(int argc, const char *argv[])
     setSosInfo(&sos, &sosInfo);
     strncpy(sosInfo.password, finalPassword, 54);
     printSOSData(&sosInfo, &sos);
+    FILE *f = fopen(LOG_SOS_FILENAME, "a");
+    time_t t = -1;
+    char *timeStr = NULL;
+    if (f) {
+        // header
+        t = time(NULL);
+        timeStr = ctime(&t);
+        if (timeStr) {
+            timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+        }
+        fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+        printSOSDataToFile(&sosInfo, sos.mailType, f);
+        fputs("\n\n\n", f);
+        fflush(f);
+        fclose(f);
+    }
     fflush(stdout);
-    fflush(stderr);
 
     return NoError;
 }
@@ -338,6 +407,10 @@ int convertSOS(int argc, const char *argv[])
     int mostSimilarIndex = 0;
     int errorCode;
     int mailType = SosMailType; /* default type */
+
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
 
     if (argc <= 1) {
         requestAndParseSOSMailConvertion(SOSPassword, &itemReward);
@@ -400,6 +473,15 @@ int convertSOS(int argc, const char *argv[])
         if (mailType != SosMailType) {
             SOSPassword[0] = '\0';
         }
+        f = fopen(LOG_SOS_FILENAME, "a");
+        t = time(NULL);
+        timeStr = ctime(&t);
+        if (timeStr) {
+            timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+        }
+        // header
+        fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+
         if (strlen(SOSPassword) == 54) {
             fputs(RESET "=================== SOS Mail =====================\n", stdout);
             if (decodeSosMail(SOSPassword, &SOSMail) != NoError) {
@@ -410,6 +492,10 @@ int convertSOS(int argc, const char *argv[])
             strncpy(SOSInfo.password, SOSPassword, 54);
             printSOSData(&SOSInfo, &SOSMail);
             fputc('\n', stdout);
+            if (f) {
+                printSOSDataToFile(&SOSInfo, SOSMail.mailType, f);
+                fputc('\n', f);
+            }
         }
         if (strlen(AOKPassword) == 54) {
             if (decodeSosMail(AOKPassword, &AOKMail) != NoError) {
@@ -420,6 +506,10 @@ int convertSOS(int argc, const char *argv[])
             strncpy(AOKInfo.password, AOKPassword, 54);
             printSOSData(&AOKInfo, &AOKMail);
             fputc('\n', stdout);
+            if (f) {
+                printSOSDataToFile(&AOKInfo, AOKMail.mailType, f);
+                fputc('\n', f);
+            }
         }
         if (strlen(ThankYouPassword) == 54) {
             if (decodeSosMail(ThankYouPassword, &ThxMail) != NoError) {
@@ -429,6 +519,15 @@ int convertSOS(int argc, const char *argv[])
             setSosInfo(&ThxMail, &ThxInfo);
             strncpy(ThxInfo.password, ThankYouPassword, 54);
             printSOSData(&ThxInfo, &ThxMail);
+            if (f) {
+                printSOSDataToFile(&ThxInfo, ThxMail.mailType, f);
+                fputc('\n', f);
+            }
+        }
+        if (f) {
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
         }
         fflush(stdout);
     } /* for loop */
@@ -451,6 +550,9 @@ int generateMassiveItemMissions(int dungeon, int item, int amount)
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
     char password[25] = {0};
     int i;
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
     for (i = 0; i < amount; ++i) {
         wm.floor = i + 1;
         while (checkFloorForDungeon(wm.floor, wm.dungeon, 0) != NoError) {
@@ -466,6 +568,20 @@ int generateMassiveItemMissions(int dungeon, int item, int amount)
         printWonderMailData(&wmInfo, &wm);
         if (i < amount - 1) {
             fputc('\n', stdout);
+        }
+        f = fopen(LOG_WM_FILENAME, "a");
+        if (f) {
+            // header
+            t = time(NULL);
+            timeStr = ctime(&t);
+            if (timeStr) {
+                timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+            }
+            fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+            printWonderMailDataToFile(&wmInfo, f);
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
         }
     }
     return NoError;
@@ -485,10 +601,15 @@ int generateMassiveHighRankMissions(int dungeon, int item, int amount)
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
     char password[25] = {0};
 
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
+
     char calculatedDiffChar = 'E';
     char diffColor[50] = {0};
     int targetRank = 12;
     int i;
+
     /* locate the first appareance of a high rank floor */
     for (i = 1; i <= difficulties[dungeon][0]; ++i) {
         if (difficulties[dungeon][i] >= targetRank) {
@@ -525,6 +646,20 @@ int generateMassiveHighRankMissions(int dungeon, int item, int amount)
         if (i < top - 1) {
             fputc('\n', stdout);
         }
+        f = fopen(LOG_WM_FILENAME, "a");
+        if (f) {
+            // header
+            t = time(NULL);
+            timeStr = ctime(&t);
+            if (timeStr) {
+                timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+            }
+            fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+            printWonderMailDataToFile(&wmInfo, f);
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
+        }
     }
     return NoError;
 }
@@ -542,6 +677,10 @@ int unlockExclusivePokemon(enum GameType gameType)
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
     char password[25] = {0};
 
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
+
     int i;
     int top = gameType == RedRescueTeam ? 5 : 4;
     for (i = 0; i < top; ++i) {
@@ -554,6 +693,20 @@ int unlockExclusivePokemon(enum GameType gameType)
         if (i < top - 1) {
             fputc('\n', stdout);
         }
+        f = fopen(LOG_WM_FILENAME, "a");
+        if (f) {
+            // header
+            t = time(NULL);
+            timeStr = ctime(&t);
+            if (timeStr) {
+                timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+            }
+            fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+            printWonderMailDataToFile(&wmInfo, f);
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
+        }
     }
     return NoError;
 }
@@ -564,6 +717,10 @@ int unlockDungeons()
     struct WonderMail wm = { WonderMailType, HelpMe, 0, 0, 0, 0, MoneyMoney, 0x09, 0, 0, 0, 0xFF, 0, 1 };
     struct WonderMailInfo wmInfo = { {0}, {0}, {0}, {0}, {0}, {0}, {0}, '\0', {0}, {0} };
     char password[25] = {0};
+
+    FILE *f = NULL;
+    time_t t = -1;
+    char *timeStr = NULL;
 
     int i;
     for (i = 0; i < 3; ++i) {
@@ -578,6 +735,20 @@ int unlockDungeons()
         printWonderMailData(&wmInfo, &wm);
         if (i < 2) {
             fputc('\n', stdout);
+        }
+        f = fopen(LOG_WM_FILENAME, "a");
+        if (f) {
+            // header
+            t = time(NULL);
+            timeStr = ctime(&t);
+            if (timeStr) {
+                timeStr[strlen(timeStr) - 1] = '\0'; /* remove the trailing newline */
+            }
+            fprintf(f, "%s ~~~~~~~~~~~~~~~~~~~~~~~\n", timeStr);
+            printWonderMailDataToFile(&wmInfo, f);
+            fputs("\n\n\n", f);
+            fflush(f);
+            fclose(f);
         }
     }
     return NoError;

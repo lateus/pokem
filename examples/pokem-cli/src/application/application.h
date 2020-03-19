@@ -5,6 +5,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#define LOG_WM_FILENAME  "logWonderMail.txt"
+#define LOG_SOS_FILENAME "logSosMail.txt"
 
 enum GameType { RedRescueTeam, BlueRescueTeam };
 
