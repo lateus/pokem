@@ -1,6 +1,10 @@
 #include <windows.h>
 
+#ifndef NO_USE_COLORS
 IDI_ICON1	ICON	DISCARDABLE	"pokem.ico"
+#else
+IDI_ICON1	ICON	DISCARDABLE	"pokem-grayscale.ico"
+#endif
 
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 0,1,0,0

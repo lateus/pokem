@@ -1,10 +1,11 @@
 # Compiler
 CC			:=	gcc
 # Compiler flags
+DEFINES		:=	$(if $(filter all-no-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=
-CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS)
+CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES)
 AR_FLAGS	:=	rcs
 
 # Tools
@@ -63,30 +64,31 @@ LIB_HEADER_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(LIB_HEADER_NAME)
 # Messages
 MSG			:=	printf
 # Colors
-NOCOLOR		:=	\033[0m
-BLACK		:=	\033[0;30m
-DARKGRAY	:=	\033[1;30m
-RED			:=	\033[0;31m
-LIGHTRED	:=	\033[1;31m
-GREEN		:=	\033[0;32m
-LIGHTGREEN	:=	\033[1;32m
-ORANGE		:=	\033[0;33m
-YELLOW		:=	\033[1;33m
-BLUE		:=	\033[0;34m
-LIGHTBLUE	:=	\033[1;34m
-PURPLE		:=	\033[0;35m
-LIGHTPURPLE	:=	\033[1;35m
-CYAN		:=	\033[0;36m
-LIGHTCYAN	:=	\033[1;36m
-LIGHTGRAY	:=	\033[0;37m
-WHITE		:=	\033[1;37m
+NOCOLOR		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0m)
+BLACK		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;30m)
+DARKGRAY	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;30m)
+RED			:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;31m)
+LIGHTRED	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;31m)
+GREEN		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;32m)
+LIGHTGREEN	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;32m)
+ORANGE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;33m)
+YELLOW		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;33m)
+BLUE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;34m)
+LIGHTBLUE	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;34m)
+PURPLE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;35m)
+LIGHTPURPLE	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;35m)
+CYAN		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;36m)
+LIGHTCYAN	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;36m)
+LIGHTGRAY	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;37m)
+WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 
 # ----------------------------------------------------------------------------------------------------
 
 .DEFAULT_GOAL := all
-.PHONY: all staticlib examples tests clean help
+.PHONY: all all-without-colors staticlib examples tests clean help
 
 all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests (default)
+all-no-colors: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests, without color support
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
@@ -110,10 +112,10 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "\n$(YELLOW)Cleaning examples...$(NOCOLOR)\n"
 	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
 	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
-	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)Pokem$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
+	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)PokeM$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(WHITE)%-10s$(NOCOLOR) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(WHITE)%-16s$(NOCOLOR) %s\n", $$1, $$2}'
 
 # Static library header
 $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
@@ -137,7 +139,7 @@ $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(YELLOW)Updating static library...$(NOCOLOR)\n"
 	$(CP) $(CP_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH) $@/lib/$(STATIC_LIB_NAME)
 	$(CP) $(CP_FLAGS) $(LIB_HEADER_DEPLOY_FILEPATH) $@/lib/$(LIB_HEADER_NAME)
-	@$(MAKE) --directory $@
+	@$(MAKE) --directory $@ $(if $(filter -DNO_USE_COLORS, $(DEFINES)), build-cli-without-colors,)
 
 $(TEST_RESULT): $(BUILDDIR) $(TEST_FILES)
 	@$(MSG) "$(LIGHTGREEN)Building tests...$(NOCOLOR)\n"

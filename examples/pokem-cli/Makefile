@@ -1,11 +1,11 @@
 # Compiler
 CC			:=	gcc
 # Compiler flags
-DEFINES		:=	#-DNO_USE_COLORS
-CC_WFLAGS	:=	-W -Wall -Wextra -pedantic $(DEFINES)
+DEFINES		:=	$(if $(filter build-cli-without-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=	-Wl,-s -static
-CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
+CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS) $(DEFINES)
 
 # Tools
 RM			:=	rm
@@ -44,30 +44,31 @@ EXECUTABLE	:=	$(BINDIR)/pokeM
 # Messages
 MSG			:=	printf
 # Colors
-NOCOLOR		:=	\033[0m
-BLACK		:=	\033[0;30m
-DARKGRAY	:=	\033[1;30m
-RED			:=	\033[0;31m
-LIGHTRED	:=	\033[1;31m
-GREEN		:=	\033[0;32m
-LIGHTGREEN	:=	\033[1;32m
-ORANGE		:=	\033[0;33m
-YELLOW		:=	\033[1;33m
-BLUE		:=	\033[0;34m
-LIGHTBLUE	:=	\033[1;34m
-PURPLE		:=	\033[0;35m
-LIGHTPURPLE	:=	\033[1;35m
-CYAN		:=	\033[0;36m
-LIGHTCYAN	:=	\033[1;36m
-LIGHTGRAY	:=	\033[0;37m
-WHITE		:=	\033[1;37m
+NOCOLOR		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0m)
+BLACK		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;30m)
+DARKGRAY	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;30m)
+RED			:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;31m)
+LIGHTRED	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;31m)
+GREEN		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;32m)
+LIGHTGREEN	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;32m)
+ORANGE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;33m)
+YELLOW		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;33m)
+BLUE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;34m)
+LIGHTBLUE	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;34m)
+PURPLE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;35m)
+LIGHTPURPLE	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;35m)
+CYAN		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;36m)
+LIGHTCYAN	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;36m)
+LIGHTGRAY	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;37m)
+WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 
 # ----------------------------------------------------------------------------------------------------
 
-.DEFAULT_GOAL := all
-.PHONY: all clean help
+.DEFAULT_GOAL := build-cli
+.PHONY: build-cli build-cli-without-colors clean help
 
-all: $(EXECUTABLE) ## Build Pokem CLI executable (default)
+build-cli: $(EXECUTABLE) ## Build Pokem CLI executable (default)
+build-cli-without-colors: $(EXECUTABLE) ## Build Pokem CLI executable, without colors
 
 clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
@@ -94,7 +95,7 @@ $(OBJS):
 
 $(RC_OBJ):
 	@$(MSG) "$(YELLOW)Building MS Windows's RC file...$(NOCOLOR)\n"
-	$(WINDRES) -i $(RC_FILE) -o $@
+	$(WINDRES) -i $(RC_FILE) $(DEFINES) -o $@
 	@$(MSG) "$(YELLOW)Building intermediate objects files...$(NOCOLOR)\n"
 
 $(BUILDDIR):

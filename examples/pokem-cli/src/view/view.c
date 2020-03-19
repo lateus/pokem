@@ -185,7 +185,7 @@ int showSelectionScreen()
           LGREEN  "[Other]:" LRED " Exit\n" RESET, stdout);
     unsigned int selection;
     if (requestAndValidateIntegerInput(&selection, 0, 0, "") != NoError) {
-        return 10; /* exit */
+        return 0; /* exit */
     } else {
         return selection;
     }
@@ -878,6 +878,8 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
     char diffColor[50] = {0};
     strcpy(diffColor, mailInfo->difficulty == 'E' ? RESET COLOR_BACKGROUND : mailInfo->difficulty == 'D' || mailInfo->difficulty == 'C' ? COLOR_GREEN : mailInfo->difficulty == 'B' || mailInfo->difficulty == 'A' ? COLOR_CYAN : mailInfo->difficulty == 'S' ? COLOR_RED : LYELLOW);
     
+
+#ifndef NO_USE_COLORS
     int i, j;
     char temp[30] = {0};
     for (i = j = 0; i < 24; ++i) {
@@ -887,38 +889,23 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
         temp[i + j] = mailInfo->password[i];
     }
 
-#ifndef NO_USE_COLORS
-    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-58s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:     " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:  " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:      " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty: " RESET COLOR_BACKGROUND "%s%c%-32s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:   " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\n",
+    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-58s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:     " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:  " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:      " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty: " RESET COLOR_BACKGROUND "%s%c%-32s" COLOR_BORDER "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:   " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
+                    COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\xFF\n",
             newHead, "", newBody1, newBody2, "", mailInfo->client, newObjective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, temp, temp + 5, temp + 10, temp + 15, temp + 20, temp + 25);
 #else
-    fprintf(stdout, "************************************************\n"
-                    "* %-44s *\n"
-                    "* %-44s *\n"
-                    "* %-44s *\n"
-                    "* %-44s *\n"
-                    "* %-44s *\n"
-                    "* Client:     %-32s *\n"
-                    "* Objective:  %-32s *\n"
-                    "* Place:      %-32s *\n"
-                    "* Difficulty: %s%c%-31s *\n"
-                    "* Reward:     %-32s *\n"
-                    "* Password:   %s%s%-24s *\n"
-                    "*             %s%s%-24s *\n"
-                    "************************************************\n",
-            newHead, "", newBody1, newBody2, "", mailInfo->client, newObjective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, temp, temp + 5, temp + 10, temp + 15, temp + 20, temp + 25);
+    printWonderMailDataToFile(mailInfo, stdout);
 #endif
 }
 
@@ -978,6 +965,7 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
     char diffColor[50] = {0};
     strcpy(diffColor, mailInfo->difficulty == 'E' ? RESET COLOR_BACKGROUND : mailInfo->difficulty == 'D' || mailInfo->difficulty == 'C' ? COLOR_GREEN : mailInfo->difficulty == 'B' || mailInfo->difficulty == 'A' ? COLOR_CYAN : mailInfo->difficulty == 'S' ? COLOR_RED : LYELLOW);
 
+#ifndef NO_USE_COLORS
     int i, j;
     char temp[70] = {0};
     for (i = j = 0; i < 54; ++i) {
@@ -989,7 +977,6 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
         temp[i + j] = mailInfo->password[i];
     }
 
-#ifndef NO_USE_COLORS
     fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-46s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
                     COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-47s*" RESET "\n"
@@ -1008,7 +995,57 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
                     COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET "\n",
             mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mail->mailType == SosMailType ? "* " : "\r", mail->mailType == SosMailType ? "Chances left: " : "\r", mail->mailType == SosMailType ? mailInfo->chancesLeft : "\r", mail->mailType == SosMailType ? "*" : "\r", mail->mailType == SosMailType ? "\n" : "\r", temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
 #else
-    fprintf(stdout, "**************************************************\n"
+    printSOSDataToFile(mailInfo, mail->mailType, stdout);
+#endif
+}
+
+
+
+void printWonderMailDataToFile(const struct WonderMailInfo *mailInfo, FILE *f)
+{
+    char placeAndFloor[51] = {0};
+    sprintf(placeAndFloor, "%s  %s", mailInfo->place, mailInfo->floor);
+
+    char passwordHalf1[13] = {0};
+    char passwordHalf2[13] = {0};
+
+    strncpy(passwordHalf1, mailInfo->password, 12);
+    strncpy(passwordHalf2, mailInfo->password, 12);
+
+    fprintf(f, "************************************************\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* %-44s *\n"
+                    "* Client:     %-32s *\n"
+                    "* Objective:  %-32s *\n"
+                    "* Place:      %-32s *\n"
+                    "* Difficulty: %s%c%-31s *\n"
+                    "* Reward:     %-32s *\n"
+                    "* Password:   %-32s *\n"
+                    "*             %-32s *\n"
+                    "************************************************\n",
+            mailInfo->head, "", mailInfo->body1, mailInfo->body2, "", mailInfo->client, mailInfo->objective, placeAndFloor, "", mailInfo->difficulty, "", mailInfo->reward, passwordHalf1, passwordHalf2);
+}
+
+
+
+void printSOSDataToFile(const struct SosMailInfo *mailInfo, enum MailType mailType, FILE *f)
+{
+
+    char placeAndFloor[51] = {0};
+    sprintf(placeAndFloor, "%s  %s", mailInfo->place, mailInfo->floor);
+
+    char passwordThird1[19] = {0};
+    char passwordThird2[19] = {0};
+    char passwordThird3[19] = {0};
+
+    strncpy(passwordThird1, mailInfo->password, 18);
+    strncpy(passwordThird2, mailInfo->password, 18);
+    strncpy(passwordThird3, mailInfo->password, 18);
+
+    fprintf(f, "**************************************************\n"
                     "* %-46s *\n"
                     "* %-46s *\n"
                     "* %-46s *\n"
@@ -1020,12 +1057,11 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
                     "* Reward:       %-32s *\n"
                     "* ID:           %-32s *\n"
                     "%s%s"          "%-33s%s%s"
-                    "* Password:     %s%s%-19s *\n"
-                    "*               %s%s%-19s *\n"
-                    "*               %s%s%-19s *\n"
+                    "* Password:     %-32s *\n"
+                    "*               %-32s *\n"
+                    "*               %-32s *\n"
                     "**************************************************\n",
-            mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mail->mailType == SosMailType ? "* " : "\r", mail->mailType == SosMailType ? "Chances left: " : "\r", mail->mailType == SosMailType ? mailInfo->chancesLeft : "\r", mail->mailType == SosMailType ? "*" : "\r", mail->mailType == SosMailType ? "\n" : "\r", temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
-#endif
+            mailInfo->head, "", mailInfo->body, "", mailInfo->client, mailInfo->objective, placeAndFloor, "", mailInfo->difficulty, "", mailInfo->reward, mailInfo->id, mailType == SosMailType ? "* " : "\r", mailType == SosMailType ? "Chances left: " : "\r", mailType == SosMailType ? mailInfo->chancesLeft : "\r", mailType == SosMailType ? "*" : "\r", mailType == SosMailType ? "\n" : "\r", passwordThird1, passwordThird2, passwordThird3);
 }
 
 

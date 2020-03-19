@@ -1,6 +1,7 @@
 #ifndef VIEW_H
 #define VIEW_H
 
+#include <stdio.h>
 #include "../../lib/pokem.h"
 
 /* Colors */
@@ -26,6 +27,9 @@ int requestAndParseSOSMailConvertion(char *password, int *item);
 
 void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct WonderMail *mail);
 void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail);
+
+void printWonderMailDataToFile(const struct WonderMailInfo *mailInfo, FILE *f);
+void printSOSDataToFile(const struct SosMailInfo *mailInfo, enum MailType mailType, FILE *f);
 
 int checkPkmnInWonderMail(int index, int printErrorMessages);
 int checkPkmnInSosMail(int index, int printErrorMessages);
