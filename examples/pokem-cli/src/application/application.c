@@ -386,6 +386,8 @@ int convertSOS(int argc, const char *argv[])
             } else if (itemReward != 0 && checkItemRange(itemReward, 1) != NoError) {
                 continue;
             }
+        } else {
+            fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", (unsigned int)itemReward < itemsCount ? LGREEN : LRED, itemReward, (unsigned int)itemReward < itemsCount ? itemsStr[itemReward] : LRED "[INVALID]" RESET);
         }
 
         errorCode = convertSosMail(SOSPassword, itemReward, AOKPassword, ThankYouPassword);

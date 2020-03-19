@@ -213,6 +213,8 @@ int requestItem()
                     fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                 }
             }
+        } else {
+            fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < itemsCount ? LGREEN : LRED, selection, selection < itemsCount ? itemsStr[selection] : LRED "[INVALID]" RESET);
         }
 
         if (checkItemRange(selection, 1) == NoError) {
@@ -259,6 +261,8 @@ int requestDungeon()
                     fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, dungeonsStr[mostSimilarIndex]);
                 }
             }
+        } else {
+            fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < dungeonsCount ? LGREEN : LRED, selection, selection < dungeonsCount ? dungeonsStr[selection] : LRED "[INVALID]" RESET);
         }
 
         if (checkDungeonInWonderMail(selection, 1) == NoError) {

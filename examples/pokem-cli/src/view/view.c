@@ -257,6 +257,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                     fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
                 }
             }
+        } else {
+            fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < pkmnSpeciesCount ? LGREEN : LRED, selection, selection < pkmnSpeciesCount ? pkmnSpeciesStr[selection] : LRED "[INVALID]" RESET);
         }
 
         if (checkPkmnInWonderMail(selection, 1) == NoError) {
@@ -295,6 +297,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                         fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, pkmnSpeciesStr[mostSimilarIndex]);
                     }
                 }
+            } else {
+                fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < pkmnSpeciesCount ? LGREEN : LRED, selection, selection < pkmnSpeciesCount ? pkmnSpeciesStr[selection] : LRED "[INVALID]" RESET);
             }
 
             if (checkPkmnInWonderMail(selection, 1) == NoError) {
@@ -335,6 +339,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                     fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, dungeonsStr[mostSimilarIndex]);
                 }
             }
+        } else {
+            fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < dungeonsCount ? LGREEN : LRED, selection, selection < dungeonsCount ? dungeonsStr[selection] : LRED "[INVALID]" RESET);
         }
 
         if (checkDungeonInWonderMail(selection, 1) == NoError) {
@@ -380,6 +386,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                         fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                     }
                 }
+            } else {
+                fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < itemsCount ? LGREEN : LRED, selection, selection < itemsCount ? itemsStr[selection] : LRED "[INVALID]" RESET);
             }
 
             if (checkItemToFindDeliverRangeInWonderMail(selection, 1) == NoError) {
@@ -444,6 +452,8 @@ int requestAndParseWonderMailData(struct WonderMail *wm)
                         fprintf(stderr, LGREEN "%s" RESET LIGHT " has been assumed.\n" RESET, itemsStr[mostSimilarIndex]);
                     }
                 }
+            } else {
+                fprintf(stdout, RESET "(%s" "%d" RESET ") %s\n", selection < itemsCount ? LGREEN : LRED, selection, selection < itemsCount ? itemsStr[selection] : LRED "[INVALID]" RESET);
             }
 
             if (checkItemRange(selection, 1) == NoError) {
@@ -880,6 +890,13 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
     
 
 #ifndef NO_USE_COLORS
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define EndOfLineString "\xFF\n"
+#else
+#define EndOfLineString "\n"
+#endif
+
     int i, j;
     char temp[30] = {0};
     for (i = j = 0; i < 24; ++i) {
@@ -889,20 +906,20 @@ void printWonderMailData(const struct WonderMailInfo *mailInfo, const struct Won
         temp[i + j] = mailInfo->password[i];
     }
 
-    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-58s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:     " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:  " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:      " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty: " RESET COLOR_BACKGROUND "%s%c%-32s" COLOR_BORDER "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:   " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\xFF\n"
-                    COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET "\xFF\n",
+    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-58s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-83s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-45s*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:     " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:  " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:      " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty: " RESET COLOR_BACKGROUND "%s%c%-32s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:     " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:   " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "            %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-25s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "************************************************" RESET EndOfLineString,
             newHead, "", newBody1, newBody2, "", mailInfo->client, newObjective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, temp, temp + 5, temp + 10, temp + 15, temp + 20, temp + 25);
 #else
     printWonderMailDataToFile(mailInfo, stdout);
@@ -966,6 +983,13 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
     strcpy(diffColor, mailInfo->difficulty == 'E' ? RESET COLOR_BACKGROUND : mailInfo->difficulty == 'D' || mailInfo->difficulty == 'C' ? COLOR_GREEN : mailInfo->difficulty == 'B' || mailInfo->difficulty == 'A' ? COLOR_CYAN : mailInfo->difficulty == 'S' ? COLOR_RED : LYELLOW);
 
 #ifndef NO_USE_COLORS
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define EndOfLineString "\xFF\n"
+#else
+#define EndOfLineString "\n"
+#endif
+
     int i, j;
     char temp[70] = {0};
     for (i = j = 0; i < 54; ++i) {
@@ -977,22 +1001,22 @@ void printSOSData(const struct SosMailInfo *mailInfo, const struct SosMail *mail
         temp[i + j] = mailInfo->password[i];
     }
 
-    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-46s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-47s*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-47s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-47s*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:       " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:    " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:        " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty:   " RESET COLOR_BACKGROUND "%s%c%-32s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:       " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "ID:           " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET "\n"
+    fprintf(stdout, COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET WHITE COLOR_BACKGROUND UNDERLINE "%-46s" RESET COLOR_BACKGROUND COLOR_BORDER " *" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-47s*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "%-47s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " COLOR_BORDER "%-47s*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Client:       " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Objective:    " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Place:        " RESET COLOR_BACKGROUND "%-109s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Difficulty:   " RESET COLOR_BACKGROUND "%s%c%-32s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Reward:       " RESET COLOR_BACKGROUND "%-71s" COLOR_BORDER "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "ID:           " RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "*" RESET EndOfLineString
                     COLOR_BORDER COLOR_BACKGROUND "%s" WHITE COLOR_BACKGROUND "%s"             RESET COLOR_BACKGROUND "%-33s" COLOR_BORDER "%s" RESET "%s"
-                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:     " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET "\n"
-                    COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET "\n",
+                    COLOR_BORDER COLOR_BACKGROUND "* " WHITE COLOR_BACKGROUND "Password:     " RESET COLOR_BACKGROUND "%s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "* " RESET COLOR_BACKGROUND "              %s" COLOR_YELLOW "%s" RESET COLOR_BACKGROUND "%-20s" COLOR_BORDER COLOR_BACKGROUND "*" RESET EndOfLineString
+                    COLOR_BORDER COLOR_BACKGROUND "**************************************************" RESET EndOfLineString,
             mailInfo->head, "", mailInfo->body, "", newClient, mailInfo->objective, placeAndFloor, diffColor, mailInfo->difficulty, "", newReward, mailInfo->id, mail->mailType == SosMailType ? "* " : "\r", mail->mailType == SosMailType ? "Chances left: " : "\r", mail->mailType == SosMailType ? mailInfo->chancesLeft : "\r", mail->mailType == SosMailType ? "*" : "\r", mail->mailType == SosMailType ? "\n" : "\r", temp, temp + 6, temp + 15, temp + 21, temp + 27, temp + 36, temp + 42, temp + 48, temp + 57);
 #else
     printSOSDataToFile(mailInfo, mail->mailType, stdout);
