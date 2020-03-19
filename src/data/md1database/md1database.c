@@ -22,7 +22,7 @@
     {  9,  4,4,4,4,4,5,5,5,5 }, /* 9 - Frosty Forest */
     {  5,  5,5,5,5,5 }, /* 5 - Frosty Grotto */
     { 15,  5,5,5,5,5,5,5,5,5,5,5,5,5,5,5 }, /* 15 - Mt. Freeze */
-    {  4,  5,5,5,5 }, /* 5 - Mt. Freeze Peak */
+    {  4,  5,5,5,5 }, /* 4 - Mt. Freeze Peak */
     { 23,  6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6 }, /* 23 - Magma Cavern */
     {  3,  6,6,6 }, /* 3 - Magma Cavern Pit */
     { 25,  6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6 }, /* 25 - Sky Tower */
@@ -32,13 +32,13 @@
     { 20,  7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8 }, /* 20 - Meteor Cave */
     {  4,  5,5,5,5 }, /* 4 - Mt. Freeze Peak */
     { 99,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12 }, /* 99 - Western Cave */
-    {  0,  }, /* [INVALID] */
-    {  0,  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
     { 99,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12 }, /* 99 - Whish Cave */
-    { 20,  7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8 }, /* 20 - Buried Relic */
+    { 99,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12 }, /* 99 - Buried Relic */
     { 11,  1,1,1,1,1,1,1,1,1,1,1 }, /* 11 Pitfall Valley */
     { 25,  7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9 }, /* 25 - Northern Range */
-    {  0,  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
     { 20,  7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8 },   /* 20 - Desert Region */
     { 50,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9 }, /* 50 - Southern Cavern */
     { 30,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9 }, /* 30 - Wyvern Hill */
@@ -47,7 +47,7 @@
     { 20,  7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8 }, /* 20- Solar Cave */
     { 30,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9 }, /* 30 - Lightning Field */
     { 15,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }, /* 15 - Darknight Relic */
-    {  0,  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
     { 19,  7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8 }, /* 19 - Murky Cave */
     { 30,  7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8 }, /* 30 - Grand Sea */
     { 10,  5,5,5,5,5,5,5,5,5,5 }, /* 10 - Uproar Forest */
@@ -57,30 +57,31 @@
     { 30,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9 }, /* 30 - Fantasy Strait */
     {  4,  1,1,1,1 }, /* 4 - Rock Path */
     {  4,  1,1,1,1 }, /* 4 - Snow Path */
-    {  0,  }, /* [INVALID] */
-    {  0,  }, /* [INVALID] */
-    {  0,  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
     { 69,  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }, /* 69 - Dojo Registration */
     { 15,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }, /* 15 - Howling Forest */
-    {  0,  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
     { 30,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9 }, /* 30 - Fantasy Strait */
     { 19,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7 }, /* 19 - Waterfall Pound */
     { 11,  7,7,7,7,7,7,7,7,7,7,7 }, /* 11 - Unown Relic */
     { 99,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12 }, /* 99 - Joyous Tower */
     { 75,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12 }, /* 75 - Far-off Sea */
     { 40,  7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,9,10,10,10,10,10 }, /* 40 - Mt. Faraway */
-    {  0,  }, /* [INVALID] */
+    {  0  }, /* [INVALID] */
     { 99,  8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,13,13,13,13,13,13,13,13,13,13,13,13,13,13,14,14,14,14,14,14,14,14,14,14,14 } /* 99 - Purity Forest */
 };
 
 
 /* Difficulties characters */
+const int difficultiesCharsCount = 7;
 const char* difficultiesChars = "EDCBAS*";
 
 
-/* Dungeon-up or dungeon-down ('-' is B#F, ' ' (space) is #F, '\?' is UNKNOWN and/or INVALID) */
+/* Dungeon-up or dungeon-down (negative floors are `B#F`, positive floors are ` #F`, '\?' are for INVALID dungeons) */
     /* PD: I use the scape secuence '\?' instead of just '?' because of trigraphs */
-const char* dungeonUpOrDown = "BB  B \? B \? \? \?B\? \?BBB B\?\?BBB \? B   B B\?BBBBBBB\?\?\?\?\?\?B \?BBB B \? ";
+const char* dungeonUpOrDown = "BB  B   B      BB  BBB B\?\?BBB \? B   B B\?BBBBBBBBB\?\?\?B \?BBB B \? ";
 
 
 /* Items in dungeons */
@@ -152,7 +153,106 @@ const int itemsInDungeons[][145] = {
 };
 
 
+/* Forbidden floors in dungeons */
+/* the first element of each sub-array represents his size */
+const int forbiddenFloorsInDungeons[][3] = {
+    { 0 }, /* 0 - Tiny Woods */
+    { 0 }, /* Thunderwave Cave */
+    { 1,  9 }, /* Mt. Steel */
+    { 1, 13 }, /* Sinister Woods */
+    { 0 }, /* Silent Chasm */
+    { 0 }, /* Mt. Thunder */
+    { 1,  3 }, /* Mt. Thunder Peak */
+    { 0 }, /* Great Canyon */
+    { 0 }, /* Lapis Cave */
+    { 0 }, /* Mt. Blaze */
+    { 1,  3 }, /* 10 - Mt. Blaze Peak */
+    { 0 }, /* Frosty Forest */
+    { 0 }, /* Frosty Grotto */
+    { 0 }, /* Mt. Freeze */
+    { 0 }, /* Mt. Freeze Peak */
+    { 0 }, /* Magma Cavern */
+    { 2,  2,  3 }, /* Magma Cavern Pit */
+    { 0 }, /* Sky Tower */
+    { 1,  9 }, /* Sky Tower Summit */
+    { 1, 40 }, /* Stormy Sea */
+    { 1, 99 }, /* 20 - Silver Trench */
+    { 1, 20 }, /* Meteor Cave */
+    { 0 }, /* Mt. Freeze Peak */
+    { 1, 99 }, /* Western Cave */
+    { 0 }, /* [INVALID] */
+    { 0 }, /* [INVALID] */
+    { 2, 20, 99 }, /* Wish Cave */
+    { 0 }, /* Buried Relic */
+    { 0 }, /* Pitfall Valley */
+    { 1, 25 }, /* Northern Range */
+    { 0 }, /* 30 - [INVALID] */
+    { 0 }, /* Desert Region */
+    { 0 }, /* Southern Cavern */
+    { 0 }, /* Wyvern Hill */
+    { 1, 30 }, /* Fiery Field */
+    { 1, 30 }, /* Northwind Field */
+    { 0 }, /* Solar Cave */
+    { 1, 30 }, /* Lightning Field */
+    { 0 }, /* Darknight Relic */
+    { 0 }, /* [INVALID] */
+    { 0 }, /* 40 - Murky Cave */
+    { 0 }, /* Grand Sea */
+    { 1, 10 }, /* Uproar Forest */
+    { 0 }, /* Oddity Cave */ 
+    { 0 }, /* Remains Islands */
+    { 0 }, /* Marvelous Sea */
+    { 0 }, /* Fantasy Strait */
+    { 0 }, /* Rock Path */
+    { 0 }, /* Snow Path */
+    { 0 }, /* [INVALID] */
+    { 0 }, /* 50 - [INVALID] */
+    { 0 }, /* [INVALID] */
+    { 0 }, /* Dojo Registration */
+    { 0 }, /* Howling Forest */
+    { 0 }, /* [INVALID] */
+    { 0 }, /* Fantasy Strait */
+    { 0 }, /* Waterfall Pond */
+    { 0 }, /* Unown Relic */
+    { 0 }, /* Joyous Tower */
+    { 0 }, /* Far-off Sea */
+    { 1, 40 }, /* 60 - Mt. Faraway */
+    { 0 }, /* [INVALID] */
+    { 1, 99 }  /* Purity Forest */
+};
+
+/*
+    Evolution checking - The first element is the size
+
+    Truly speaking, the game does not have any restriction over
+    any pkmn/item combination that can be used to generate a mail
+    with a special flavor text about evolution or feed. However,
+    we apply limitations for abvious reasons: we do not want a
+    Charizard evolving with a Gravelerock, or a Pikachu eating an
+    Insomniscope.
+    We want as much consistence as the real game has, but we will
+    also add the rest of evolution-related items.
+*/
+const int thunderStonePkmn[] = { 2, 25, 133 }; /* Pikachu and Eevee */
+const int fireStonePkmn[]    = { 3, 37, 58, 133 }; /* Vulpix, Growlithe and Eevee */
+const int waterStonePkmn[]   = { 5, 61, 90, 120, 133, 296 }; /* Poliwhirl, Shellder, Staryu, Eevee and Lombre */
+const int leafStonePkmn[]    = { 4, 44, 70, 102, 299 }; /* Gloom, Weepinbell, Exeggcute and Nuzleaf */
+const int sunStonePkmn[]     = { 2, 44, 191 }; /* Gloom and Sunkern */
+const int moonStonePkmn[]    = { 5, 30, 33, 35, 39, 325 }; /* Nidorina, Nidorino, Clefairy, Jigglypuff and Skitty */
+const int linkCablePkmn[]    = { 4, 64, 67, 75, 93 }; /* Kadabra, Machoke, Graveler and Haunter */
+const int deepSeaScalePkmn[] = { 1, 394 }; /* Clamperl */
+const int deepSeaToothPkmn[] = { 1, 394 }; /* Same as `deepSeaScalePkmn`: Clamperl */
+const int dragonScalePkmn[]  = { 1, 117 }; /* Seadra */
+const int kingsRockPkmn[]    = { 1, 80 }; /* Slowbro */
+const int metalCoatPkmn[]    = { 2, 95, 123 }; /* Onix and Scyther */
+const int upgradePkmn[]      = { 1, 137 }; /* Porygon */
+const int sunRibbonPkmn[]    = { 1, 133 }; /* Eevee */
+const int lunarRibbonPkmn[]  = { 1, 133 }; /* Same as `sunRibbonPkmn`: Eevee */
+const int beautyScarfPkmn[]  = { 1, 374 }; /* Feebas */
+
+
 /* Mission type */
+const unsigned int missionTypeObjectiveCount = 6; /* The size of the array */
 const char* missionTypeObjectiveStr[] = {
     "Help me!",
     "Find %s.",
@@ -390,27 +490,27 @@ const char* msgBodyStandard_2Of2_FindDeliverItem[] = {
 
 /* Parents */
 const int parents[] = {
-     15,  13,
-     18,  16,
-     20,  19,
-     26, 172,
-     36, 173,
-     40, 174,
-    169,  41,
-     45,  43,
-     62,  60,
-    176, 175,
-    184, 323,
-    242, 241,
-    257, 256,
-    125, 264,
-    126, 265,
-    273, 271,
-    292, 290,
-    331, 329,
-    355, 353,
-    393, 391,
-    302, 301
+     15,  13, /* Beedrill   -> Kakuna */
+     18,  16, /* Pidgeot    -> Pidgey */
+     20,  19, /* Raticate   -> Rattata */
+     26, 172, /* Raichu     -> Pichu */
+     36, 173, /* Clefable   -> Cleffa */
+     40, 174, /* Wigglytuff -> Igglybuff */
+    169,  41, /* Crobat     -> Zubat */
+     45,  43, /* Vileplume  -> Oddish */
+     62,  60, /* Poliwrath  -> Poliwag */
+    176, 175, /* Togetic    -> Togepi */
+    184, 323, /* Azumarill  -> Azurill */
+    242, 241, /* Ursaring   -> Teddiursa */
+    257, 256, /* Donphan    -> Phanpy */
+    125, 264, /* Electabuzz -> Elekid */
+    126, 265, /* Magmar     -> Magby */
+    273, 271, /* Tyranitar  -> Larvitar */
+    292, 290, /* Beautifly  -> Wurmple */
+    331, 329, /* Aggron     -> Aron */
+    355, 353, /* Flygon     -> Trapinch */
+    393, 391, /* Walrein    -> Spheal */
+    302, 301  /* Swellow    -> Taillow */
 };
 
 const char* parentsHead = "Save my child!";
@@ -465,57 +565,57 @@ const char* parentsBody2Of2[] = {
 
 /* Pairs */
 const int pairs[] = {
-    103,  85,
-     22, 112,
-     90, 394,
-     89, 342,
-     52, 325,
-    129, 374,
-     13, 290,
-    293, 291,
-    301,  16,
-     37, 347,
-    174, 173,
-     49, 294,
-    313,  57,
-    286,  58,
-     69, 238,
-     86, 392,
-     97, 122,
-     98, 366,
-    143, 314,
-    127, 239,
-    240, 360,
-    323, 175,
-    132, 185,
-    241, 352,
-     79, 312,
-    164, 198,
-    340, 182,
-    250, 304,
-    397,  38,
-    197, 386,
-    200, 381,
-    247, 398,
-    176, 267,
-     32,  29,
-     33,  30,
-     34,  31,
-    128, 266,
-    338, 339,
-    337, 336,
-    360, 361,
-    106, 107,
-    362, 363,
-    138, 140,
-    370, 372,
-    172, 172
+    103,  85, /* Exeggutor  <-> Dodrio */
+     22, 112, /* Fearow     <-> Rhydon */
+     90, 394, /* Shellder   <-> Clamperl */
+     89, 342, /* Muk        <-> Swalot */
+     52, 325, /* Meowth     <-> Skitty */
+    129, 374, /* Magikarp   <-> Feebas */
+     13, 290, /* Weedle     <-> Wurmple */
+    293, 291, /* Cascoon    <-> Silcoon */
+    301,  16, /* Taillow    <-> Pidgey */
+     37, 347, /* Vulpix     <-> Numel */
+    174, 173, /* Igglybuff  <-> Cleffa */
+     49, 294, /* Venomoth   <-> Dustox */
+    313,  57, /* Vigoroth   <-> Primeape */
+    286,  58, /* Poochyena  <-> Growlithe */
+     69, 238, /* Bellsprout <-> Shuckle */
+     86, 392, /* Seel       <-> Sealeo */
+     97, 122, /* Hypno      <-> Mr. Mime */
+     98, 366, /* Krabby     <-> Corphish */
+    143, 314, /* Snorlax    <-> Slaking */
+    127, 239, /* Pinsir     <-> Heracross */
+    240, 360, /* Sneasel    <-> Zangoose */
+    323, 175, /* Azurill    <-> Togepi */
+    132, 185, /* Ditto      <-> Sudowoodo */
+    241, 352, /* Teddiursa  <-> Spinda */
+     79, 312, /* Slowpoke   <-> Slakoth */
+    164, 198, /* Noctowl    <-> Murkrow */
+    340, 182, /* Roselia    <-> Bellossom */
+    250, 304, /* Delibird   <-> Wingull */
+    397,  38, /* Relicanth  <-> Ninetales */
+    197, 386, /* Umbreon    <-> Chimecho */
+    200, 381, /* Misdreavus <-> Shuppet */
+    247, 398, /* Corsola    <-> Luvdisc */
+    176, 267, /* Togetic    <-> Blissey */
+     32,  29, /* NidoranM   <-> NidoranF */
+     33,  30, /* Nidorino   <-> Nidorina */
+     34,  31, /* Nidoking   <-> Nidoqueen */
+    128, 266, /* Tauros     <-> Miltank */
+    338, 339, /* Volbeat    <-> Illumise */
+    337, 336, /* Minum      <-> Plusle */
+    360, 361, /* Zangoose   <-> Seviper */
+    106, 107, /* Hitmonlee  <-> Hitmonchan */
+    362, 363, /* Lunatone   <-> Solrock */
+    138, 140, /* Omanyte    <-> Kabuto */
+    370, 372, /* Lileep     <-> Anorith */
+    172, 172  /* Pichu      <-> Pichu */
 };
 
-const char* friendsHead  = "Please save my friend!"; /* first 33 */
-const char* loversHead   = "Please save my love!";   /* next 7 */
-const char* rivalsHead   = "Rescue my rival!";   /* next 4 */
-const char* brothersHead = "Please help my brother!";    /* last one */
+const char* friendsHead  = "Please save my friend!";  /* first 33 */
+const char* loversHead   = "Please save my love!";    /* next 7 */
+const char* rivalsHead   = "Rescue my rival!";        /* next 4 */
+const char* brothersHead = "Please help my brother!"; /* last one */
 
 const char* pairsBody1Of2[] = {
     "This precious friend can chat separately",
@@ -616,12 +716,12 @@ const char* pairsBody2Of2[] = {
 
 /* Lovers flavor text - Escort missions */
 const int lovers[] = {
-     32,  29,
-     33,  30,
-     34,  31,
-    128, 266,
-    338, 339,
-    337, 336
+     32,  29, /* NidoranM <-> NidoranF */
+     33,  30, /* Nidorino <-> Nidorina */
+     34,  31, /* Nidoking <-> Nidoqueen */
+    128, 266, /* Tauros   <-> Miltank */
+    338, 339, /* Volbeat  <-> Illumise */
+    337, 336  /* Minum    <-> Plusle */
 };
 
 const char* loversEscortHead = "Escort me to my love!";
@@ -645,25 +745,28 @@ const char* loversBody2Of2[] = {
 };
 
 
+/* Special missions */
 /*
     The following flavors texts are programmed in the game, provided just to complete the database.
     However, only the game can generate the respective Wonder Mail,
-    and it also make invalid a Wonder Mail that contains the following special missions, rejecting that mail.
-
-    So you can uncomment the code bellow, but it is useless, and only increase the size of the binary executable.
+    and it also rejects any mail containing the following special missions.
 */
-/* Special missions */
-/*
-const char* MankeyTitle   = "Punish bad Mankey!";
-const char* SmeargleTitle = "Smeargle's desperate plea!";
-const char* MedichamTitle = "Medicham: Help me!";
+const char* mankeyTitle   = "Punish bad Mankey!";
+const char* smeargleTitle = "Smeargle's desperate plea!";
+const char* medichamTitle = "Medicham: Help me!";
 
-const char* Mankey   = "Please punish bad Mankey's gang.";
-const char* Smeargle = "I didn't want to become a grown-up, so I \nfled, but now I've lost my way! Help!";
-const char* Medicham = "This is Medicham. Rescue me, please! \nThe reward is a secret...";
-const char* Special1 = "With the item %s, I can \nevolve! I'm yearning to evolve! Help!";
-const char* Special2 = "The %s! What I love to eat \nand can't live without! Please get one!";
-*/
+const char* mankeyBody1Of2   = "Please punish bad Mankey's gang.";
+const char* mankeyBody2Of2   = "";
+const char* smeargleBody1Of2 = "I didn't want to become a grown-up, so I";
+const char* smeargleBody2Of2 = "fled, but now I've lost my way! Help!";
+const char* medichamBody1Of2 = "This is Medicham. Rescue me, please!";
+const char* medichamBody2Of2 = "The reward is a secret...";
+
+/* Semi-special missions */
+const char* evolutionBody1Of2 = "With the item %s, I can";
+const char* evolutionBody2Of2 = "evolve! I'm yearning to evolve! Help!";
+const char* foodBody1Of2 = "The %s! What I love to eat";
+const char* foodBody2Of2 = "and can't live without! Please get one!";
 
 
 /* Rescue communication (SOS) */
@@ -677,6 +780,7 @@ const char* SOS_Thanks1  = "This is a rescue through communication.";
 const char* SOS_Thanks2  = "Send your thanks to your friend!";
 
 /* Pokémon species */
+const unsigned int pkmnSpeciesCount = 415; /* The size of the array */
 const char* pkmnSpeciesStr[] = {
     "??????????", /* Decamark == Nothing */
     "Bulbasaur",
@@ -1015,7 +1119,7 @@ const char* pkmnSpeciesStr[] = {
     "Electrike",
     "Manectric",
     "Plusle",
-    "Minun",
+    "Minum",
     "Volbeat",
     "Illumise",
     "Roselia", /* 340 */
@@ -1097,6 +1201,7 @@ const char* pkmnSpeciesStr[] = {
 
 
 /* Items */
+const unsigned int itemsCount = 240; /* The size of the array */
 const char* itemsStr[] = {
     "Nothing", /* 0 */
     "Stick",
@@ -1342,6 +1447,7 @@ const char* itemsStr[] = {
 
 /* Dungeons */
 /* Note: Some of this dungeons are useless in mails because you can't accept such mail, but are still provided as database, there are others unknown dungeons (also invalid values) */
+const unsigned int dungeonsCount = 63; /* The size of the array */
 const char* dungeonsStr[] = {
     "Tiny Woods", /* 0 */
     "Thunderwave Cave",
@@ -1410,23 +1516,9 @@ const char* dungeonsStr[] = {
 
 
 /* Friend areas */
-/*
-    For efficence, I just want to include into the binary the info that really will be used.
-    Bellow are the friend areas that can be obtained using wonder mails. Others friend areas
-    rewards will be rejected by the game.
-    Next to it, is commented the full database of friend areas, most of them useless as rewards (except
-    the four listed bellow). Update the application code if you uncomment the full database.
-*/
+const unsigned int friendAreasCount = 58; /* The size of the array */
 const char* friendAreasStr[] = {
-    "Dragon Cave",
-    "Mt. Moonview",
-    "Sky Blue Plains",
-    "Boulder Cave"
-};
-
-/*
-const char* friendAreasStr[] = {
-    "[Nothing]",
+    "[Nothing]", /* 0 */
     "Bountiful Sea",
     "Treasure Sea",
     "Serene Sea",
@@ -1435,18 +1527,18 @@ const char* friendAreasStr[] = {
     "Seafloor Cave",
     "Shallow Beach",
     "Mt. Deepgreen",
-    "Dragon Cave",
-    "Mt. Moonview",
+    "Dragon Cave", /* 9 - Obtainable in missions */
+    "Mt. Moonview", /* 10 - Obtainable in missions */
     "Mt. Cleft",
     "Rainbow Peak",
     "Wild Plains",
     "Beau Plains",
-    "Sky Blue Plains",
+    "Sky Blue Plains", /* 15 - Obtainable in missions */
     "Safari",
     "Scorched Plains",
     "Sacred Field",
     "Mist-Rise Forest",
-    "Flyaway Forest",
+    "Flyaway Forest", /* 20 */
     "Overgrown Forest",
     "Energetic Forest",
     "Mushroom Forest",
@@ -1456,17 +1548,17 @@ const char* friendAreasStr[] = {
     "Rub-a-Dub River",
     "Tadpole Pond",
     "Turtleshell Pond",
-    "Mystic Lake",
+    "Mystic Lake", /* 30 */
     "Waterfall Lake",
     "Peanut Swamp",
     "Poison Swamp",
     "Echo Cave",
     "Cryptic Cave",
     "Jungle",
-    "Boulder Cave",
+    "Boulder Cave", /* 37 - Obtainable in missions */
     "Decrepit Lab",
     "Mt. Discipline",
-    "Thunder Meadow",
+    "Thunder Meadow", /* 40 */
     "Power Plant",
     "Crater",
     "Furnace Desert",
@@ -1476,7 +1568,7 @@ const char* friendAreasStr[] = {
     "Darkness Ridge",
     "Frigid Cavern",
     "Ice Floe Beach",
-    "Volcanic Pit",
+    "Volcanic Pit", /* 50 */
     "Stratos Lookout",
     "Ravaged Field",
     "Magnetic Quarry",
@@ -1485,4 +1577,7 @@ const char* friendAreasStr[] = {
     "Enclosed Island",
     "Final Island"
 };
-*/
+
+/* Helper texts */
+const char* friendZoneText = "Friend Zone";
+const char* nearPlaceText  = "Near";

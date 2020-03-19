@@ -1,30 +1,55 @@
-CC_WFLAGS	:=	-W -Wall -Wextra
+# Compiler
+CC			:=	gcc
+# Compiler flags
+DEFINES		:=	$(if $(filter all-no-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
 CC_OFLAGS	:=	-O2 -funroll-loops
-CC_LFLAGS	:=	-Wl,-s -static
-CFLAGS		:=	$(CC_WFLAGS) $(CC_OFLAGS)
+CC_LFLAGS	:=
+CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES)
+AR_FLAGS	:=	rcs
 
-# DIRECTORIES
+# Tools
+RM			:=	rm
+RM_FLAGS	:=	-rf
+MKDIR		:=	mkdir
+MKDIR_FLAGS	:=	-p
+CP			:=	cp
+CP_FLAGS	:=	-f
+FIND		:=	find
+
+# Directories
 BUILDDIR	:=	build
 BINLIBDIR	:=	binlib
 
-SOURCES		:=	src/core/Decode/DecodeSOS/DecodeSOS.c \
+SOURCES		:=	src/core/Decode/DecodeSos/DecodeSos.c \
 				src/core/Decode/DecodeWonderMail/DecodeWonderMail.c \
 				src/core/Decode/UtilDecode/UtilDecode.c \
-				src/core/Encode/EncodeSOS/EncodeSOS.c \
+				src/core/Encode/EncodeSos/EncodeSos.c \
 				src/core/Encode/EncodeWonderMail/EncodeWonderMail.c \
 				src/core/Encode/UtilEncode/UtilEncode.c \
 				src/core/Convert/Convert.c \
 				src/core/UtilCore/UtilCore.c \
 				src/data/md1database/md1database.c
 
-OBJS_SLIB	:=	$(BUILDDIR)/DecodeSOS.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
-				$(BUILDDIR)/EncodeSOS.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
+OBJECTS		:=	$(BUILDDIR)/DecodeSos.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
+				$(BUILDDIR)/EncodeSos.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
 				$(BUILDDIR)/Convert.o \
 				$(BUILDDIR)/UtilCore.o \
 				$(BUILDDIR)/md1database.o
 
-LIB_HEADER_NAME		:=	pokem.h
-LIB_HEADER_FILEPATH	:=	src/lib/$(LIB_HEADER_NAME)
+TEST_SUITE	:=	test/CuTest.c test/allTests.c
+TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
+				src/core/Decode/UtilDecode/UtilDecode_test.c \
+				src/core/Encode/UtilEncode/UtilEncode_test.c \
+				src/core/Decode/DecodeWonderMail/DecodeWonderMail_test.c \
+				src/core/Decode/DecodeSos/DecodeSos_test.c \
+				src/core/Encode/EncodeWonderMail/EncodeWonderMail_test.c \
+				src/core/Encode/EncodeSos/EncodeSos_test.c \
+				src/core/Convert/Convert_test.c
+TEST_RESULT	:=	$(BUILDDIR)/tests
+
+# Library header
+LIB_HEADER_NAME	:=	pokem.h
 
 # Examples
 EXAMPLES_DIR	:=	examples
@@ -36,82 +61,77 @@ STATIC_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(STATIC_LIB_NAME)
 
 LIB_HEADER_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(LIB_HEADER_NAME)
 
-AR_FLAGS	:=	rcs
-
-# Platform-specific switches
-ifeq ($(OS),Windows_NT)
-	SHELL		:=	cmd
-	RM			:=	del
-	CP			:=	cp
-	CC			:=	gcc
-	RMDIR		:=	rd
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=
-else
-	RMDIR		:=	$(RM)
-	CP			:=	cp
-	CP_FLAGS	:=	-f
-	RM_FLAGS	:=
-	RMDIR_FLAGS	:=	-frd
-	MKDIR		:=	mkdir
-	MKDIR_FLAGS	:=	-p
-endif
-
-# MESSAGES
+# Messages
 MSG			:=	printf
-# COLORS
-NOCOLOR		:=	\033[0m
-BLACK		:=	\033[0;30m
-DARKGRAY	:=	\033[1;30m
-RED			:=	\033[0;31m
-LIGHTRED	:=	\033[1;31m
-GREEN		:=	\033[0;32m
-LIGHTGREEN	:=	\033[1;32m
-ORANGE		:=	\033[0;33m
-YELLOW		:=	\033[1;33m
-BLUE		:=	\033[0;34m
-LIGHTBLUE	:=	\033[1;34m
-PURPLE		:=	\033[0;35m
-LIGHTPURPLE	:=	\033[1;35m
-CYAN		:=	\033[0;36m
-LIGHTCYAN	:=	\033[1;36m
-LIGHTGRAY	:=	\033[0;37m
-WHITE		:=	\033[1;37m
+# Colors
+NOCOLOR		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0m)
+BLACK		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;30m)
+DARKGRAY	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;30m)
+RED			:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;31m)
+LIGHTRED	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;31m)
+GREEN		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;32m)
+LIGHTGREEN	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;32m)
+ORANGE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;33m)
+YELLOW		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;33m)
+BLUE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;34m)
+LIGHTBLUE	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;34m)
+PURPLE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;35m)
+LIGHTPURPLE	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;35m)
+CYAN		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;36m)
+LIGHTCYAN	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;36m)
+LIGHTGRAY	:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[0;37m)
+WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
+
+# ----------------------------------------------------------------------------------------------------
 
 .DEFAULT_GOAL := all
-.PHONY: all staticlib examples clean help
+.PHONY: all all-without-colors staticlib examples tests clean help
 
-all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem project (default)
+all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests (default)
+all-no-colors: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests, without color support
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
 examples: $(EXAMPLES) ## Build examples
 
+tests: $(TEST_RESULT) ## Build and run tests
+
 clean: ## Remove all leftovers from the previous build
+	@$(MSG) "$(YELLOW)Cleaning Pokem...$(NOCOLOR)\n\n"
 	@$(MSG) "$(ORANGE)Removing intermediate objects files...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(RC_OBJ) $(OBJS_SLIB) $(OBJS)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(RC_OBJ) $(OBJECTS) $(OBJS)
 	@$(MSG) "$(ORANGE)Removing binaries...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(ORANGE)Removing headers...$(NOCOLOR)\n"
-	$(RM) $(RM_FLAGS) $(STATIC_H)
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(STATIC_H)
+	@$(MSG) "$(ORANGE)Removing tests...$(NOCOLOR)\n"
+	$(RM) $(RM_FLAGS) $(RM_FLAGS) $(TEST_RESULT)
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
-	$(RMDIR) $(RMDIR_FLAGS) $(BUILDDIR)
-	$(RMDIR) $(RMDIR_FLAGS) $(BINLIBDIR)
-	@$(MSG) "\n$(ORANGE)Cleaning examples...$(NOCOLOR)\n"
+	$(RM) $(RM_FLAGS) $(BUILDDIR)
+	$(RM) $(RM_FLAGS) $(BINLIBDIR)
+	@$(MSG) "\n$(YELLOW)Cleaning examples...$(NOCOLOR)\n"
 	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
 	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
-	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)Pokem$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
+	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)PokeM$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {$(MSG) "$(WHITE)%-20s$(NOCOLOR) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(WHITE)%-16s$(NOCOLOR) %s\n", $$1, $$2}'
 
-$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJS_SLIB)
-	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
-	$(AR) $(AR_FLAGS) $@ $(OBJS_SLIB)
+# Static library header
+$(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
-	$(CP) $(CP_FLAGS) $(LIB_HEADER_FILEPATH) $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "#ifndef POKEM_H\n" > $@
+	@$(MSG) "#define POKEM_H\n" >> $@
+	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $@
+	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $@
+	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(MSG) "\n#endif /* POKEM_H */" >> $@
+
+# Static library
+$(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS) $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
+	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
 
 $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
@@ -119,11 +139,17 @@ $(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
 	@$(MSG) "$(YELLOW)Updating static library...$(NOCOLOR)\n"
 	$(CP) $(CP_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH) $@/lib/$(STATIC_LIB_NAME)
 	$(CP) $(CP_FLAGS) $(LIB_HEADER_DEPLOY_FILEPATH) $@/lib/$(LIB_HEADER_NAME)
-	@$(MAKE) --directory $@
+	@$(MAKE) --directory $@ $(if $(filter -DNO_USE_COLORS, $(DEFINES)), build-cli-without-colors,)
 
-$(OBJS_SLIB):
-	@$(MSG) "$(GREEN)Compiling $(LIGHTBLUE)$<$(GREEN)...$(NOCOLOR)\n"
-	@$(CC) -c $(CFLAGS) $< -o $@
+$(TEST_RESULT): $(BUILDDIR) $(TEST_FILES)
+	@$(MSG) "$(LIGHTGREEN)Building tests...$(NOCOLOR)\n"
+	$(CC) -o $@ $(TEST_SUITE) $(TEST_FILES) $(SOURCES)
+	@$(MSG) "$(LIGHTGREEN)Running tests...$(NOCOLOR)\n"
+	@$@
+
+$(OBJECTS):
+	@$(MSG) "$(GREEN)Compiling $(BLUE)$<$(GREEN)...$(NOCOLOR)\n"
+	$(CC) -c $(CFLAGS) $< -o $@
 
 $(BUILDDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
@@ -133,11 +159,11 @@ $(BINLIBDIR):
 	@$(MSG) "$(YELLOW)Creating $@ directory...$(NOCOLOR)\n"
 	$(MKDIR) $(MKDIR_FLAGS) $(BINLIBDIR)
 
-# INTERMEDIATE OBJECTS BUILD RULES
-$(BUILDDIR)/DecodeSOS.o:        src/core/Decode/DecodeSOS/DecodeSOS.c
+# Intermediate objects build rules
+$(BUILDDIR)/DecodeSos.o:        src/core/Decode/DecodeSos/DecodeSos.c
 $(BUILDDIR)/DecodeWonderMail.o: src/core/Decode/DecodeWonderMail/DecodeWonderMail.c
 $(BUILDDIR)/UtilDecode.o:       src/core/Decode/UtilDecode/UtilDecode.c
-$(BUILDDIR)/EncodeSOS.o:        src/core/Encode/EncodeSOS/EncodeSOS.c
+$(BUILDDIR)/EncodeSos.o:        src/core/Encode/EncodeSos/EncodeSos.c
 $(BUILDDIR)/EncodeWonderMail.o: src/core/Encode/EncodeWonderMail/EncodeWonderMail.c
 $(BUILDDIR)/UtilEncode.o:       src/core/Encode/UtilEncode/UtilEncode.c
 $(BUILDDIR)/Convert.o:          src/core/Convert/Convert.c

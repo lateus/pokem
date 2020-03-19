@@ -5,13 +5,23 @@
 
 #include <stdio.h>
 #include <string.h>
+#define LOG_WM_FILENAME  "logWonderMail.txt"
+#define LOG_SOS_FILENAME "logSosMail.txt"
+
+enum GameType { RedRescueTeam, BlueRescueTeam };
 
 int decodeWM(int argc, const char *argv[]);
 int encodeWM(int argc, const char *argv[]);
-void parseWMData(const char *argv[], struct WONDERMAIL *wm);
+int parseWMData(const char *argv[], struct WonderMail *wm);
 int decodeSOSM(int argc, const char *argv[]);
-void parseSOSData(const char *argv[], struct SOSMAIL *sos);
+int parseSOSData(const char *argv[], struct SosMail *sos);
 int encodeSOSM(int argc, const char *argv[]);
 int convertSOS(int argc, const char *argv[]);
+
+int generateMassiveItemMissions(int dungeon, int item, int amount);
+int generateMassiveHighRankMissions(int dungeon, int item, int amount);
+
+int unlockExclusivePokemon(enum GameType gameType);
+int unlockDungeons();
 
 #endif /* APPLICATION_H */

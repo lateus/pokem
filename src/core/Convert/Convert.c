@@ -1,98 +1,135 @@
 #include "Convert.h"
-#include "../Decode/DecodeSOS/DecodeSOS.h"
-#include "../Encode/EncodeSOS/EncodeSOS.h"
+#include "../Decode/DecodeSos/DecodeSos.h"
+#include "../Encode/EncodeSos/EncodeSos.h"
 #include "../Decode/UtilDecode/UtilDecode.h"
 #include "../Encode/UtilEncode/UtilEncode.h"
 #include "../UtilCore/UtilCore.h"
 #include "../../data/md1global/md1global.h"
+#include "../../data/md1database/md1database.h"
 
 #include <stdio.h>
 #include <string.h>
 
-int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+extern int printMessages;
+
+int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 {
-    char password54Integers[54] = {0};
-    if (SOSMailIsInvalidForConverting(SOSPassword, password54Integers)) {
-        return INPUT_ERROR;
+    struct SosMail mailTest = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
+    int errorCode = decodeSosMail(SOSPassword, &mailTest);
+    if (errorCode != NoError) {
+        if (printMessages) {
+            fprintf(stderr, "Invalid SOS Mail (%s): Error %d\n", SOSPassword, errorCode);
+            fflush(stderr);
+        }
+        return errorCode;
+    } else if (item < 0 || (unsigned)item >= itemsCount) {
+        if (printMessages) {
+            fputs("Error: The specified item is invalid.\n", stderr);
+            fflush(stderr);
+        }
+        return InputError;
     }
 
-    int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
-    if (mailType != 1) { /* 1 is SOS Mail */
-        fputs("ERROR: The mail entered not belongs to a SOS Mail.\n", stderr);
-        if (mailType == 4 || mailType == 5) {
-            fprintf(stderr, "        Apparently it belongs to a %s.\n", mailType == 4 ? "A-OK Mail" : "Thank-You Mail");
+    char allocatedPassword[54] = {0}; /* always initialize */
+    const unsigned char newPositionsToDecode[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
+    reallocateBytes(SOSPassword, newPositionsToDecode, 54, allocatedPassword);
+
+    char password54Integers[54] = {0};
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 54, password54Integers);
+    if (errorCode != NoError) { /* this cannot happen because we already decoded the mail */
+        if (printMessages) {
+            fputs("Invalid character found.\n", stderr);
+            fflush(stderr);
         }
-        fputs("THE PASSWORD CAN'T BE DECODED.\n\n", stderr);
-        return INPUT_ERROR;
+        return errorCode;
     }
+
+    char packed34Bytes[34] = {0}; /* The packed password */
+    int i;
+    char passwordUnallocated[54] = {0};
+    const unsigned char newPositionsToEncode[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
+
+    int mailType = getMailType(SOSPassword);
 
     /* FIRST: A-OK MAIL */
-    convertSOSToAOKMail(password54Integers);
+    if (mailType == SosMailType) {
+        convertSosToAOkMail(password54Integers);
 
-    /* Bit packing */
-    char packed34Bytes[34] = {0}; /* The packed password */
-    bitPackingDecoding(packed34Bytes, password54Integers, sizeof(password54Integers)); /* Pack the password */
+        /* Bit packing */
+        bitPackingDecoding(packed34Bytes, password54Integers, 54); /* Pack the password */
 
-    packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
+        packed34Bytes[0] = (char)computeChecksum(packed34Bytes + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
 
-    /* back again */
-    int i;
-    for (i = 0; i < 54; ++i) {
-        password54Integers[i] = 0;
+        /* back again */
+        for (i = 0; i < 54; ++i) {
+            password54Integers[i] = 0;
+        }
+        bitUnpackingEncoding(packed34Bytes, password54Integers, 34);
+
+        reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, passwordUnallocated); /* a tricky one, but we want this: passwordUnallocated[i] = lookupTable[(int)password54Integers[i]]; */
+        reallocateBytes(passwordUnallocated, newPositionsToEncode, 54, resultAOKMail);
+
+        /* Update the mail type */
+        mailType = getMailType(resultAOKMail);
+        if (mailType != AOkMailType) { /* Conversion error */
+            if (printMessages) {
+                fputs("Error: The converted mail is not an A-OK Mail.\n", stderr);
+                fflush(stderr);
+            }
+            return InputError;
+        }
     }
-    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
-    char passwordAllocated[54] = {0};
-    lookupTableEncodingSOS(passwordAllocated, password54Integers);
-    realocateBytesEncodingSOS(resultAOKMail, passwordAllocated);
 
     /* SECOND: THANK-YOU MAIL */
-    if (item <= 0 || item > 239) {
-        fputs("The specified item is invalid. Default to nothing.\n", stderr);
-        item = 0;
-    }
-    convertAOKToThankYouMail(password54Integers, item);
+    if (mailType == AOkMailType) {
+        convertAOkToThankYouMail(password54Integers, item);
 
-    /* Bit packing */
-    /* reseting variables */
-    for (i = 0; i < 34; ++i) {
-        packed34Bytes[i] = 0;
-    }
-    bitPackingDecoding(packed34Bytes, password54Integers, sizeof(password54Integers)); /* Pack the password */
-    packed34Bytes[0] = (char)computeChecksum(packed34Bytes, sizeof(packed34Bytes));
+        /* Bit packing */
+        /* reseting variables */
+        for (i = 0; i < 34; ++i) {
+            packed34Bytes[i] = 0;
+        }
+        bitPackingDecoding(packed34Bytes, password54Integers, sizeof(password54Integers)); /* Pack the password */
+        packed34Bytes[0] = (char)computeChecksum(packed34Bytes + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
 
-    /* back again */
-    for (i = 0; i < 54; ++i) {
-        password54Integers[i] = 0;
-        passwordAllocated[i] = 0;
-    }
-    bitUnpackingEncoding(password54Integers, packed34Bytes, sizeof(packed34Bytes));
-    lookupTableEncodingSOS(passwordAllocated, password54Integers);
-    realocateBytesEncodingSOS(resultThankYouMail, passwordAllocated);
+        /* back again */
+        for (i = 0; i < 54; ++i) {
+            password54Integers[i] = 0;
+            passwordUnallocated[i] = 0;
+        }
+        bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
 
-    return 0;
+        reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, passwordUnallocated); /* a tricky one, but we want this: passwordUnallocated[i] = lookupTable[(int)password54Integers[i]]; */
+        reallocateBytes(passwordUnallocated, newPositionsToEncode, 54, resultThankYouMail);
+    } else if (mailType == ThankYouMailType) {
+        /* just replace the item */
+        password54Integers[37] |= (item & 0x07) << 2;
+        password54Integers[38]  = (item >> 3) & 0x1F;
+
+        /* Bit packing */
+        /* reseting variables */
+        for (i = 0; i < 34; ++i) {
+            packed34Bytes[i] = 0;
+        }
+        bitPackingDecoding(packed34Bytes, password54Integers, sizeof(password54Integers)); /* Pack the password */
+        packed34Bytes[0] = (char)computeChecksum(packed34Bytes + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
+
+        /* back again */
+        for (i = 0; i < 54; ++i) {
+            password54Integers[i] = 0;
+            passwordUnallocated[i] = 0;
+        }
+        bitUnpackingEncoding(packed34Bytes, password54Integers, sizeof(packed34Bytes));
+
+        reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, passwordUnallocated); /* a tricky one, but we want this: passwordUnallocated[i] = lookupTable[(int)password54Integers[i]]; */
+        reallocateBytes(passwordUnallocated, newPositionsToEncode, 54, resultThankYouMail);
+    }
+
+    return NoError;
 }
 
-int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
-{
-    size_t pswLenght = strlen(SOSPassword);
-    if (pswLenght != 54) {
-        fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
-                        "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        return INPUT_ERROR;
-    }
-
-    char pswAllocated[54] = {0}; /* Please, initialize all data */
-    reallocateBytesDecodingSOS(SOSPassword, pswAllocated);
-
-    /* The password that will be converted to integers representation using the lookup table bellow */
-    if (lookupTableDecodingSOS(pswAllocated, password54Integers) == INPUT_ERROR) {
-        return INPUT_ERROR;
-    }
-
-    return 0;
-}
-
-void convertSOSToAOKMail(char *password54Integers)
+void convertSosToAOkMail(char *password54Integers)
 {
     /*
      * One possible way to do this is decoding the mail, then change the mail type,
@@ -100,7 +137,7 @@ void convertSOSToAOKMail(char *password54Integers)
      * again. But that is very inefficient, however, that's the idea. I'll directly
      * change the bytes of the password by tracking the location of the bits I must
      * change:
-     * UPDATE: It's very hard to track bits before the password has been relocated and
+     * UPDATE: It's very hard to track bits before the password has been reallocated and
      *         converted back to integers and I do not have enough time to check it out,
      *         so I'll track the bits after that. If someone help me track the bits, I
      *         will be sincerely grateful.
@@ -158,7 +195,7 @@ void convertSOSToAOKMail(char *password54Integers)
     password54Integers[52]  = (char)(0 | (rescueChances >> 1));
 }
 
-void convertAOKToThankYouMail(char *password54Integers, int item)
+void convertAOkToThankYouMail(char *password54Integers, int item)
 {
     /*
      * Similar to the procedure to convert a SOS into an A-OK Mail.

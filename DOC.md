@@ -1,4 +1,4 @@
-<p align="center"><img src=res/images/png/pokem_128.png></p>  
+<p align="center"><img src=resources/logo/pokem.png></p>  
 
 # PokéM - Pokémon Mystery Dungeon Mail Generator  
 
@@ -65,6 +65,7 @@ Returns the difficulty level of the mission with type `missionType` that takes p
 int computeMoneyReward(int difficulty, int rewardType)
 ```  
 Returns the amount of money you will receive after success in a mission with reward type `rewardType`. The `difficulty` parameter is the same returned by the function `computeDifficulty`.  
+
 ----------  
 
 
@@ -77,16 +78,16 @@ These functions are used to decode Wonder Mails.
 ----------  
 
 ```c
-int decodeWonderMail(const char *password, struct WM_INFO *wonderMailInfoResult)
+int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult)
 ```  
-Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
+Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
 
 ----------  
 
 ```c
-int WonderMailIsInvalid(const char *password, char *packed15BytesPassword)
+int wonderMailIsInvalid(const char *password, char *packed15BytesPassword)
 ```  
-Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
+Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
 
 ----------  
 
@@ -97,16 +98,16 @@ These functions are used to decode SOS Mails.
 ----------  
 
 ```c
-int decodeSOSMail(const char *sosPassword, struct SOS_INFO *sosMailInfoResult)
+int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
 ```  
-Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
+Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
 
 ----------  
 
 ```c
-int SOSMailIsInvalid(const char *password, char *packed34BytesPassword)
+int sosMailIsInvalid(const char *password, char *packed34BytesPassword)
 ```  
-Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ERROR_TYPE` enum type).  
+Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
 
 ----------  
 
@@ -120,14 +121,14 @@ These functions are used to encode Wonder Mails.
 ----------  
 
 ```c
-int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword)
+int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
 ```  
-Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a encoded Wonder Mail password, it's the best approach.  
+Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded Wonder Mail password, it's the best approach.  
 
 ----------  
 
 ```c
-int foundErrorsEntriesWM(const struct WONDERMAIL *wm)
+int entryErrorsWonderMail(const struct WonderMail *wm)
 ```  
 This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
 
@@ -140,16 +141,16 @@ These functions are used to decode SOS Mails.
 ----------  
 
 ```c
-int encodeSOSMail(struct SOSMAIL *sos, char *finalPassword)
+int encodeSosMail(struct SosMail *sos, char *finalPassword)
 ```  
-Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
+Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
 
 ----------  
 
 ```c
-int foundErrorsEntriesSOS(const struct SOSMAIL *sos)
+int entryErrorsSosMail(const struct SosMail *sos)
 ```  
-This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSOSMail`, but you may want to call it to report entry errors at real-time.  
+This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSosMail`, but you may want to call it to report entry errors at real-time.  
 
 ----------  
 
@@ -159,9 +160,9 @@ This function scans the SOS Mail `sos` and return the number of errors found whi
 ----------  
 
 ```c
-int convertSOSMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 ```  
-This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ERROR_TYPE` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
+This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
 
 ----------  
 
@@ -526,23 +527,23 @@ In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPa
 ----------  
 
 ```c
-void reallocateBytesDecodingWM(char *allocatePassword, const char *unallocatedPassword)
+void reallocateBytesDecodingWonderMail(const char *unallocatedPassword, char *allocatedPassword)
 ```  
 **Internal function, should not be used**  
-Returns in `allocatePassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
+Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-int lookupTableDecodingWM(char *passwordIntegers, const char *allocatedPassword)
+int lookupTableDecodingWonderMail(const char *allocatedPassword, char *passwordIntegers)
 ```  
 **Internal function, should not be used**  
-Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingWM` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
+Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingWonderMail` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void bitUnpackingDecodingWM(const char *packed14BytesPassword, struct WONDERMAIL* mail)
+void bitUnpackingDecodingWonderMail(const char *packed14BytesPassword, struct WonderMail* mail)
 ```  
 **Internal function, should not be used**  
 This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
@@ -550,31 +551,31 @@ This function takes the packed 14 bytes stored in `packed14BytesPassword`, decod
 ----------  
 
 ```c
-int* flavorText(const struct WONDERMAIL *wm, int pairsIndex, int loversIndex, int parentsIndex)
+int* flavorText(const struct WonderMail *wm, int pairsIndex, int loversIndex, int parentsIndex)
 ```  
 **Internal function, should not be used**  
-This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWM`, and also the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively. Only one of the last 3 arguments are relevant. The function returns a two-byte. The first one contains an integer code relative to the HEAD of the flavor text, and the second contains an integer code relative to the BODY of the flavor text. Then you can call `flavorTextHead` and `flavorTextBody` to get the flavor text. This is an internal function and should not be used.  
+This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWonderMail`, and also the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively. Only one of the last 3 arguments are relevant. The function returns a two-byte. The first one contains an integer code relative to the HEAD of the flavor text, and the second contains an integer code relative to the BODY of the flavor text. Then you can call `flavorTextHead` and `flavorTextBody` to get the flavor text. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void flavorTextHead(const struct WONDERMAIL *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo)
+void flavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo)
 ```  
 **Internal function, should not be used**  
-This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWM`, the HEAD code returned by `flavorText` and stored in `headIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WM_INFO` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the head of the flavor text. This is an internal function and should not be used.  
+This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWonderMail`, the HEAD code returned by `flavorText` and stored in `headIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WonderMailInfo` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the head of the flavor text. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void flavorTextBody(const struct WONDERMAIL *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WM_INFO *mailInfo)
+void flavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo)
 ```  
 **Internal function, should not be used**  
-This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWM`, the BODY code returned by `flavorText` and stored in `bodyIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WM_INFO` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the body of the flavor text. This is an internal function and should not be used.  
+This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWonderMail`, the BODY code returned by `flavorText` and stored in `bodyIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WonderMailInfo` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the body of the flavor text. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void setWMInfo(struct WM_INFO *mailInfo, const struct WONDERMAIL *mail)
+void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo)
 ```  
 **Internal function, should not be used** 
 This function extract the information contained in `mail` and write it to `mailInfo` in a mail-style layout. The flavor text is not filled here, you must call `flavorText` and related functions to do so. This is an internal function and should not be used.  
@@ -587,7 +588,7 @@ This function extract the information contained in `mail` and write it to `mailI
 ----------
 
 ```c
-void reallocateBytesDecodingSOS(const char *unallocatedPassword, char *allocatedPassword)
+void reallocateBytesDecodingSos(const char *unallocatedPassword, char *allocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
@@ -595,15 +596,15 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-int lookupTableDecodingSOS(const char *allocatedPassword, char *passwordIntegers)
+int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers)
 ```  
 **Internal function, should not be used**  
-Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingSOS` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
+Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingSos` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void bitUnpackingDecodingSOS(const char *packed14BytesPassword, struct SOSMAIL* mail)
+void bitUnpackingDecodingSos(const char *packed14BytesPassword, struct SosMail* mail)
 ```  
 **Internal function, should not be used**  
 This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
@@ -611,7 +612,7 @@ This function takes the packed 14 bytes stored in `packed14BytesPassword`, decod
 ----------  
 
 ```c
-void setSOSInfo(struct SOS_INFO *sosInfo, const struct SOSMAIL *mail)
+void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
 ```  
 **Internal function, should not be used** 
 This function extract the information contained in `mail` and write it to `sosInfo` in a mail-style layout. This is an internal function and should not be used.  
@@ -627,7 +628,7 @@ This function extract the information contained in `mail` and write it to `sosIn
 ----------  
 
 ```c
-void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* mail)
+void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14BytesPassword)
 ```  
 **Internal function, should not be used**  
 This function takes the content of the Wonder Mail `wm`, encodes it and writes the result to `packed14BytesPassword` in the form of packed 14 bytes. This is an internal function and should not be used.  
@@ -635,7 +636,7 @@ This function takes the content of the Wonder Mail `wm`, encodes it and writes t
 ----------  
 
 ```c
-void lookupTableEncodingWM(const char* password24Integers, char* password24Chars)
+void lookupTableEncodingWonderMail(const char* password24Integers, char* password24Chars)
 ```  
 **Internal function, should not be used**  
 This is the inverse process of decoding. This function takes `password24Integers` and writes the resulting ASCCI buffer in `password24Chars` using a lookup table. This is an internal function and should not be used.  
@@ -643,7 +644,7 @@ This is the inverse process of decoding. This function takes `password24Integers
 ----------  
 
 ```c
-void reallocateBytesEncodingWM(const char* unallocatedPassword, char* allocatedPassword)
+void reallocateBytesEncodingWonderMail(const char* unallocatedPassword, char* allocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
@@ -656,7 +657,7 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-void bitPackingEncodingSOS(char* packed33BytesPassword, const struct SOSMAIL* mail)
+void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPassword)
 ```  
 **Internal function, should not be used**  
 This function takes the content of the SOS Mail `sos`, encodes it and writes the result to `packed33BytesPassword` in the form of packed 33 bytes. This is an internal function and should not be used.  
@@ -664,7 +665,7 @@ This function takes the content of the SOS Mail `sos`, encodes it and writes the
 ----------  
 
 ```c
-void lookupTableEncodingSOS(char* password54Chars, const char* password54Integers)
+void lookupTableEncodingSos(const char* password54Integers, char* password54Chars)
 ```  
 **Internal function, should not be used**  
 This is the inverse process of decoding. This function takes `password54Integers` and writes the resulting ASCCI buffer in `password54Chars` using a lookup table. This is an internal function and should not be used.  
@@ -672,7 +673,7 @@ This is the inverse process of decoding. This function takes `password54Integers
 ----------  
 
 ```c
-void reallocateBytesEncodingSOS(char* allocatedPassword, const char* unallocatedPassword)
+void reallocateBytesEncodingSos(const char* unallocatedPassword, char* allocatedPassword)
 ```  
 **Internal function, should not be used**  
 Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
@@ -686,15 +687,15 @@ Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. T
 ----------  
 
 ```c
-int SOSMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
+int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
 ```  
 **Internal function, should not be used**  
-Tries to convert the SOS Mail. Returns the error code (check the `ERROR_TYPE` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  
+Tries to convert the SOS Mail. Returns the error code (check the `ErrorType` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  
 
 ----------  
 
 ```c
-void convertSOSToAOKMail(char *password54Integers)
+void convertSosToAOkMail(char *password54Integers)
 ```  
 **Internal function, should not be used**  
 Converts the SOS intermediate integers password into a A-OK one. The password `password54Integers` is modified directly, so the SOS password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  
@@ -702,7 +703,7 @@ Converts the SOS intermediate integers password into a A-OK one. The password `p
 ----------  
 
 ```c
-void convertAOKToThankYouMail(char *password54Integers, int item)
+void convertAOkToThankYouMail(char *password54Integers, int item)
 ```  
 **Internal function, should not be used**  
 Converts the A-OK intermediate integers password into a Thank-You one with the reward item `item`. The password `password54Integers` is modified directly, so the A-OK password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  

@@ -3,10 +3,8 @@
 
 #include "../../../data/md1global/md1global.h"
 
-int encodeWonderMail(struct WONDERMAIL *wm, char *finalPassword);
-int foundErrorsEntriesWM(const struct WONDERMAIL *wm);
-void bitPackingEncodingWM(char* packed14BytesPassword, const struct WONDERMAIL* mail);
-void lookupTableEncodingWM(const char* password24Integers, char* password24Chars);
-void reallocateBytesEncodingWM(const char* unallocatedPassword, char* allocatePassword);
+/* ENCODING WONDER MAIL FUNCTIONS */
+int encodeWonderMail(struct WonderMail *wm, char *finalPassword, int trySpecialWonderMail);
+void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14BytesPassword);
 
 #endif /* ENCODEWONDERMAIL_H */
