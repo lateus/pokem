@@ -1,0 +1,3 @@
+echo "Configuring..."
+echo "    (Nothing to configure)"
+echo "Done."
