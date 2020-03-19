@@ -51,10 +51,6 @@ TEST_RESULT	:=	$(BUILDDIR)/tests
 # Library header
 LIB_HEADER_NAME	:=	pokem.h
 
-# Examples
-EXAMPLES_DIR	:=	examples
-EXAMPLES		:=	$(EXAMPLES_DIR)/pokem-cli
-
 # Deployment
 STATIC_LIB_NAME				:=	libpokem.a
 STATIC_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(STATIC_LIB_NAME)
@@ -85,14 +81,12 @@ WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 # ----------------------------------------------------------------------------------------------------
 
 .DEFAULT_GOAL := all
-.PHONY: all all-without-colors staticlib examples test clean help
+.PHONY: all all-without-colors staticlib clean help
 
-all: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests (default)
-all-no-colors: $(EXAMPLES) $(STATIC_LIB_DEPLOY_FILEPATH) $(TEST_RESULT) ## Build Pokem library, examples and tests, without color support
+all: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library (default)
+all-no-colors: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library without color support
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
-
-examples: $(EXAMPLES) ## Build examples
 
 test: $(TEST_RESULT) ## Build and run tests
 
@@ -109,10 +103,6 @@ clean: ## Remove all leftovers from the previous build
 	@$(MSG) "$(ORANGE)Removing directories...$(NOCOLOR)\n"
 	$(RM) $(RM_FLAGS) $(BUILDDIR)
 	$(RM) $(RM_FLAGS) $(BINLIBDIR)
-	@$(MSG) "\n$(YELLOW)Cleaning examples...$(NOCOLOR)\n"
-	@$(MSG) "\n$(WHITE)pokem-cli$(NOCOLOR)\n"
-	@$(MAKE) --directory $(EXAMPLES_DIR)/pokem-cli clean
-	@$(MSG) "\n$(LIGHTGREEN)Project $(WHITE)PokeM$(LIGHTGREEN) cleaned.$(NOCOLOR)\n\n"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(WHITE)%-16s$(NOCOLOR) %s\n", $$1, $$2}'
@@ -133,13 +123,6 @@ $(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS) $(LIB_HEADER_
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
-
-$(EXAMPLES): $(STATIC_LIB_DEPLOY_FILEPATH)
-	@$(MSG) "$(LIGHTBLUE)Building $(WHITE)$@$(LIGHTBLUE)...$(NOCOLOR)\n"
-	@$(MSG) "$(YELLOW)Updating static library...$(NOCOLOR)\n"
-	$(CP) $(CP_FLAGS) $(STATIC_LIB_DEPLOY_FILEPATH) $@/lib/$(STATIC_LIB_NAME)
-	$(CP) $(CP_FLAGS) $(LIB_HEADER_DEPLOY_FILEPATH) $@/lib/$(LIB_HEADER_NAME)
-	@$(MAKE) --directory $@ $(if $(filter -DNO_USE_COLORS, $(DEFINES)), build-cli-without-colors,)
 
 $(TEST_RESULT): $(BUILDDIR) $(TEST_FILES)
 	@$(MSG) "$(LIGHTGREEN)Building tests...$(NOCOLOR)\n"
