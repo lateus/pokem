@@ -211,15 +211,15 @@ unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionT
 int getMailType(const char* password)
 {
     const size_t passwordLength = strlen(password);
-    if (/*passwordLength != 24 && */passwordLength != 54) {
-        return InvalidMailType;
-    }
     /* int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2; */
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     const char firstChar  = password[passwordLength == 24 ? 20 :  7];
     const char secondChar = password[passwordLength == 24 ?  9 : 25];
     const char* firstCharPtr = strchr(lookupTable, firstChar);
     const char* secondCharPtr = strchr(lookupTable, secondChar);
+    if (/*passwordLength != 24 && */passwordLength != 54) {
+        return InvalidMailType;
+    }
     return (!firstCharPtr || !secondCharPtr) ? InvalidMailType : (((firstCharPtr - lookupTable) >> 3) & 0x03) | ((secondCharPtr - lookupTable) & 0x03) << 2;
 }
 
@@ -275,6 +275,7 @@ int computeChecksum(const char* packedPassword, int bytes)
 int entryErrorsWonderMail(const struct WonderMail *wm)
 {
     int errorsFound = 0;
+    unsigned short i;
 
     /* mail type check */
     if (wm->mailType != WonderMailType) {
@@ -367,7 +368,6 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
                                     "      To accept a job about finding an item inside a dungeon, the item must exist on that dungeon.\n"
                                     "      The items that can be found in that dungeon are listed bellow:\n",
                             errorsFound, wm->itemDeliverFind, itemsStr[wm->itemDeliverFind], wm->dungeon, dungeonsStr[wm->dungeon]);
-                    unsigned short i;
                     for (i = 1; i < itemsInDungeons[wm->dungeon][0]; ++i) {
                         fprintf(stderr, "%u [%s]\n", itemsInDungeons[wm->dungeon][i], itemsStr[itemsInDungeons[wm->dungeon][i]]);
                     }
@@ -469,6 +469,8 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 int entryErrorsSosMail(const struct SosMail *sos)
 {
     int errorsFound = 0;
+    int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
+    int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
 
     /* mail type check */
     if (sos->mailType != SosMailType && sos->mailType != AOkMailType && sos->mailType != ThankYouMailType) {
@@ -548,8 +550,6 @@ int entryErrorsSosMail(const struct SosMail *sos)
 
 
     /* rescue chances left check */
-    int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
-    int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
     if (sos->mailType >= SosMailType && sos->mailType <= ThankYouMailType && (sos->chancesLeft < minChancesLeft || sos->chancesLeft > maxChancesLeft)) {
         ++errorsFound;
         if (printMessages) {

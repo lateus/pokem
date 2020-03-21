@@ -2,7 +2,7 @@
 CC			:=	gcc
 # Compiler flags
 DEFINES		:=	$(if $(filter all-no-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
-CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic -std=c89
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=
 CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES)

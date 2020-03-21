@@ -11,6 +11,16 @@ extern int printMessages;
 int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 {
     size_t pswLenght = strlen(password);
+    char allocatedPassword[54] = {0};
+    const unsigned char newPositions[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
+    char password54Integers[54] = {0};
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    int errorCode = NoError;
+    char packed34BytesPassword[34] = {0};
+    int checksum = 0;
+    char* packed33BytesPassword = NULL;
+    struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
+
     if (pswLenght != 54) {
         if (printMessages) {
             fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
@@ -19,25 +29,19 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
         return InputError;
     }
 
-    char allocatedPassword[54] = {0};
-
-    const unsigned char newPositions[] = { 13, 7, 25, 15, 4, 29, 42, 49, 8, 19, 45, 24, 14, 26, 27, 41, 1, 32, 33, 34, 17, 51, 38, 0, 53, 10, 43, 31, 18, 35, 44, 23, 39, 16, 28, 48, 11, 2, 36, 9, 50, 5, 40, 52, 46, 3, 30, 12, 37, 20, 47, 22, 6, 21 };
     reallocateBytes(password, newPositions, 54, allocatedPassword);
 
-    /* The password that will be converted to integers representation using the lookup table bellow */
-    char password54Integers[54] = {0};
-    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    int errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 54, password54Integers);
+    /* The password that will be converted to integers representation using the lookup table */
+    errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 54, password54Integers);
     if (errorCode != NoError) {
         return errorCode;
     }
 
-    char packed34BytesPassword[34] = {0};
     /* Bit packing */
     bitPackingDecoding(packed34BytesPassword, password54Integers, 54); /* Pack the password */
 
     /* Checksum */
-    int checksum = computeChecksum(packed34BytesPassword + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
+    checksum = computeChecksum(packed34BytesPassword + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
     if (checksum != (packed34BytesPassword[0] & 0xFF)) {
         if (printMessages) {
             fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
@@ -48,15 +52,13 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
     }
 
     /* The first byte in the 35 byte packed password was merely a checksum, so it's useless and I'll remove it */
-    char* packed33BytesPassword = packed34BytesPassword + 1; /* You must be firm in pointer's arithmetic to handle this */
+    packed33BytesPassword = packed34BytesPassword + 1; /* You must be firm in pointer's arithmetic to handle this */
 
     /* Bit unpacking */
-    struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
     bitUnpackingDecodingSosMail(packed33BytesPassword, &sosm);
-    int errors = entryErrorsSosMail(&sosm);
-    if (errors) {
+    if (entryErrorsSosMail(&sosm) > 0) {
         if (printMessages) {
-            fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
+            fprintf(stderr, " :: ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n");
             fflush(stderr);
         }
         return InputError; /* to use the NOT operator */
@@ -161,6 +163,7 @@ void bitUnpackingDecodingSosMail(const char *packed33BytesPassword, struct SosMa
 void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
 {
     int mailType = mail->mailType;
+    int diffValue = 0;
     strcpy(sosInfo->head, mailType == AOkMailType ? SOS_GoHelp1 : mailType == ThankYouMailType ? SOS_Thanks1 : SOS_AskHelp1);
     strcpy(sosInfo->body, mailType == AOkMailType ? SOS_GoHelp2 : mailType == ThankYouMailType ? SOS_Thanks2 : SOS_AskHelp2);
     strncpy(sosInfo->nickname, mail->pkmnNick, 10);  /* ensure not buffer overflow */
@@ -168,7 +171,7 @@ void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
     strcpy(sosInfo->objective, missionTypeObjectiveStr[FriendRescue]);
     strcpy(sosInfo->place, mail->dungeon >= dungeonsCount ? "[INVALID]" : dungeonsStr[mail->dungeon]);
     sprintf(sosInfo->floor, "%c%dF", mail->dungeon >= dungeonsCount ? '?' : dungeonUpOrDown[mail->dungeon], mail->floor);
-    int diffValue = computeDifficulty(mail->dungeon, mail->floor, FriendRescue);
+    diffValue = computeDifficulty(mail->dungeon, mail->floor, FriendRescue);
     sosInfo->difficulty = diffValue >= difficultiesCharsCount ? '?' : difficultiesChars[diffValue];
     strcpy(sosInfo->reward, mailType != ThankYouMailType ? "???" : (mail->itemReward >= itemsCount ? "[INVALID]" : itemsStr[mail->itemReward]));
     sprintf(sosInfo->id, "%d", mail->mailID);

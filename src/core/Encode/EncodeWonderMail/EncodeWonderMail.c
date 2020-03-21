@@ -11,10 +11,16 @@ extern int printMessages;
 
 int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialWonderMail)
 {
-    int errors = entryErrorsWonderMail(wm);
-    if (errors) {
+    char packed15BytesPassword[15] = {0}; /* the first byte is merely a checksum */
+    char *packed14BytesPassword = packed15BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
+    char password24Integers[24] = {0};
+    char password24Chars[24] = {0};
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    const unsigned char newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
+
+    if (entryErrorsWonderMail(wm)) {
         if (printMessages) {
-            fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE\a\n\n", errors);
+            fprintf(stderr, " :: ERRORS FOUND. ENCODING IS NOT POSSIBLE\a\n\n");
             fflush(stderr);
         }
         return InputError;
@@ -27,20 +33,10 @@ int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialW
     }
     wm->idk_always0xFF = 0xFF; /* as his name suggest */
 
-    char packed15BytesPassword[15] = {0}; /* the first byte is merely a checksum */
-    char *packed14BytesPassword = packed15BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
     bitPackingEncodingWonderMail(wm, packed14BytesPassword); /* bit packing while decoding are equivalent to bit unpacking while decoding */
-
     packed15BytesPassword[0] = (char)computeChecksum(packed14BytesPassword, 14);
-
-    char password24Integers[24] = {0};
     bitUnpackingEncoding(packed15BytesPassword, password24Integers, 15);
-
-    char password24Chars[24] = {0};
-    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     reallocateBytes(lookupTable, (unsigned char*)password24Integers, 24, password24Chars); /* a tricky one, but we want this: password24Chars[i] = lookupTable[(int)password24Integers[i]]; */
-    
-    const unsigned char newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
     reallocateBytes(password24Chars, newPositions, 24, finalPassword);
 
     return NoError;
