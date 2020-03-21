@@ -1,22 +1,26 @@
 #include "messages.h"
 #include "colors.h"
 
+int printMessages = 1;
+
 int printMessage(FILE *stream, enum MessageType messageType, const char* message, ...)
 {
     va_list argList;
-    const char* messageTypesStr = { "DEBUG", "INFO", "WARNING", "ERROR", "FATAL ERROR" };
+    int charactersReturned = 0;
+    const char* messageTypesStr[] = { "DEBUG", "INFO", "WARNING", "ERROR", "FATAL ERROR" };
 #ifndef NO_USE_COLORS
-    const char* messageColorsByTypes = { DGREEN, LGREEN, LYELLOW, LRED, LRED };
+    const char* messageColorsByTypes[] = { DGREEN, LGREEN, LYELLOW, LRED, LRED };
 #else
-    const char* messageColorsByTypes = { {0}, {0}, {0}, {0}, {0} };
+    const char* messageColorsByTypes[] = { {0}, {0}, {0}, {0}, {0} };
 #endif
 
-    if (!stream || messageType > FatalMsg) {
+    if (!printMessages || !stream || messageType > FatalMessage) {
         return 0;
     }
 
-    fprintf(stream, "%s%s:" RESET);
+    charactersReturned += fprintf(stream, "%s%s:" RESET, messageColorsByTypes[messageType], messageTypesStr[messageType]);
     va_start(argList, message);
-    vfprintf(stream, message, argList);
+    charactersReturned += vfprintf(stream, message, argList);
     va_end(argList);
+    return charactersReturned;
 }
