@@ -5,7 +5,7 @@
 #include <stdarg.h>
 
 /* Message type */
-enum MessageType { DebugMsg, InfoMsg, WarnMsg, ErrMsg, FatalMsg };
+enum MessageType { DebugMessage, InfoMessage, WarningMessage, ErrorMessage, FatalMessage };
 
 int printMessage(FILE *stream, enum MessageType messageType, const char* message, ...);
 
