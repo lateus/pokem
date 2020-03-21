@@ -14,12 +14,14 @@ enum ErrorType {
     MissionTypeError,                       /* the mission type is invalid */
     SpecialJobIndicatorError,               /* the special job indicator is invalid */
     PokemonOutOfRangeError,                 /* the pokemon is out of range */
+    PokemonNotAllowedError,                 /* the pokemon is invalid (for example, a legendary) */
     ClientPokemonOutOfRangeError,           /* the client pokemon is out of range, this has priority over `PokemonOutOfRangeError` */
-    ClientPokemonNotAllowedError,           /* the client pokemon is invalid (for example, a legendary pokemon) */
+    ClientPokemonNotAllowedError,           /* the client pokemon is invalid (for example, a legendary) */
     TargetPokemonOutOfRangeError,           /* the target pokemon is out of range, this has priority over `PokemonOutOfRangeError` */
-    TargetPokemonNotAllowedError,           /* the target pokemon is invalid (for example, a legendary pokemon) */
+    TargetPokemonNotAllowedError,           /* the target pokemon is invalid (for example, a legendary) */
     ItemOutOfRangeError,                    /* the item is out of range */
-    ItemToFindDeliverOutOfRangeError,       /* the item to find/deliver is out of range, this has priority over `ItemOutOfRangeError` */
+    NoItemError,                            /* the item is `0` (Nothing), which is not necessarily an error */
+    ItemCannotBeObtainedError,              /* the item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine */
     ItemNotExistsInDungeonError,            /* the item do not exists in the dungeon */
     RewardTypeError,                        /* the reward type is invalid */
     FriendAreaOutOfRangeError,              /* the friend area is out of range */
@@ -29,7 +31,7 @@ enum ErrorType {
     MissionCannotBeAcceptedInDungeonError,  /* the mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo) */
     FloorOutOfRangeError,                   /* the dungeon do not have the selected floor */
     FloorIsInvalidInDungeonError,           /* the floor exists, but a mission cannot be done there (for example, boss and warp floors) */
-    MailIDError,                            /* the mail ID is invalid */
+    MailIDOutOfRangeError,                  /* the mail ID is invalid */
     NicknameEmptyError,                     /* the nickname is empty */
     ChancesLeftError                        /* the amount of chances left is invalid */
 };
