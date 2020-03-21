@@ -1,6 +1,7 @@
 #include "UtilCore.h"
 #include "../../data/md1database/md1database.h"
 #include "../../data/md1global/md1global.h"
+#include "../../util/messages.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -213,26 +214,13 @@ int getMailType(const char* password)
     if (/*passwordLength != 24 && */passwordLength != 54) {
         return InvalidMailType;
     }
-    // int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2;
+    /* int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2; */
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     const char firstChar  = password[passwordLength == 24 ? 20 :  7];
     const char secondChar = password[passwordLength == 24 ?  9 : 25];
     const char* firstCharPtr = strchr(lookupTable, firstChar);
     const char* secondCharPtr = strchr(lookupTable, secondChar);
     return (!firstCharPtr || !secondCharPtr) ? InvalidMailType : (((firstCharPtr - lookupTable) >> 3) & 0x03) | ((secondCharPtr - lookupTable) & 0x03) << 2;
-}
-
-
-
-int findItemByDungeon(int item, int dungeon)
-{
-    int i;
-    for (i = 1; i <= itemsInDungeons[dungeon][0]; ++i) {
-        if (item == itemsInDungeons[dungeon][i]) {
-            return 1;
-        }
-    }
-    return NoError;
 }
 
 
@@ -371,7 +359,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 
         /* item to deliver/find check (existence) */
         if (wm->missionType == FindItem) {
-            if (!findItemByDungeon(wm->itemDeliverFind, wm->dungeon)) {
+            if (checkItemExistenceInDungeon(wm->itemDeliverFind, wm->dungeon) != NoError) {
                 ++errorsFound;
                 if (printMessages) {
                     fprintf(stderr, "ERROR No. %d in argument 4 (item to find/deliver).\n"
@@ -606,6 +594,91 @@ int mapPasswordByPositionInLookupTable(const char* password, const char* lookupT
             }
             return InputError;
         }
+    }
+
+    return NoError;
+}
+
+
+
+int checkPokemon(int pokemon, enum MailType mailType)
+{
+    /* pkmn check (limits) */
+    if (pokemon <= 0 || (unsigned int)pokemon >= pkmnSpeciesCount) {
+        return PokemonOutOfRangeError;
+    } else if (mailType == WonderMailType && 
+              ((pokemon >= 144 && pokemon <= 146) /* birds */ || (pokemon >= 150 && pokemon <= 151) /* mewtwo and mew */ ||
+               (pokemon >= 201 && pokemon <= 226) /* unown */ || (pokemon >= 268 && pokemon <= 270) /* dogs */ ||
+               (pokemon >= 274 && pokemon <= 276) /* lugia and ho-oh */ ||
+               (pokemon >= 405 && pokemon <= 414)) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
+        return PokemonNotAllowedError;
+    }
+
+    return NoError;
+}
+
+
+
+int checkDungeon(int dungeon, enum MailType mailType)
+{
+    if (dungeon < 0 || (unsigned int)dungeon >= dungeonsCount) {
+        return DungeonOutOfRangeError;
+    } else if (strcmp(dungeonsStr[dungeon], "[INVALID]") == 0) {
+        return DungeonIsInvalidError;
+    } else if (mailType == WonderMailType && (dungeon == 6 || dungeon == 10 || dungeon == 12 || dungeon == 14 || dungeon == 16 || dungeon == 18 || dungeon == 22 || dungeon == 47 || dungeon == 48 || dungeon == 52)) {
+        return MissionCannotBeAcceptedInDungeonError;
+    }
+
+    return NoError;
+}
+
+
+
+int checkFloor(int floor, int dungeon)
+{
+    if (floor <= 0 || floor > difficulties[dungeon][0]) {
+        return FloorOutOfRangeError;
+    } else if (floor == forbiddenFloorsInDungeons[dungeon][1] || floor == forbiddenFloorsInDungeons[dungeon][2]) {
+        return FloorIsInvalidInDungeonError;
+    }
+
+    return NoError;
+}
+
+
+
+int checkItem(int item)
+{
+    if (item == 0) {
+        return NoItemError;
+    } else if (item < 0 || (unsigned int)item >= itemsCount) {
+        return ItemOutOfRangeError;
+    } else if ((unsigned int)item >= (itemsCount - 4)) {
+        return ItemCannotBeObtainedError;
+    }
+
+    return NoError;
+}
+
+
+
+int checkItemExistenceInDungeon(int item, int dungeon)
+{
+    int i;
+    for (i = 1; i <= itemsInDungeons[dungeon][0]; ++i) {
+        if (item == itemsInDungeons[dungeon][i]) {
+            return NoError;
+        }
+    }
+    return ItemNotExistsInDungeonError;
+}
+
+
+
+int checkMailID(int mailID)
+{
+    if (mailID < 0 || mailID > 9999) {
+        return MailIDOutOfRangeError;
     }
 
     return NoError;
