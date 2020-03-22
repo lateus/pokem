@@ -291,41 +291,54 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     }
 
     /* pkmn client check (limits) */
-    if (wm->pkmnClient <= 0 || wm->pkmnClient >= pkmnSpeciesCount) {
+    switch (checkPokemon(wm->pkmnClient, WonderMailType))
+    {
+    case NoError:
+        break;
+    case PokemonOutOfRangeError:
         ++errorsFound;
         printMessage(stderr, ErrorMessage, "Pokemon must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, wm->pkmnClient);
-    }
-    /* pkmn client check (legendaries) */
-    else if ( (wm->pkmnClient >= 144 && wm->pkmnClient <= 146) /* birds */ || (wm->pkmnClient >= 150 && wm->pkmnClient <= 151) /* mewtwo and mew */ ||
-              (wm->pkmnClient >= 201 && wm->pkmnClient <= 226) /* unown */ || (wm->pkmnClient >= 268 && wm->pkmnClient <= 270) /* dogs */ ||
-              (wm->pkmnClient >= 274 && wm->pkmnClient <= 276) /* lugia and ho-oh */ ||
-              (wm->pkmnClient >= 405 && wm->pkmnClient <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
+        break;
+    case PokemonNotAllowedError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "Legendaries are not valid values. Current value: %u [%s]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
+        printMessage(stderr, ErrorMessage, "Legendaries are not allowed in Wonder Mails. Current value: %u [%s]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
+        break;
     }
 
     if (wm->missionType == Find || wm->missionType == Escort) {
-        /* pkmn target check (limits) */
-        if (wm->pkmnTarget == 0 || wm->pkmnTarget >= pkmnSpeciesCount) {
+        switch (checkPokemon(wm->pkmnTarget, WonderMailType))
+        {
+        case NoError:
+            break;
+        case PokemonOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Pokemon must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, wm->pkmnTarget);
-        }
-
-        /* pkmn target check (legendaries) */
-        if ( (wm->pkmnTarget >= 144 && wm->pkmnTarget <= 146) /* birds */ || (wm->pkmnTarget >= 150 && wm->pkmnTarget <= 151) /* mewtwo and mew */ ||
-             (wm->pkmnTarget >= 201 && wm->pkmnTarget <= 226) /* unown */ || (wm->pkmnTarget >= 268 && wm->pkmnTarget <= 270) /* dogs */ ||
-             (wm->pkmnTarget >= 274 && wm->pkmnTarget <= 276) /* lugia and ho-oh */ ||
-             (wm->pkmnTarget >= 405 && wm->pkmnTarget <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
+            printMessage(stderr, ErrorMessage, "Pokemon must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, wm->pkmnClient);
+            break;
+        case PokemonNotAllowedError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Legendaries are not valid values. Current value: %u [%s]\n\n", wm->pkmnTarget, pkmnSpeciesStr[wm->pkmnTarget]);
+            printMessage(stderr, ErrorMessage, "Legendaries are not allowed in Wonder Mails. Current value: %u [%s]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
+            break;
         }
     }
 
     /* item to deliver/find check (limits) */
     if (wm->missionType == FindItem || wm->missionType == DeliverItem) {
-        if (wm->itemDeliverFind < 1 || wm->itemDeliverFind > (itemsCount - 8)) { /* the last 7 are not valid */
+        switch (checkItem(wm->itemDeliverFind))
+        {
+        case NoError:
+            break;
+        case NoItemError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Invalid item index %d. Items to find or deliver must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", errorsFound, wm->itemDeliverFind, (itemsCount - 8), wm->itemDeliverFind);
+            printMessage(stderr, ErrorMessage, "Item 0 [Nothing] is not allowed as item to find or deliver.\n\n");
+            break;
+        case ItemCannotBeObtainedError:
+            ++errorsFound;
+            printMessage(stderr, ErrorMessage, "Item %d [%s] cannot be obtained as reward.\n\n", wm->itemDeliverFind, itemsStr[wm->itemDeliverFind]);
+            break;
+        case ItemOutOfRangeError:
+            ++errorsFound;
+            printMessage(stderr, ErrorMessage, "Items to find or deliver must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", itemsCount - 5, wm->itemDeliverFind);
+            break;
         }
 
         /* item to deliver/find check (existence) */
@@ -345,29 +358,45 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     }
 
     /* dungeon check */
-    if (wm->dungeon <= 0 || wm->dungeon >= dungeonsCount) {
-        ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon must be a number between 0 and %d. Current value: %u [INVALID]\n\n", dungeonsCount - 1, wm->dungeon);
-    } else if (strcmp(dungeonsStr[wm->dungeon], "[INVALID]") == 0) {
-        ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon with index %u isn't a valid dungeon.\n", wm->dungeon);
-    } else { /* Check the floor only if the dungeon is valid */
-        if (wm->floor <= 0 || wm->floor > difficulties[wm->dungeon][0]) { /* floor check (limit) */
+    switch (checkDungeon(wm->dungeon, WonderMailType))
+    {
+    case MissionCannotBeAcceptedInDungeonError:
+        /* since the mail can be generated, just ignore this error (don't increment the errors counter) */
+        printMessage(stderr, WarningMessage, "A mission in dungeon %u [%s] can be generated, but cannot be done.\n\n", wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID");
+        /* no break because we want to fall through the `case NoError:` */
+    case NoError:
+        /* floor check */
+        switch (checkFloor(wm->floor, wm->dungeon))
+        {
+        case NoError:
+            break;
+        case FloorOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "The dungeon %u [%s] has floors in the range 1-%d floors. Current value: %u\n\n",
-                            wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID", difficulties[wm->dungeon][0]);
-        } else if (wm->floor == forbiddenFloorsInDungeons[wm->dungeon][1] || wm->floor == forbiddenFloorsInDungeons[wm->dungeon][2]) {
+            printMessage(stderr, ErrorMessage, "The dungeon %u [%s] has floors in the range 1-%d floors. Current value: %u\n\n", wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID", difficulties[wm->dungeon][0], wm->floor);
+            break;
+        case FloorInvalidInDungeonError:
             ++errorsFound;
             printMessage(stderr, ErrorMessage, "A mission cannot be made in floor %d of dungeon %u [%s].\n\n",
                             wm->floor, wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID");
+            break;
         }
+        break;
+    case DungeonOutOfRangeError:
+        ++errorsFound;
+        printMessage(stderr, ErrorMessage, "The dungeon must be between 0 [%s] and %d [%s]. Current value: %u [INVALID]\n\n", dungeonsStr[0], dungeonsCount - 1, dungeonsStr[dungeonsCount - 1], wm->dungeon);
+        break;
+    case DungeonIsInvalidError:
+        ++errorsFound;
+        printMessage(stderr, ErrorMessage, "The dungeon with index %u [INVALID] is not a valid dungeon.\n\n", wm->dungeon);
+        break;
     }
 
     /* reward type check (range) */
     if (wm->rewardType > FriendArea) {
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The reward type must be a number between 0 and %d. Current value: %u [INVALID]\n\n", FriendArea, wm->rewardType);
+        printMessage(stderr, ErrorMessage, "The reward type must be  between 0 [Money + (?)] and %d [Friend Area]. Current value: %u [INVALID]\n\n", FriendArea, wm->rewardType);
     }
+
     /* reward type check (enable friend area reward) */
     if (wm->rewardType == FriendArea && computeDifficulty(wm->dungeon, wm->floor, wm->missionType) == 0) { /* 0 means 'E' difficulty */
         ++errorsFound;
@@ -375,15 +404,28 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     }
 
     /* reward item check */
-    if ( (wm->rewardType >= 1 && wm->rewardType <= 3) || (wm->rewardType >= 6 && wm->rewardType <= 8) ) {
-        if (wm->itemReward == 0 || wm->itemReward >= itemsCount) {
+    if ( (wm->rewardType >= MoneyItem && wm->rewardType <= ItemItem) || (wm->rewardType >= MoneyMoneyItem && wm->rewardType <= ItemItem2) ) {
+        switch (checkItem(wm->itemReward))
+        {
+        case NoError:
+            break;
+        case NoItemError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Reward item must be a number between 1 and %d. Current value: %u [INVALID]\n\n", itemsCount - 1, wm->itemReward);
+            printMessage(stderr, ErrorMessage, "Item 0 %s is not allowed as reward.\n\n", itemsStr[0]);
+            break;
+        case ItemCannotBeObtainedError:
+            ++errorsFound;
+            printMessage(stderr, ErrorMessage, "Items %d [%s] cannot be obtained as reward.\n\n", wm->itemReward, itemsStr[wm->itemReward]);
+            break;
+        case ItemOutOfRangeError:
+            ++errorsFound;
+            printMessage(stderr, ErrorMessage, "Reward items must be between 1 [%s] and %d [%s]. Current value: %u [INVALID]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], wm->itemDeliverFind);
+            break;
         }
     }
 
     /* friend area reward check */
-    if (wm->rewardType == 9) {
+    if (wm->rewardType == FriendArea) {
         if (wm->friendAreaReward != 9 && wm->friendAreaReward != 10 && wm->friendAreaReward != 15 && wm->friendAreaReward != 37) {
             ++errorsFound;
             printMessage(stderr, ErrorMessage, "Valid friend area values are:\n" \
@@ -411,9 +453,18 @@ int entryErrorsSosMail(const struct SosMail *sos)
     } 
 
     /* pkmn to rescue check (limits) */
-    if (sos->pkmnToRescue <= 0 || sos->pkmnToRescue >= pkmnSpeciesCount) {
+    switch (checkPokemon(sos->pkmnToRescue, SosMailType))
+    {
+    case NoError:
+        break;
+    case PokemonOutOfRangeError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "Pokemon must be numbers between 1 and %d. Current value: %u\n\n", pkmnSpeciesCount - 1, sos->pkmnToRescue);
+        printMessage(stderr, ErrorMessage, "Pokemon must be between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, sos->pkmnToRescue);
+        break;
+    case PokemonNotAllowedError: /* this cannot happen in SOS Mails */
+        ++errorsFound;
+        printMessage(stderr, ErrorMessage, "Legendaries are not allowed. Current value: %u [%s]\n\n", sos->pkmnToRescue, pkmnSpeciesStr[sos->pkmnToRescue]);
+        break;
     }
 
     /* nickname check */
@@ -423,24 +474,44 @@ int entryErrorsSosMail(const struct SosMail *sos)
     }
 
     /* dungeon check */
-    if (sos->dungeon >= dungeonsCount) {
-        ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon must be a number between 0 and %d. Current value: %u [INVALID]\n\n", dungeonsCount, sos->dungeon);
-    } else if (!strcmp(dungeonsStr[sos->dungeon], "[INVALID]")) {
-        ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon with index %u isn't a valid dungeon.\n\n", sos->dungeon);
-    } else {
-        if (sos->floor <= 0 || sos->floor > difficulties[sos->dungeon][0]) { /* floor check (limit) */
+    switch (checkDungeon(sos->dungeon, SosMailType))
+    {
+    case NoError:
+        /* floor check */
+        switch (checkFloor(sos->floor, sos->dungeon))
+        {
+        case NoError:
+            break;
+        case FloorOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "The dungeon %u [%s] has floors in the range 1-%d floors. Current value: %u\n\n",
-                                        sos->dungeon < dungeonsCount ? dungeonsStr[sos->dungeon] : "INVALID", sos->dungeon, difficulties[sos->dungeon][0]);
+            printMessage(stderr, ErrorMessage, "The dungeon %u [%s] has floors in the range 1-%d floors. Current value: %u\n\n", sos->dungeon, sos->dungeon < dungeonsCount ? dungeonsStr[sos->dungeon] : "INVALID", difficulties[sos->dungeon][0], sos->floor);
+            break;
+        case FloorInvalidInDungeonError:
+            /* floor-specific restriction do not apply in non Wonder Mail requests */
+            break;
         }
+        break;
+    case DungeonOutOfRangeError:
+        ++errorsFound;
+        printMessage(stderr, ErrorMessage, "The dungeon must be between 0 [%s] and %d [%s]. Current value: %u [INVALID]\n\n", dungeonsStr[0], dungeonsCount - 1, dungeonsStr[dungeonsCount - 1], sos->dungeon);
+        break;
+    case DungeonIsInvalidError:
+        ++errorsFound;
+        printMessage(stderr, ErrorMessage, "The dungeon with index %u [INVALID] is not a valid dungeon.\n\n", sos->dungeon);
+        break;
+    case MissionCannotBeAcceptedInDungeonError: /* this cannot happen in SOS Mails */
+        break;
     }
 
     /* mail ID check */
-    if (sos->mailID > 9999) {
+    switch (checkMailID(sos->mailID))
+    {
+    case NoError:
+        break;
+    case MailIDOutOfRangeError:
         ++errorsFound;
         printMessage(stderr, ErrorMessage, "The mail ID must be beetwen 0-9999. Current value: %u\n\n", sos->mailID);
+        break;
     }
 
     /* rescue chances left check */
@@ -529,7 +600,7 @@ int checkFloor(int floor, int dungeon)
     if (floor <= 0 || floor > difficulties[dungeon][0]) {
         return FloorOutOfRangeError;
     } else if (floor == forbiddenFloorsInDungeons[dungeon][1] || floor == forbiddenFloorsInDungeons[dungeon][2]) {
-        return FloorIsInvalidInDungeonError;
+        return FloorInvalidInDungeonError;
     }
 
     return NoError;

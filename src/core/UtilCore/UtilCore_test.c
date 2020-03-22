@@ -302,7 +302,7 @@ void entryErrorsWonderMail_test(CuTest *tc)
         {     WonderMailType,     DeliverItem,         0x01,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,      62,    98 },
         {     WonderMailType,     DeliverItem,         0x02,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,       0,     1 }, /* Friend area ('E' difficulty) */
         {        SosMailType,            Find,         0x03,         405,         415,      255, FriendArea + 1,         240,          60,      0,      0, 0xFF,      63,    99 }, /* Mail type, pkmn client, pkmn target, reward type and dungeon */
-        {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, item to deliver, friend area and floor  */
+        {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, friend area and floor  */
         {   ThankYouMailType, DeliverItem + 1,         0x05,         210,         511,      240,      MoneyItem,           0,          63,      0,      0, 0xFF,       0,     4 }, /* Mission type, pkmn client, reward item and floor. Note: Not the Mail type cuz ThankYouMail == WonderMail */
         { WonderMailType + 1,          Escort,         0x0E,         150,         151,        0,      MoneyItem,         240,          19,      0,      0, 0xFF,      10,     4 }, /* Mail type, pkmn client, pkmn target, item reward and floor */
         {    InvalidMailType,        FindItem,         0x0F,         201,           0,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* Mail type, pkmn client, item to find and friend area and floor */
@@ -310,7 +310,7 @@ void entryErrorsWonderMail_test(CuTest *tc)
 
     int actualResults[ARRAY_SIZE];
 
-    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 5, 4, 5, 5 };
+    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 4, 4, 5, 5 };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -330,7 +330,7 @@ void entryErrorsSosMail_test(CuTest *tc)
         {      SosMailType + 1,      63,     0,        0,              0,   10000,        0,           "",   0,         240, 0,             10000,            10000,          255,           0 }, /* Mail type, Dungeon, Pkmn to rescue, Mail ID, Nickname and Reward item */
         {          SosMailType,       0,     0,        0,            150,    5555,        0,          ".",   0,           1, 0,                 1,                2,            0,           0 }, /* Floor and chances left */
         {          SosMailType,       0,     4,        0,            150,    1234,        0,          ".",   0,           1, 0,              1000,             1000,           11,           0 }, /* Floor and chances left */
-        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* Chances left. Note: Floor-specific prohibitions do not apply in not Wonder Mail requests */
+        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* Chances left. Note: Floor-specific prohibitions do not apply in non Wonder Mail requests */
         { ThankYouMailType + 1,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,          100,           0 }  /* Mail type */
     };
 
@@ -495,7 +495,7 @@ void checkFloor_test(CuTest *tc)
     const int input2[ARRAY_SIZE]         = { 0,                    0,                    0,                    0,          2,                            3,                            6,                6,                            10,                           16,                           16,                           18,                           19,                           20,                           21,                           23,                           26,                           26,                           29,                           34,                           35,                           37,                           42,                           60,                           62 };
 
     int testResult[ARRAY_SIZE];
-    const int expectedResult[ARRAY_SIZE] = { FloorOutOfRangeError, FloorOutOfRangeError, FloorOutOfRangeError, NoError,    FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, NoError,          FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError, FloorIsInvalidInDungeonError };
+    const int expectedResult[ARRAY_SIZE] = { FloorOutOfRangeError, FloorOutOfRangeError, FloorOutOfRangeError, NoError,    FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   NoError,          FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {

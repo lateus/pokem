@@ -18,7 +18,7 @@ int printMessage(FILE *stream, enum MessageType messageType, const char* message
         return 0;
     }
 
-    charactersReturned += fprintf(stream, "%s%s:" RESET, messageColorsByTypes[messageType], messageTypesStr[messageType]);
+    charactersReturned += fprintf(stream, "%s%s: " RESET, messageColorsByTypes[messageType], messageTypesStr[messageType]);
     va_start(argList, message);
     charactersReturned += vfprintf(stream, message, argList);
     va_end(argList);

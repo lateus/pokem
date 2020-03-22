@@ -30,7 +30,7 @@ enum ErrorType {
     DungeonIsInvalidError,                  /* the dungeon exists, but it is invalid */
     MissionCannotBeAcceptedInDungeonError,  /* the mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo) */
     FloorOutOfRangeError,                   /* the dungeon do not have the selected floor */
-    FloorIsInvalidInDungeonError,           /* the floor exists, but a mission cannot be done there (for example, boss and warp floors) */
+    FloorInvalidInDungeonError,             /* the floor exists, but a mission cannot be done there (for example, boss and warp floors) */
     MailIDOutOfRangeError,                  /* the mail ID is invalid */
     NicknameEmptyError,                     /* the nickname is empty */
     ChancesLeftError                        /* the amount of chances left is invalid */
