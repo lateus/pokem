@@ -1,6 +1,6 @@
 # Known bugs
 
-**None until now.**
+1. Apparently, the number of rescue chances left do not matters? Or varies from dungeon to dungeon?
 ---------------------------------------------
 
 ## Bug tracker
