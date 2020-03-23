@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+int convertSosMail(const char *SOSPassword, int idTeamGivingHelp, int item, char *resultAOKMail, char *resultThankYouMail)
 {
     struct SosMail mailTest = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 };
     int errorCode = NoError;
@@ -42,7 +42,7 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
 
     /* FIRST: A-OK MAIL */
     if (mailType == SosMailType) {
-        convertSosToAOkMail(password54Integers);
+        convertSosToAOkMail(password54Integers, idTeamGivingHelp);
 
         /* Bit packing */
         bitPackingDecoding(packed34Bytes, password54Integers, 54); /* Pack the password */
@@ -114,7 +114,7 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     return NoError;
 }
 
-void convertSosToAOkMail(char *password54Integers)
+void convertSosToAOkMail(char *password54Integers, int idTeamGivingHelp)
 {
     /*
      * One possible way to do this is decoding the mail, then change the mail type,
@@ -136,43 +136,35 @@ void convertSosToAOkMail(char *password54Integers)
      *   of the third byte.
     */
 
-    int teamSeekingHelpID = 0, rescueChances = 0;
+    int rescueChances = 0;
 
     password54Integers[1] &= 0x07; /* unset the last two bits. The first two bits of 4 (0100) are zeros */
     password54Integers[2] &= 0xFC; /* unset the first two bits */
     password54Integers[2] |= 0x01; /* set the first one as 4 (DEC) == 0100 (BIN) */
 
     /*
-     * > The ID of the team giving help must equal the ID of the team seeking help.
-     *   So first, we need to get the ID of the team seeking help, which is stored
-     *   in the last 5 bits of byte 23 and the next full 3 bytes and the first 3
-     *   bits of byte 27. Then the checksum is pushed and so the desired ID begins
-     *   at index 24. After unpacking, it starts at index 39:
+     * The ID of the team giving help must equal the ID of the team seeking help.
+     * So first, we need to get the ID of the team seeking help, which is stored
+     * in the last 5 bits of byte 23 and the next full 3 bytes and the first 3
+     * bits of byte 27. Then the checksum is pushed and so the desired ID begins
+     * at index 24. After unpacking, it starts at index 39:
     */
 
-    teamSeekingHelpID  =  password54Integers[39] & 0x1F;
-    teamSeekingHelpID |= (password54Integers[40] & 0x1F) <<  5;
-    teamSeekingHelpID |= (password54Integers[41] & 0x1F) << 10;
-    teamSeekingHelpID |= (password54Integers[42] & 0x1F) << 15;
-    teamSeekingHelpID |= (password54Integers[43] & 0x1F) << 20;
-    teamSeekingHelpID |= (password54Integers[44] & 0x1F) << 25;
-    teamSeekingHelpID |= (password54Integers[45] & 0x03) << 30;
-
     password54Integers[45] &= 0x03;
-    password54Integers[45] |= (teamSeekingHelpID & 0x07) << 2;
-    password54Integers[46]  = (teamSeekingHelpID >>  3) & 0x1F;
-    password54Integers[47]  = (teamSeekingHelpID >>  8) & 0x1F;
-    password54Integers[48]  = (teamSeekingHelpID >> 13) & 0x1F;
-    password54Integers[49]  = (teamSeekingHelpID >> 18) & 0x1F;
-    password54Integers[50]  = (teamSeekingHelpID >> 23) & 0x1F;
+    password54Integers[45] |= (idTeamGivingHelp & 0x07) << 2;
+    password54Integers[46]  = (idTeamGivingHelp >>  3) & 0x1F;
+    password54Integers[47]  = (idTeamGivingHelp >>  8) & 0x1F;
+    password54Integers[48]  = (idTeamGivingHelp >> 13) & 0x1F;
+    password54Integers[49]  = (idTeamGivingHelp >> 18) & 0x1F;
+    password54Integers[50]  = (idTeamGivingHelp >> 23) & 0x1F;
     password54Integers[51] &= (0x01 << 4);
-    password54Integers[51]  = (teamSeekingHelpID >> 28) & 0x0F;
+    password54Integers[51]  = (idTeamGivingHelp >> 28) & 0x0F;
 
     /*
-     * > The chances left must be decremented, because we "rescue" the other team,
-     *   and of course we used a rescue chance. The chances are stored just next
-     *   to the ID of the team giving help. We must obtain the chances, decrement
-     *   it and then insert it again.
+     * The chances left must be decremented, because we "rescued" the other team,
+     * and of course we used a rescue chance. The chances are stored just next
+     * to the ID of the team giving help. We must obtain the chances, decrement
+     * it and then insert it again.
     */
     rescueChances  = (password54Integers[51] >> 4) & 0x01;
     rescueChances |= (password54Integers[52] & 0x07) << 1;
