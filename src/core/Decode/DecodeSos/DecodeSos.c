@@ -93,7 +93,7 @@ void bitUnpackingDecodingSosMail(const char *packed33BytesPassword, struct SosMa
     mail->mailID  = (packed33BytesPassword[6] >> 3) & 0x1F; /* get 5 bits, 0 remaining */
     mail->mailID |= (packed33BytesPassword[7] & 0xFF) << 5; /* get the full byte */
     mail->mailID |= (packed33BytesPassword[8] & 0x07) << 13; /* get 3 bits, 5 remaining */
-    mail->mailID &= 0xFFFF; /** REVIEW THIS IF THERE ARE PROBLEMS WITH THE MAIL ID */
+    mail->mailID %= 10000; /** the mail ID is a 32-bit number, but only matters the first 4 digits */
 
     mail->idk_random2 = (packed33BytesPassword[8] >> 3) & 0x1F; /* get 5 bits, 0 remaining */
     mail->idk_random2 |= (packed33BytesPassword[9] & 0xFF) << 5; /* get the full byte */
