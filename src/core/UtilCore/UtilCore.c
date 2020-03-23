@@ -2,6 +2,7 @@
 #include "../../data/md1database/md1database.h"
 #include "../../data/md1global/md1global.h"
 #include "../../util/messages.h"
+#include "../../util/colors.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -280,14 +281,14 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     /* mail type check */
     if (wm->mailType != WonderMailType) {
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The mail type must be a Wonder Mail. Current value: %u [%s]\n\n", wm->mailType,
+        printMessage(stderr, ErrorMessage, "The mail type must be a " LGREEN "Wonder Mail" RESET ". Current value: " LRED "%u" RESET " [" LRED "%s" LRED "]\n\n", wm->mailType,
                         wm->mailType == SosMailType ? "SOS Mail" : wm->mailType == AOkMailType ? "AOK Mail" : "INVALID");
     } 
 
     /* mission type check */
     if (wm->missionType < 0 || wm->missionType > 4) {
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The mission type must be a number between 0 and 4. Current value: %u [%s]\n\n", wm->missionType, wm->missionType == FriendRescue ? "Friend rescue" : "INVALID");
+        printMessage(stderr, ErrorMessage, "The mission type must be a number between " LGREEN "0" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]\n\n", missionTypeObjectiveStr[0], missionTypeObjectiveCount - 1, missionTypeObjectiveStr[missionTypeObjectiveCount - 1], wm->missionType, wm->missionType == FriendRescue ? "Friend rescue" : "INVALID");
     }
 
     /* pkmn client check (limits) */
@@ -297,11 +298,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
         break;
     case PokemonOutOfRangeError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "Pokemon must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, wm->pkmnClient);
+        printMessage(stderr, ErrorMessage, "Pokemon must be between " LGREEN "1" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", pkmnSpeciesStr[1], pkmnSpeciesCount - 1, pkmnSpeciesStr[pkmnSpeciesCount - 1], wm->pkmnClient);
         break;
     case PokemonNotAllowedError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "Legendaries are not allowed in Wonder Mails. Current value: %u [%s]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
+        printMessage(stderr, ErrorMessage, LIGHT "Legendaries" RESET " are not allowed in Wonder Mails. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
         break;
     }
 
@@ -312,11 +313,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             break;
         case PokemonOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Pokemon must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, wm->pkmnClient);
+            printMessage(stderr, ErrorMessage, "Pokemon must be between " LGREEN "1" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", pkmnSpeciesStr[1], pkmnSpeciesCount - 1, pkmnSpeciesStr[pkmnSpeciesCount - 1], wm->pkmnClient);
             break;
         case PokemonNotAllowedError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Legendaries are not allowed in Wonder Mails. Current value: %u [%s]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
+            printMessage(stderr, ErrorMessage, LIGHT "Legendaries" RESET " are not allowed in Wonder Mails. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
             break;
         }
     }
@@ -329,15 +330,15 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             break;
         case NoItemError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Item 0 [Nothing] is not allowed as item to find or deliver.\n\n");
+            printMessage(stderr, ErrorMessage, "Item " LRED "0" RESET " [" LRED "%s" RESET "] is not allowed as item to find or deliver.\n\n", pkmnSpeciesStr[0]);
             break;
         case ItemCannotBeObtainedError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Item %d [%s] cannot be obtained as reward.\n\n", wm->itemDeliverFind, itemsStr[wm->itemDeliverFind]);
+            printMessage(stderr, ErrorMessage, "Item " LRED "%d" RESET " [" LRED "%s" RESET "] cannot be obtained as reward.\n\n", wm->itemDeliverFind, itemsStr[wm->itemDeliverFind]);
             break;
         case ItemOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Items to find or deliver must be numbers between 1 and %d. Current value: %u [INVALID]\n\n", itemsCount - 5, wm->itemDeliverFind);
+            printMessage(stderr, ErrorMessage, "Items to find or deliver must be numbers between " LGREEN "1" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: %u [INVALID]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], wm->itemDeliverFind);
             break;
         }
 
@@ -345,11 +346,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
         if (wm->missionType == FindItem) {
             if (checkItemExistenceInDungeon(wm->itemDeliverFind, wm->dungeon) != NoError) {
                 ++errorsFound;
-                printMessage(stderr, ErrorMessage, "The item %u [%s] can't be found in the dungeon %u [%s] To accept a job about finding an item inside a dungeon, the item must exist on that dungeon. The items that can be found in that dungeon are listed bellow:\n",
+                printMessage(stderr, ErrorMessage, "The item " LRED "%u" RESET " [" LRED "%s" RESET "] can't be found in the dungeon " LIGHT "%u" RESET " [" LIGHT "%s" RESET "] To accept a job about finding an item inside a dungeon, the item must exist on that dungeon. The items that can be found in that dungeon are listed bellow:\n",
                         wm->itemDeliverFind, itemsStr[wm->itemDeliverFind], wm->dungeon, dungeonsStr[wm->dungeon]);
                 if (printMessages) {
                     for (i = 1; i < itemsInDungeons[wm->dungeon][0]; ++i) {
-                        fprintf(stderr, "%u [%s]\n", itemsInDungeons[wm->dungeon][i], itemsStr[itemsInDungeons[wm->dungeon][i]]);
+                        fprintf(stderr, RESET "(" LGREEN "%u" RESET ") %s\n", itemsInDungeons[wm->dungeon][i], itemsStr[itemsInDungeons[wm->dungeon][i]]);
                     }
                     fprintf(stderr, "\n\n");
                 }
@@ -362,8 +363,8 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
     {
     case MissionCannotBeAcceptedInDungeonError:
         /* since the mail can be generated, just ignore this error (don't increment the errors counter) */
-        printMessage(stderr, WarningMessage, "A mission in dungeon %u [%s] can be generated, but cannot be done.\n\n", wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID");
-        /* no break because we want to fall through the `case NoError:` */
+        printMessage(stderr, WarningMessage, "A mission in dungeon " LYELLOW "%u" RESET " [" LYELLOW "%s" RESET "] can be generated, but cannot be done.\n\n", wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID");
+        /* fall through */
     case NoError:
         /* floor check */
         switch (checkFloor(wm->floor, wm->dungeon))
@@ -372,35 +373,35 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             break;
         case FloorOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "The dungeon %u [%s] has floors in the range 1-%d floors. Current value: %u\n\n", wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID", difficulties[wm->dungeon][0], wm->floor);
+            printMessage(stderr, ErrorMessage, "The dungeon " LIGHT "%u" LIGHT " [" LIGHT "%s" LIGHT "] has floors in the range " LGREEN "1" RESET "-" LGREEN "%d" RESET " floors. Current value: " LRED "%u" RESET "\n\n", wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID", difficulties[wm->dungeon][0], wm->floor);
             break;
         case FloorInvalidInDungeonError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "A mission cannot be made in floor %d of dungeon %u [%s].\n\n",
+            printMessage(stderr, ErrorMessage, "A mission cannot be made in floor " LRED "%d" RESET " of dungeon " LIGHT "%u" RESET " [" LIGHT "%s" RESET "].\n\n",
                             wm->floor, wm->dungeon, wm->dungeon < dungeonsCount ? dungeonsStr[wm->dungeon] : "INVALID");
             break;
         }
         break;
     case DungeonOutOfRangeError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon must be between 0 [%s] and %d [%s]. Current value: %u [INVALID]\n\n", dungeonsStr[0], dungeonsCount - 1, dungeonsStr[dungeonsCount - 1], wm->dungeon);
+        printMessage(stderr, ErrorMessage, "The dungeon must be between " LGREEN "0" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LGREEN "INVALID" RESET "]\n\n", dungeonsStr[0], dungeonsCount - 1, dungeonsStr[dungeonsCount - 1], wm->dungeon);
         break;
     case DungeonIsInvalidError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon with index %u [INVALID] is not a valid dungeon.\n\n", wm->dungeon);
+        printMessage(stderr, ErrorMessage, "The dungeon " LRED "%u" RESET " [" LRED "INVALID" RESET "] is not a valid dungeon.\n\n", wm->dungeon);
         break;
     }
 
     /* reward type check (range) */
     if (wm->rewardType > FriendArea) {
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The reward type must be  between 0 [Money + (?)] and %d [Friend Area]. Current value: %u [INVALID]\n\n", FriendArea, wm->rewardType);
+        printMessage(stderr, ErrorMessage, "The reward type must be between " LGREEN "0" RESET " [" LGREEN "Money + (?)" RESET "] and " LGREEN "%d" RESET " [" LGREEN "Friend Area" RESET "]. Current value: " LRED "%u [" LRED "INVALID" RESET "]\n\n", FriendArea, wm->rewardType);
     }
 
     /* reward type check (enable friend area reward) */
     if (wm->rewardType == FriendArea && computeDifficulty(wm->dungeon, wm->floor, wm->missionType) == 0) { /* 0 means 'E' difficulty */
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "To receive a friend area reward, the mission must have at least \"D\" difficulty.\n\n");
+        printMessage(stderr, ErrorMessage, "To receive a friend area reward, the mission must have at least " COLOR(88, 248, 88) "D" RESET " difficulty.\n\n");
     }
 
     /* reward item check */
@@ -411,15 +412,15 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             break;
         case NoItemError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Item 0 %s is not allowed as reward.\n\n", itemsStr[0]);
+            printMessage(stderr, ErrorMessage, "Item " LRED "0" RESET " [" LRED "%s" RESET "] is not allowed as reward.\n\n", itemsStr[0]);
             break;
         case ItemCannotBeObtainedError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Items %d [%s] cannot be obtained as reward.\n\n", wm->itemReward, itemsStr[wm->itemReward]);
+            printMessage(stderr, ErrorMessage, "Item " LRED "%d" RESET " [" LRED "%s" RESET "] cannot be obtained as reward.\n\n", wm->itemReward, itemsStr[wm->itemReward]);
             break;
         case ItemOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Reward items must be between 1 [%s] and %d [%s]. Current value: %u [INVALID]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], wm->itemDeliverFind);
+            printMessage(stderr, ErrorMessage, "Reward items must be between " LGREEN "%d" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], wm->itemDeliverFind);
             break;
         }
     }
@@ -429,8 +430,11 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
         if (wm->friendAreaReward != 9 && wm->friendAreaReward != 10 && wm->friendAreaReward != 15 && wm->friendAreaReward != 37) {
             ++errorsFound;
             printMessage(stderr, ErrorMessage, "Valid friend area values are:\n" \
-                                 "[%d (%s), %d (%s), %d (%s), %d (%s)].\n" \
-                                 "Current value: %u [%s]\n\n", 9, friendAreasStr[9], 10, friendAreasStr[10], 15, friendAreasStr[15], 37, friendAreasStr[37], wm->friendAreaReward, wm->friendAreaReward < friendAreasCount ? friendAreasStr[wm->friendAreaReward] : "INVALID");
+                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                 "Current value: %s%u" RESET " [%s%s" RESET "]\n\n", 9, friendAreasStr[9], 10, friendAreasStr[10], 15, friendAreasStr[15], 37, friendAreasStr[37], wm->friendAreaReward < friendAreasCount ? LGREEN : LRED, wm->friendAreaReward, wm->friendAreaReward < friendAreasCount ? LGREEN : LRED, wm->friendAreaReward < friendAreasCount ? friendAreasStr[wm->friendAreaReward] : "INVALID");
         }
     }
 
@@ -449,7 +453,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
     /* mail type check */
     if (sos->mailType != SosMailType && sos->mailType != AOkMailType && sos->mailType != ThankYouMailType) {
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The mail type must be a SOS Mail, A-OK Mail or Thank-You Mail. Current value: %u [INVALID]\n\n", sos->mailType);
+        printMessage(stderr, ErrorMessage, "The mail type must be a " LGREEN "SOS Mail" RESET ", " LGREEN "A-OK Mail" RESET " or " LGREEN "Thank-You" RESET ". Current value: " LRED "%u" RESET " [" LRED "%s" LRED "]\n\n", sos->mailType);
     } 
 
     /* pkmn to rescue check (limits) */
@@ -459,11 +463,11 @@ int entryErrorsSosMail(const struct SosMail *sos)
         break;
     case PokemonOutOfRangeError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "Pokemon must be between 1 and %d. Current value: %u [INVALID]\n\n", pkmnSpeciesCount - 1, sos->pkmnToRescue);
+        printMessage(stderr, ErrorMessage, "Pokemon must be between " LGREEN "1" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", pkmnSpeciesStr[1], pkmnSpeciesCount - 1, pkmnSpeciesStr[pkmnSpeciesCount - 1], sos->pkmnToRescue);
         break;
     case PokemonNotAllowedError: /* this cannot happen in SOS Mails */
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "Legendaries are not allowed. Current value: %u [%s]\n\n", sos->pkmnToRescue, pkmnSpeciesStr[sos->pkmnToRescue]);
+        printMessage(stderr, ErrorMessage, LIGHT "Legendaries" RESET " are not allowed. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]\n\n", sos->pkmnToRescue, pkmnSpeciesStr[sos->pkmnToRescue]);
         break;
     }
 
@@ -484,7 +488,7 @@ int entryErrorsSosMail(const struct SosMail *sos)
             break;
         case FloorOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "The dungeon %u [%s] has floors in the range 1-%d floors. Current value: %u\n\n", sos->dungeon, sos->dungeon < dungeonsCount ? dungeonsStr[sos->dungeon] : "INVALID", difficulties[sos->dungeon][0], sos->floor);
+            printMessage(stderr, ErrorMessage, "The dungeon " LIGHT "%u" LIGHT " [" LIGHT "%s" LIGHT "] has floors in the range " LGREEN "1" RESET "-" LGREEN "%d" RESET " floors. Current value: " LRED "%u" RESET "\n\n", sos->dungeon, sos->dungeon < dungeonsCount ? dungeonsStr[sos->dungeon] : "INVALID", difficulties[sos->dungeon][0], sos->floor);
             break;
         case FloorInvalidInDungeonError:
             /* floor-specific restriction do not apply in non Wonder Mail requests */
@@ -493,11 +497,11 @@ int entryErrorsSosMail(const struct SosMail *sos)
         break;
     case DungeonOutOfRangeError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon must be between 0 [%s] and %d [%s]. Current value: %u [INVALID]\n\n", dungeonsStr[0], dungeonsCount - 1, dungeonsStr[dungeonsCount - 1], sos->dungeon);
+        printMessage(stderr, ErrorMessage, "The dungeon must be between " LGREEN "0" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LGREEN "INVALID" RESET "]\n\n", dungeonsStr[0], dungeonsCount - 1, dungeonsStr[dungeonsCount - 1], sos->dungeon);
         break;
     case DungeonIsInvalidError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The dungeon with index %u [INVALID] is not a valid dungeon.\n\n", sos->dungeon);
+        printMessage(stderr, ErrorMessage, "The dungeon " LRED "%u" RESET " [" LRED "INVALID" RESET "] is not a valid dungeon.\n\n", sos->dungeon);
         break;
     case MissionCannotBeAcceptedInDungeonError: /* this cannot happen in SOS Mails */
         break;
@@ -510,14 +514,14 @@ int entryErrorsSosMail(const struct SosMail *sos)
         break;
     case MailIDOutOfRangeError:
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The mail ID must be beetwen 0-9999. Current value: %u\n\n", sos->mailID);
+        printMessage(stderr, ErrorMessage, "The mail ID must be beetwen " LGREEN "0" RESET " and " LGREEN "9999" RESET ". Current value: " LRED "%u\n\n", sos->mailID);
         break;
     }
 
     /* rescue chances left check */
     if (sos->mailType >= SosMailType && sos->mailType <= ThankYouMailType && (sos->chancesLeft < minChancesLeft || sos->chancesLeft > maxChancesLeft)) {
         ++errorsFound;
-        printMessage(stderr, ErrorMessage, "The chances left for %s value must be between %d and %d. Current value: %u\n\n", sos->mailType == SosMailType ? "SOS mails" : "AOK and Thank-You mails", minChancesLeft, maxChancesLeft, sos->chancesLeft);
+        printMessage(stderr, ErrorMessage, "The chances left for " LIGHT "%s" RESET " must be between " LGREEN "%d" RESET " and " LGREEN "%d" RESET ". Current value: " LRED "%u" RESET "\n\n", sos->mailType == SosMailType ? "SOS mails" : "AOK and Thank-You mails", minChancesLeft, maxChancesLeft, sos->chancesLeft);
     }
 
     return errorsFound;
