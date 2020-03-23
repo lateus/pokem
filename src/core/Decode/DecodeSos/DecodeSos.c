@@ -2,11 +2,10 @@
 #include "../UtilDecode/UtilDecode.h"
 #include "../../UtilCore/UtilCore.h"
 #include "../../../data/md1database/md1database.h"
+#include "../../../util/messages.h"
 
 #include <stdio.h>
 #include <string.h>
-
-extern int printMessages;
 
 int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 {
@@ -19,49 +18,38 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
     char packed34BytesPassword[34] = {0};
     int checksum = 0;
     char* packed33BytesPassword = NULL;
-    struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* To store the decoded SOS Mail */
+    struct SosMail sosm = { 0, 0, 0, 0, 0, 0, 0, {0}, 0, 0, 0, 0, 0, 0, 0 }; /* to store the decoded SOS Mail */
 
     if (pswLenght != 54) {
-        if (printMessages) {
-            fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 54 characters.\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-        }
-        return InputError;
+        printMessage(stderr, ErrorMessage, "The password must have " LGREEN "54" RESET " characters. Current length: " LRED "%d" RESET ".\n", pswLenght);
+        return IncorrectPasswordLengthError;
     }
 
     reallocateBytes(password, newPositions, 54, allocatedPassword);
 
-    /* The password that will be converted to integers representation using the lookup table */
+    /* the password that will be converted to integers representation using the lookup table */
     errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 54, password54Integers);
     if (errorCode != NoError) {
         return errorCode;
     }
 
-    /* Bit packing */
-    bitPackingDecoding(packed34BytesPassword, password54Integers, 54); /* Pack the password */
+    /* bit packing */
+    bitPackingDecoding(packed34BytesPassword, password54Integers, 54); /* pack the password */
 
-    /* Checksum */
+    /* checksum */
     checksum = computeChecksum(packed34BytesPassword + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
     if (checksum != (packed34BytesPassword[0] & 0xFF)) {
-        if (printMessages) {
-            fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n");
-            fflush(stderr);
-        }
+        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ".\n", packed34BytesPassword[0] & 0xFF, checksum);
         return ChecksumError;
     }
 
-    /* The first byte in the 35 byte packed password was merely a checksum, so it's useless and I'll remove it */
-    packed33BytesPassword = packed34BytesPassword + 1; /* You must be firm in pointer's arithmetic to handle this */
+    /* the first byte in the 35 byte packed password was merely a checksum, so it's useless and I'll remove it */
+    packed33BytesPassword = packed34BytesPassword + 1;
 
-    /* Bit unpacking */
+    /* bit unpacking */
     bitUnpackingDecodingSosMail(packed33BytesPassword, &sosm);
     if (entryErrorsSosMail(&sosm) > 0) {
-        if (printMessages) {
-            fprintf(stderr, " :: ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n");
-            fflush(stderr);
-        }
-        return InputError; /* to use the NOT operator */
+        return MultipleError;
     }
     
     *sosMailResult = sosm;
@@ -73,7 +61,7 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 void bitUnpackingDecodingSosMail(const char *packed33BytesPassword, struct SosMail *mail)
 {
     /*
-        As a final step, the password is converted into a Wonder Mail by
+        As a final step, the password is converted into a Sos Mail by
         unpacking the bits of the 33-bytes password.
         Bit unpacking is the reverse of bit packing.
         It starts with the rightmost bit of the first byte. That bit is

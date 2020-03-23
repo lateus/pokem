@@ -7,6 +7,7 @@
 enum ErrorType {
     NoError,                                /* no error, all OK */
     UnknownError,                           /* unknown error */
+    MultipleError,                          /* multiple errors */
     InputError,                             /* generic input error */
     OutputError,                            /* generic output error */
     ChecksumError,                          /* checksum error */
@@ -15,10 +16,6 @@ enum ErrorType {
     SpecialJobIndicatorError,               /* the special job indicator is invalid */
     PokemonOutOfRangeError,                 /* the pokemon is out of range */
     PokemonNotAllowedError,                 /* the pokemon is invalid (for example, a legendary) */
-    ClientPokemonOutOfRangeError,           /* the client pokemon is out of range, this has priority over `PokemonOutOfRangeError` */
-    ClientPokemonNotAllowedError,           /* the client pokemon is invalid (for example, a legendary) */
-    TargetPokemonOutOfRangeError,           /* the target pokemon is out of range, this has priority over `PokemonOutOfRangeError` */
-    TargetPokemonNotAllowedError,           /* the target pokemon is invalid (for example, a legendary) */
     ItemOutOfRangeError,                    /* the item is out of range */
     NoItemError,                            /* the item is `0` (Nothing), which is not necessarily an error */
     ItemCannotBeObtainedError,              /* the item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine */
@@ -33,7 +30,10 @@ enum ErrorType {
     FloorInvalidInDungeonError,             /* the floor exists, but a mission cannot be done there (for example, boss and warp floors) */
     MailIDOutOfRangeError,                  /* the mail ID is invalid */
     NicknameEmptyError,                     /* the nickname is empty */
-    ChancesLeftError                        /* the amount of chances left is invalid */
+    ChancesLeftError,                       /* the amount of chances left is invalid */
+    IncorrectPasswordLengthError,           /* the length of the password is invalid */
+    InvalidCharacterError,                  /* the password contains an invalid character */
+    ConversionError                         /* the password couldn't be converted */
 };
 
 /* Mail type */

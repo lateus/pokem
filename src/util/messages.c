@@ -1,5 +1,4 @@
 #include "messages.h"
-#include "colors.h"
 
 int printMessages = 1;
 

@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int printMessages;
-
 int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialWonderMail)
 {
     char packed15BytesPassword[15] = {0}; /* the first byte is merely a checksum */
@@ -18,12 +16,8 @@ int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialW
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     const unsigned char newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
 
-    if (entryErrorsWonderMail(wm)) {
-        if (printMessages) {
-            fprintf(stderr, " :: ERRORS FOUND. ENCODING IS NOT POSSIBLE\a\n\n");
-            fflush(stderr);
-        }
-        return InputError;
+    if (entryErrorsWonderMail(wm) > 0) {
+        return MultipleError;
     }
 
     wm->specialJobIndicator = getSpecialJobIndicator(wm->pkmnClient, wm->pkmnTarget, wm->missionType, trySpecialWonderMail, wm->itemDeliverFind);

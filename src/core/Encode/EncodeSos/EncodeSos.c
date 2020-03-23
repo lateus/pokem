@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int printMessages;
-
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
     char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
@@ -19,11 +17,7 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     const unsigned char newPositions[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
 
     if (entryErrorsSosMail(sos) > 0) {
-        if (printMessages) {
-            fprintf(stderr, " :: ERRORS FOUND. ENCODING IS NOT POSSIBLE.\a\n\n");
-            fflush(stderr);
-        }
-        return InputError; /* to use the NOT operator */
+        return MultipleError; /* to use the NOT operator */
     }
 
     sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */

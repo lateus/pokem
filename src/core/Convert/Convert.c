@@ -6,11 +6,10 @@
 #include "../UtilCore/UtilCore.h"
 #include "../../data/md1global/md1global.h"
 #include "../../data/md1database/md1database.h"
+#include "../../util/messages.h"
 
 #include <stdio.h>
 #include <string.h>
-
-extern int printMessages;
 
 int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
 {
@@ -21,34 +20,23 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
     char password54Integers[54] = {0};
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     char packed34Bytes[34] = {0}; /* The packed password */
-    int i;
     char passwordUnallocated[54] = {0};
     const unsigned char newPositionsToEncode[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
     int mailType = getMailType(SOSPassword);
+    int i;
 
     errorCode = decodeSosMail(SOSPassword, &mailTest);
     if (errorCode != NoError) {
-        if (printMessages) {
-            fprintf(stderr, "Invalid SOS Mail (%s): Error %d\n", SOSPassword, errorCode);
-            fflush(stderr);
-        }
         return errorCode;
-    } else if (item < 0 || (unsigned)item >= itemsCount) {
-        if (printMessages) {
-            fputs("Error: The specified item is invalid.\n", stderr);
-            fflush(stderr);
-        }
-        return InputError;
+    } else if (checkItem(item) == ItemOutOfRangeError) {
+        printMessage(stderr, ErrorMessage, "Reward items must be between " LGREEN "%d" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], item);
+        return ItemOutOfRangeError;
     }
 
     reallocateBytes(SOSPassword, newPositionsToDecode, 54, allocatedPassword);
 
     errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 54, password54Integers);
     if (errorCode != NoError) { /* this cannot happen because we already decoded the mail */
-        if (printMessages) {
-            fputs("Invalid character found.\n", stderr);
-            fflush(stderr);
-        }
         return errorCode;
     }
 
@@ -73,11 +61,8 @@ int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char 
         /* Update the mail type */
         mailType = getMailType(resultAOKMail);
         if (mailType != AOkMailType) { /* Conversion error */
-            if (printMessages) {
-                fputs("Error: The converted mail is not an A-OK Mail.\n", stderr);
-                fflush(stderr);
-            }
-            return InputError;
+            printMessage(stderr, ErrorMessage, "The converted mail is not an " LGREEN "A-OK Mail" RESET ".\n");
+            return ConversionError;
         }
     }
 

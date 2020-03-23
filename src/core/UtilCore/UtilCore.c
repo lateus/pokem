@@ -420,7 +420,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             break;
         case ItemOutOfRangeError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Reward items must be between " LGREEN "%d" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], wm->itemDeliverFind);
+            printMessage(stderr, ErrorMessage, "Reward items must be between " LGREEN "%d" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], wm->itemReward);
             break;
         }
     }
@@ -506,6 +506,19 @@ int entryErrorsSosMail(const struct SosMail *sos)
     case MissionCannotBeAcceptedInDungeonError: /* this cannot happen in SOS Mails */
         break;
     }
+    
+    if (sos->mailType == ThankYouMailType) {
+        /* reward item check */
+        switch (checkItem(sos->itemReward))
+        {
+        case NoError:
+            break;
+        case ItemOutOfRangeError:
+            ++errorsFound;
+            printMessage(stderr, ErrorMessage, "Reward items must be between " LGREEN "%d" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", itemsStr[1], itemsCount - 5, itemsStr[itemsCount - 5], sos->itemReward);
+            break;
+        }
+    }
 
     /* mail ID check */
     switch (checkMailID(sos->mailID))
@@ -548,16 +561,8 @@ int mapPasswordByPositionInLookupTable(const char* password, const char* lookupT
         if (characterLocation) {
             newPassword[i] = characterLocation - lookupTable;
         } else {
-            if (printMessages) {
-                fprintf(stderr, "ERROR: INVALID character: '%c' found at index [%d].\n"
-                                "Valid characters are:\n"
-                                "    > Numbers: '0' to '9'.\n"
-                                "    > Letters (UPPERCASE only): 'C', 'F', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'W', 'X' AND 'Y'.\n"
-                                "    > Symbols: '*' (FEMALE), '/' (MALE), '.' (...), '!', '?', '+', '-'\n\n"
-                                "THE PASSWORD CAN'T BE DECODED.\n\n", password[i], i);
-                fflush(stderr);
-            }
-            return InputError;
+            printMessage(stderr, ErrorMessage, "Invalid character " LRED "%c" RESET " found at index " LIGHT "%d" RESET ". Remember that [male, female, ...] -> [/, *, .]\n", password[i], i);
+            return InvalidCharacterError;
         }
     }
 

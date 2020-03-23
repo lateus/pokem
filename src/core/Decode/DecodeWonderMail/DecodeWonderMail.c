@@ -3,11 +3,10 @@
 #include "../../UtilCore/UtilCore.h"
 #include "../../../data/md1database/md1database.h"
 #include "../../../data/md1global/md1global.h"
+#include "../../../util/messages.h"
 
 #include <stdio.h>
 #include <string.h>
-
-extern int printMessages;
 
 int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
 {
@@ -20,57 +19,45 @@ int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
     char packed15BytesPassword[15] = {0};
     int checksum = 0;
     char* packed14BytesPassword = NULL;
-    struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
+    struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* to store the decoded Wonder Mail */
 
     if (pswLenght != 24) {
-        if (printMessages) {
-            fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-            fflush(stderr);
-        }
-        return InputError;
+        printMessage(stderr, ErrorMessage, "The password must have " LGREEN "24" RESET " characters. Current length: " LRED "%d" RESET ".\n", pswLenght);
+        return IncorrectPasswordLengthError;
     }
 
     reallocateBytes(password, newPositions, 24, allocatedPassword);
 
-    /* This password will be 'integerized' using the lookup table */
+    /* this password will be 'integerized' using the lookup table */
     errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 24, password24Integers);
     if (errorCode != NoError) {
         return errorCode;
     }
 
     /* Bit packing */
-    bitPackingDecoding(packed15BytesPassword, password24Integers, 24); /* Pack the password */
+    bitPackingDecoding(packed15BytesPassword, password24Integers, 24); /* pack the password */
 
-    /* Checksum */
+    /* checksum */
     checksum = computeChecksum(packed15BytesPassword + 1, 14);
     if (checksum != (packed15BytesPassword[0] & 0xFF)) {
-        if (printMessages) {
-            fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n");
-            fflush(stderr);
-        }
+        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ".\n", packed15BytesPassword[0] & 0xFF, checksum);
         return ChecksumError;
     }
 
-    /* The first byte in the 15 byte packed password was merely a checksum, so it's useless and I'll remove it */
-    packed14BytesPassword = packed15BytesPassword + 1; /* You must be firm in pointer's arithmetic to handle this effectively, so take care doing this things */
+    /* the first byte in the 15 byte packed password was merely a checksum, so it's useless and I'll remove it */
+    packed14BytesPassword = packed15BytesPassword + 1;
 
-    /* Bit unpacking */
+    /* bit unpacking */
     bitUnpackingDecodingWonderMail(packed14BytesPassword, &wm);
     
-    /* Checking errors */
+    /* checking errors */
     if (entryErrorsWonderMail(&wm) > 0) {
-        if (printMessages) {
-            fprintf(stderr, " :: ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n");
-            fflush(stderr);
-        }
-        return InputError;
+        return MultipleError;
     }
 
     *wonderMailResult = wm;
 
-    return NoError; /* means ok */
+    return NoError;
 }
 
 
