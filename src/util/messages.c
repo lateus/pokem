@@ -1,5 +1,7 @@
 #include "messages.h"
 
+#include <stdarg.h>
+
 #if !defined(NO_USE_COLORS)
     #define RESETCOLORS "\x1B[0m"   /* all attributes off */
     #define DARKGREEN   "\x1B[32m"

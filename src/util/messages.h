@@ -2,7 +2,6 @@
 #define MESSAGES_H
 
 #include <stdio.h>
-#include <stdarg.h>
 
 /* Message type */
 enum MessageType { DebugMessage, InfoMessage, WarningMessage, ErrorMessage, FatalMessage };
