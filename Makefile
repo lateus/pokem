@@ -118,6 +118,8 @@ $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
 	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $@
 	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(MSG) "\n/** UTILITIES: */\n" >> $@
+	@$(FIND) tools/printSingleHeaderContent.sh ./src/util/messages.h | grep -v '#include "' >> $@
 	@$(MSG) "\n#endif /* POKEM_H */" >> $@
 
 # Static library

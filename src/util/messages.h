@@ -3,7 +3,6 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include "colors.h"
 
 /* Message type */
 enum MessageType { DebugMessage, InfoMessage, WarningMessage, ErrorMessage, FatalMessage };

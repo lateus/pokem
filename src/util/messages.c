@@ -1,5 +1,19 @@
 #include "messages.h"
 
+#if !defined(NO_USE_COLORS)
+    #define RESETCOLORS "\x1B[0m"   /* all attributes off */
+    #define DARKGREEN   "\x1B[32m"
+    #define LIGHTRED    "\x1B[31;1m"
+    #define LIGHTGREEN  "\x1B[32;1m"
+    #define LIGHTYELLOW "\x1B[33;1m"
+#else
+    #define RESETCOLORS ""
+    #define DARKGREEN   ""
+    #define LIGHTRED    ""
+    #define LIGHTGREEN  ""
+    #define LIGHTYELLOW ""
+#endif
+
 int printMessages = 1;
 
 int printMessage(FILE *stream, enum MessageType messageType, const char* message, ...)
@@ -8,7 +22,7 @@ int printMessage(FILE *stream, enum MessageType messageType, const char* message
     int charactersReturned = 0;
     const char* messageTypesStr[] = { "DEBUG", "INFO", "WARNING", "ERROR", "FATAL ERROR" };
 #ifndef NO_USE_COLORS
-    const char* messageColorsByTypes[] = { DGREEN, LGREEN, LYELLOW, LRED, LRED };
+    const char* messageColorsByTypes[] = { DARKGREEN, LIGHTGREEN, LIGHTYELLOW, LIGHTRED, LIGHTRED };
 #else
     const char* messageColorsByTypes[] = { {0}, {0}, {0}, {0}, {0} };
 #endif
@@ -17,7 +31,7 @@ int printMessage(FILE *stream, enum MessageType messageType, const char* message
         return 0;
     }
 
-    charactersReturned += fprintf(stream, "%s%s: " RESET, messageColorsByTypes[messageType], messageTypesStr[messageType]);
+    charactersReturned += fprintf(stream, "%s%s: " RESETCOLORS, messageColorsByTypes[messageType], messageTypesStr[messageType]);
     va_start(argList, message);
     charactersReturned += vfprintf(stream, message, argList);
     va_end(argList);
