@@ -114,12 +114,13 @@ $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
 	@$(MSG) "#ifndef POKEM_H\n" > $@
 	@$(MSG) "#define POKEM_H\n" >> $@
+	@$(MSG) "\n#include <stdio.h>\n" >> $@
 	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $@
-	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
 	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $@
-	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
 	@$(MSG) "\n/** UTILITIES: */\n" >> $@
-	@tools/printSingleHeaderContent.sh ./src/util/messages.h | grep -v '#include "' >> $@
+	@tools/printSingleHeaderContent.sh ./src/util/messages.h | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
 	@$(MSG) "\n#endif /* POKEM_H */" >> $@
 
 # Static library
