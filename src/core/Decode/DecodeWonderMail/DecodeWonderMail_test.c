@@ -59,7 +59,7 @@ void decodeWonderMail_test(CuTest *tc)
 
     int actualReturnResults[ARRAY_SIZE];
 
-    const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, NoError, ChecksumError, NoError, InputError, NoError, NoError };
+    const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InvalidCharacterError, NoError, NoError, ChecksumError, NoError, InvalidCharacterError, NoError, NoError };
     const struct WonderMail expected2[ARRAY_SIZE] = {
         { 5, 2, 0,   7,   8,   9, 5,   9,  0,   3, 238, 255,  1,  1 },
         { 0, 0, 0,   0,   0,   0, 0,   0,  0,   0,   0,   0,  0,  0 },

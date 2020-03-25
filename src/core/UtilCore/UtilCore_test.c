@@ -422,7 +422,7 @@ void mapPasswordByPositionInLookupTable_test(CuTest *tc)
 
     int actualReturnResults[ARRAY_SIZE];
 
-    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError, NoError, NoError };
+    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InvalidCharacterError, NoError, NoError, NoError, NoError, InvalidCharacterError, NoError, NoError };
     const int expected2[ARRAY_SIZE][24] = {
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 24,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 25,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
