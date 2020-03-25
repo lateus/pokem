@@ -3,6 +3,7 @@
 #include "../../UtilCore/UtilCore.h"
 #include "../../../data/md1database/md1database.h"
 #include "../../../util/messages.h"
+#include "../../../util/colors.h"
 
 #include <stdio.h>
 #include <string.h>
