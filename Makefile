@@ -2,7 +2,7 @@
 CC			:=	gcc
 # Compiler flags
 DEFINES		:=	$(if $(filter all-no-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
-CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic -std=c89
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=
 CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES)
@@ -29,13 +29,15 @@ SOURCES		:=	src/core/Decode/DecodeSos/DecodeSos.c \
 				src/core/Encode/UtilEncode/UtilEncode.c \
 				src/core/Convert/Convert.c \
 				src/core/UtilCore/UtilCore.c \
-				src/data/md1database/md1database.c
+				src/data/md1database/md1database.c \
+				src/util/messages.c
 
 OBJECTS		:=	$(BUILDDIR)/DecodeSos.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
 				$(BUILDDIR)/EncodeSos.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
 				$(BUILDDIR)/Convert.o \
 				$(BUILDDIR)/UtilCore.o \
-				$(BUILDDIR)/md1database.o
+				$(BUILDDIR)/md1database.o \
+				$(BUILDDIR)/messages.o
 
 TEST_SUITE	:=	test/CuTest.c test/allTests.c
 TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
@@ -152,3 +154,4 @@ $(BUILDDIR)/UtilEncode.o:       src/core/Encode/UtilEncode/UtilEncode.c
 $(BUILDDIR)/Convert.o:          src/core/Convert/Convert.c
 $(BUILDDIR)/UtilCore.o:         src/core/UtilCore/UtilCore.c
 $(BUILDDIR)/md1database.o:      src/data/md1database/md1database.c
+$(BUILDDIR)/messages.o:      	src/util/messages.c

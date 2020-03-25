@@ -43,7 +43,7 @@ void decodeSosMail_test(CuTest *tc)
 
     int actualReturnResults[ARRAY_SIZE];
 
-    const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, InputError, NoError, InputError };
+    const int expected1[ARRAY_SIZE] = { NoError, ChecksumError, NoError, MultipleError, NoError, MultipleError };
     const struct SosMail expected2[ARRAY_SIZE] = {
         { 1, 58, 50, 0, 113, 1234, 0, "Nurcy",      0, 0, 0,  215733663, 0, 10, 0 },
         { 0,  0,  0, 0,   0,    0, 0, {0},          0, 0, 0,          0, 0,  0, 0 },
@@ -97,12 +97,12 @@ void bitUnpackingDecodingSosMail_test(CuTest *tc)
     };
 
     const struct SosMail expected[ARRAY_SIZE] = {
-        { 1, 58, 50,  1982204, 113,  1234, 29718, "Nurcy",      0, 0, 0,  215733663, 0, 10, 0 },
-        { 1, 58, 50,  1982204, 113,  1234, 29718, "Nurry",      0, 0, 0,  215733663, 0, 10, 0 },
-        { 1, 62, 98,  6157229, 414,  9999, 10445, "Neo Cortex", 0, 0, 0, 1453159363, 0,  1, 0 },
-        { 1, 63, 98,  9456822, 414, 65535, 50672, "Neo Cortex", 0, 0, 0,  324088359, 0,  1, 0 },
-        { 1,  1,  3, 10818328, 100,     0, 32793, "V",          0, 0, 0,  725035086, 0,  5, 0 },
-        { 1,  1,  3, 16451154, 100,     0, 22240, "",           0, 0, 0, 1441989758, 0,  5, 0 }
+        { 1, 58, 50,  1982204, 113, 1234, 29718, "Nurcy",      0, 0, 0,  215733663, 0, 10, 0 },
+        { 1, 58, 50,  1982204, 113, 1234, 29718, "Nurry",      0, 0, 0,  215733663, 0, 10, 0 },
+        { 1, 62, 98,  6157229, 414, 9999, 10445, "Neo Cortex", 0, 0, 0, 1453159363, 0,  1, 0 },
+        { 1, 63, 98,  9456822, 414, 5535, 50672, "Neo Cortex", 0, 0, 0,  324088359, 0,  1, 0 },
+        { 1,  1,  3, 10818328, 100,    0, 32793, "V",          0, 0, 0,  725035086, 0,  5, 0 },
+        { 1,  1,  3, 16451154, 100,    0, 22240, "",           0, 0, 0, 1441989758, 0,  5, 0 }
     };
 
     int i;

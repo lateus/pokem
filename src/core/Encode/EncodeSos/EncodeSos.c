@@ -7,18 +7,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int printMessages;
-
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 {
+    char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
+    char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
+    char password54Integers[54] = {0};
+    char password54Chars[54] = {0};
+    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
+    const unsigned char newPositions[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
 
-    int errors = entryErrorsSosMail(sos);
-    if (errors) {
-        if (printMessages) {
-            fprintf(stderr, " :: %d ERRORS FOUND. ENCODING IS NOT POSSIBLE.\a\n\n", errors);
-            fflush(stderr);
-        }
-        return InputError; /* to use the NOT operator */
+    if (entryErrorsSosMail(sos) > 0) {
+        return MultipleError; /* to use the NOT operator */
     }
 
     sos->idk_random = (unsigned int)rand() & 0xFFFFFF; /* same as % ‭16777216 */
@@ -29,21 +28,10 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     sos->teamGivingHelpID = 0; /* For SOS Mail, this is 0 */
     sos->idk_last3Bits = 0;
 
-    char packed34BytesPassword[34] = {0}; /* the first byte is merely a checksum */
-    char *packed33BytesPassword = packed34BytesPassword + 1; /* be aware about pointer's arithmetic if you don't want an unexpectly behavior at runtime */
     bitPackingEncodingSos(sos, packed33BytesPassword); /* bit packing while decoding are equivalent to bit unpacking while encoding */
-
     packed34BytesPassword[0] = (char)computeChecksum(packed34BytesPassword + 1, 33);
-
-    char password54Integers[54] = {0};
     bitUnpackingEncoding(packed34BytesPassword, password54Integers, 34);
-
-    char password54Chars[54] = {0};
-
-    const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     reallocateBytes(lookupTable, (unsigned char*)password54Integers, 54, password54Chars); /* a tricky one, but we want this: password54Chars[i] = lookupTable[(int)password54Integers[i]]; */
-
-    const unsigned char newPositions[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
     reallocateBytes(password54Chars, newPositions, 54, finalPassword);
 
     return NoError;

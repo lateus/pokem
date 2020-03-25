@@ -3,11 +3,41 @@
 
 /* Data definitions */
 
+/* Error codes */
+enum ErrorType {
+    NoError,                                /* no error, all OK */
+    UnknownError,                           /* unknown error */
+    MultipleError,                          /* multiple errors */
+    InputError,                             /* generic input error */
+    OutputError,                            /* generic output error */
+    ChecksumError,                          /* checksum error */
+    MailTypeError,                          /* the mail type is invalid */
+    MissionTypeError,                       /* the mission type is invalid */
+    SpecialJobIndicatorError,               /* the special job indicator is invalid */
+    PokemonOutOfRangeError,                 /* the pokemon is out of range */
+    PokemonNotAllowedError,                 /* the pokemon is invalid (for example, a legendary) */
+    ItemOutOfRangeError,                    /* the item is out of range */
+    NoItemError,                            /* the item is `0` (Nothing), which is not necessarily an error */
+    ItemCannotBeObtainedError,              /* the item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine */
+    ItemNotExistsInDungeonError,            /* the item do not exists in the dungeon */
+    RewardTypeError,                        /* the reward type is invalid */
+    FriendAreaOutOfRangeError,              /* the friend area is out of range */
+    FriendAreaAsRewardError,                /* the friend area cannot be set as reward */
+    DungeonOutOfRangeError,                 /* the dungeon is out of range */
+    DungeonIsInvalidError,                  /* the dungeon exists, but it is invalid */
+    MissionCannotBeAcceptedInDungeonError,  /* the mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo) */
+    FloorOutOfRangeError,                   /* the dungeon do not have the selected floor */
+    FloorInvalidInDungeonError,             /* the floor exists, but a mission cannot be done there (for example, boss and warp floors) */
+    MailIDOutOfRangeError,                  /* the mail ID is invalid */
+    NicknameEmptyError,                     /* the nickname is empty */
+    ChancesLeftError,                       /* the amount of chances left is invalid */
+    IncorrectPasswordLengthError,           /* the length of the password is invalid */
+    InvalidCharacterError,                  /* the password contains an invalid character */
+    ConversionError                         /* the password couldn't be converted */
+};
+
 /* Mail type */
 enum MailType { SosMailType = 1, AOkMailType = 4, ThankYouMailType = 5, WonderMailType = ThankYouMailType, InvalidMailType = 0x0F };
-
-/* Error codes */
-enum ErrorType { NoError, UnknownError, InputError, ChecksumError, OutOfRangeError };
 
 /* The type of a mission */
 enum MissionType { HelpMe, Find, Escort, FindItem, DeliverItem, FriendRescue };
@@ -27,7 +57,7 @@ struct WonderMail {
     unsigned int itemReward:8;            /* 8 bits: Item reward */
     unsigned int friendAreaReward:6;      /* 6 bits: Friend Area reward */
     unsigned int flavorText:8;            /* 8 bits: A byte that hold information about the head and body of the mail message */
-    unsigned int random:8;                /* 8 bits: A random byte. It allows that different mails (2^8 - 1 = 255) can have exactly the same info */
+    unsigned int random:8;                /* 8 bits: A random byte. It allows that different mails (2^8 = 256) can have exactly the same info */
     unsigned int idk_always0xFF:8;        /* 8 bits: A byte for unknown purpose, maybe for validation (I'm not sure), but always with the value 0xFF */
     unsigned int dungeon:7;               /* 7 bits: Dungeon */
     unsigned int floor:7;                 /* 7 bits: Floor (e.g. set to 2 for 2nd floor). The game will turn the floor negative if necesary */

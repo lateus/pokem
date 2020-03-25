@@ -16,7 +16,6 @@ void canEvolveWithItem_test(CuTest *tc);
 void isFood_test(CuTest *tc);
 void getSpecialJobIndicator_test(CuTest *tc);
 void getMailType_test(CuTest *tc);
-void findItemByDungeon_test(CuTest *tc);
 void computeDifficulty_test(CuTest *tc);
 void computeMoneyReward_test(CuTest *tc);
 void computeChecksum_test(CuTest *tc);
@@ -24,6 +23,12 @@ void entryErrorsWonderMail_test(CuTest *tc);
 void entryErrorsSosMail_test(CuTest *tc);
 void reallocateBytes_test(CuTest *tc);
 void mapPasswordByPositionInLookupTable_test(CuTest *tc);
+void checkPokemon_test(CuTest *tc);
+void checkDungeon_test(CuTest *tc);
+void checkFloor_test(CuTest *tc);
+void checkItem_test(CuTest *tc);
+void checkItemExistenceInDungeon_test(CuTest *tc);
+void checkMailID_test(CuTest *tc);
 
 
 CuSuite* UtilCoreGetTestSuite()
@@ -36,7 +41,6 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, isFood_test);
     SUITE_ADD_TEST(suite, getSpecialJobIndicator_test);
     SUITE_ADD_TEST(suite, getMailType_test);
-    SUITE_ADD_TEST(suite, findItemByDungeon_test);
     SUITE_ADD_TEST(suite, computeDifficulty_test);
     SUITE_ADD_TEST(suite, computeMoneyReward_test);
     SUITE_ADD_TEST(suite, computeChecksum_test);
@@ -44,6 +48,12 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, entryErrorsSosMail_test);
     SUITE_ADD_TEST(suite, reallocateBytes_test);
     SUITE_ADD_TEST(suite, mapPasswordByPositionInLookupTable_test);
+    SUITE_ADD_TEST(suite, checkPokemon_test);
+    SUITE_ADD_TEST(suite, checkDungeon_test);
+    SUITE_ADD_TEST(suite, checkFloor_test);
+    SUITE_ADD_TEST(suite, checkItem_test);
+    SUITE_ADD_TEST(suite, checkItemExistenceInDungeon_test);
+    SUITE_ADD_TEST(suite, checkMailID_test);
     return suite;
 }
 
@@ -225,25 +235,6 @@ void getMailType_test(CuTest *tc)
 #undef ARRAY_SIZE
 }
 
-void findItemByDungeon_test(CuTest *tc)
-{
-#define ARRAY_SIZE 4
-    int input1[ARRAY_SIZE] = { 55, 56, 232, 105 };
-    int input2[ARRAY_SIZE] = {  0,  0,  62,  40 };
-
-    int actual[ARRAY_SIZE];
-    int i;
-    for (i = 0; i < ARRAY_SIZE; ++i) {
-        actual[i] = findItemByDungeon(input1[i], input2[i]);
-    }
-
-    int expected[ARRAY_SIZE] = { 1, 0, 1, 1 };
-    for (i = 0; i < ARRAY_SIZE; ++i) {
-        CuAssertIntEquals(tc, expected[i], actual[i]);
-    }
-#undef ARRAY_SIZE
-}
-
 void computeDifficulty_test(CuTest *tc)
 {
 #define ARRAY_SIZE 10
@@ -311,7 +302,7 @@ void entryErrorsWonderMail_test(CuTest *tc)
         {     WonderMailType,     DeliverItem,         0x01,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,      62,    98 },
         {     WonderMailType,     DeliverItem,         0x02,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,       0,     1 }, /* Friend area ('E' difficulty) */
         {        SosMailType,            Find,         0x03,         405,         415,      255, FriendArea + 1,         240,          60,      0,      0, 0xFF,      63,    99 }, /* Mail type, pkmn client, pkmn target, reward type and dungeon */
-        {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, item to deliver, friend area and floor  */
+        {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, friend area and floor  */
         {   ThankYouMailType, DeliverItem + 1,         0x05,         210,         511,      240,      MoneyItem,           0,          63,      0,      0, 0xFF,       0,     4 }, /* Mission type, pkmn client, reward item and floor. Note: Not the Mail type cuz ThankYouMail == WonderMail */
         { WonderMailType + 1,          Escort,         0x0E,         150,         151,        0,      MoneyItem,         240,          19,      0,      0, 0xFF,      10,     4 }, /* Mail type, pkmn client, pkmn target, item reward and floor */
         {    InvalidMailType,        FindItem,         0x0F,         201,           0,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* Mail type, pkmn client, item to find and friend area and floor */
@@ -319,7 +310,7 @@ void entryErrorsWonderMail_test(CuTest *tc)
 
     int actualResults[ARRAY_SIZE];
 
-    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 5, 4, 5, 5 };
+    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 4, 4, 5, 5 };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -339,7 +330,7 @@ void entryErrorsSosMail_test(CuTest *tc)
         {      SosMailType + 1,      63,     0,        0,              0,   10000,        0,           "",   0,         240, 0,             10000,            10000,          255,           0 }, /* Mail type, Dungeon, Pkmn to rescue, Mail ID, Nickname and Reward item */
         {          SosMailType,       0,     0,        0,            150,    5555,        0,          ".",   0,           1, 0,                 1,                2,            0,           0 }, /* Floor and chances left */
         {          SosMailType,       0,     4,        0,            150,    1234,        0,          ".",   0,           1, 0,              1000,             1000,           11,           0 }, /* Floor and chances left */
-        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* Chances left. Note: Floor-specific prohibitions do not apply in not Wonder Mail requests */
+        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* Chances left. Note: Floor-specific prohibitions do not apply in non Wonder Mail requests */
         { ThankYouMailType + 1,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,          100,           0 }  /* Mail type */
     };
 
@@ -431,7 +422,7 @@ void mapPasswordByPositionInLookupTable_test(CuTest *tc)
 
     int actualReturnResults[ARRAY_SIZE];
 
-    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InputError, NoError, NoError, NoError, NoError, InputError, NoError, NoError };
+    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, InvalidCharacterError, NoError, NoError, NoError, NoError, InvalidCharacterError, NoError, NoError };
     const int expected2[ARRAY_SIZE][24] = {
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 24,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
         { 16, 14,  9, 16,  3,  0,  2,  4,  1, 21,  4,  0, 25,  0, 28, 30, 31,  7, 16,  0,  0,  0,  0,  0 },
@@ -456,6 +447,109 @@ void mapPasswordByPositionInLookupTable_test(CuTest *tc)
         for (j = 0; j < input3[i]; ++j) {
             CuAssertIntEquals(tc, expected2[i][j], input4[i][j]);
         }
+    }
+#undef ARRAY_SIZE
+}
+
+void checkPokemon_test(CuTest *tc)
+{
+#define ARRAY_SIZE 30
+                                          /* [INVALID],              [INVALID],              ??????????,             ??????????,             Bulbasaur,      Voltorb,     Articuno,               Zapdos,      Moltres,                Dragonite,      Mewtwo,                 Mew,                    Chikorita,      Misdreavus,     Unown,                  Unown,       Unown,                  Wobbuffet,      Raikou,                 Larvitar,       Lugia,                  Celebi,                 Treecko,        Metagross,      Metagross,   Regirock,               Regirock,    Deoxys,                 [INVALID],              [INVALID] */
+    const int input1[ARRAY_SIZE]         = { -1,                     -1,                     0,                      0,                      1,              100,         144,                    145,         146,                    149,            150,                    151,                    152,            200,            201,                    210,         226,                    227,            268,                    271,            274,                    276,                    277,            404,            404,         405,                    405,         414,                    415,                    415 };
+    enum MailType input2[ARRAY_SIZE]     = { WonderMailType,         SosMailType,            WonderMailType,         SosMailType,            WonderMailType, SosMailType, WonderMailType,         SosMailType, WonderMailType,         WonderMailType, WonderMailType,         WonderMailType,         WonderMailType, WonderMailType, WonderMailType,         SosMailType, WonderMailType,         WonderMailType, WonderMailType,         WonderMailType, WonderMailType,         WonderMailType,         WonderMailType, WonderMailType, SosMailType, WonderMailType,         SosMailType, WonderMailType,         WonderMailType,         SosMailType };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { PokemonOutOfRangeError, PokemonOutOfRangeError, PokemonOutOfRangeError, PokemonOutOfRangeError, NoError,        NoError,     PokemonNotAllowedError, NoError,     PokemonNotAllowedError, NoError,        PokemonNotAllowedError, PokemonNotAllowedError, NoError,        NoError,        PokemonNotAllowedError, NoError,     PokemonNotAllowedError, NoError,        PokemonNotAllowedError, NoError,        PokemonNotAllowedError, PokemonNotAllowedError, NoError,        NoError,        NoError,     PokemonNotAllowedError, NoError,     PokemonNotAllowedError, PokemonOutOfRangeError, PokemonOutOfRangeError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkPokemon(input1[i], input2[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkDungeon_test(CuTest *tc)
+{
+#define ARRAY_SIZE 35
+                                          /* [INVALID],              [INVALID],              Tiny Woods,     Thunderwave Cave, Mt. Thunder,    Mt. Thunder Peak,                      Mt. Thunder Peak, Mt. Blaze,      Mt. Blaze Peak,                        Frosty Grotto,                         Mt. Freeze Peak,                       Magma Cavern,   Magma Cavern Pit,                      Sky Tower Summit,                      Mt. Freeze Peak,                       Western Cave,   [INVALID],             [INVALID],             Wish Cave,      [INVALID],             [INVALID],             Rock Path,                             Snow Path,                             Snow Path,   [INVALID],             [INVALID],             [INVALID],             Dojo Registration,                     Howling Forest, [INVALID],             Mt. Faraway,    [INVALID],             Purity Forest,  [INVALID],              [INVALID] */
+    const int input1[ARRAY_SIZE]         = { -1,                     -1,                     0,              1,                5,              6,                                     6,                9,              10,                                    12,                                    14,                                    15,             16,                                    18,                                    22,                                    23,             24,                    25,                    26,             30,                    39,                    47,                                    48,                                    48,          49,                    50,                    51,                    52,                                    53,             54,                    60,             61,                    62,             63,                     63 };
+    enum MailType input2[ARRAY_SIZE]     = { WonderMailType,         SosMailType,            WonderMailType, SosMailType,      WonderMailType, WonderMailType,                        SosMailType,      WonderMailType, WonderMailType,                        WonderMailType,                        WonderMailType,                        WonderMailType, WonderMailType,                        WonderMailType,                        WonderMailType,                        WonderMailType, WonderMailType,        SosMailType,           WonderMailType, WonderMailType,        WonderMailType,        WonderMailType,                        WonderMailType,                        SosMailType, WonderMailType,        WonderMailType,        WonderMailType,        WonderMailType,                        WonderMailType, WonderMailType,        WonderMailType, WonderMailType,        WonderMailType, WonderMailType,         SosMailType };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { DungeonOutOfRangeError, DungeonOutOfRangeError, NoError,        NoError,          NoError,        MissionCannotBeAcceptedInDungeonError, NoError,          NoError,        MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,        MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,     DungeonIsInvalidError, DungeonIsInvalidError, DungeonIsInvalidError, MissionCannotBeAcceptedInDungeonError, NoError,        DungeonIsInvalidError, NoError,        DungeonIsInvalidError, NoError,        DungeonOutOfRangeError, DungeonOutOfRangeError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkDungeon(input1[i], input2[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkFloor_test(CuTest *tc)
+{
+#define ARRAY_SIZE 25
+    const int input1[ARRAY_SIZE]         = { -1,                   0,                    4,                    3,          9,                            13,                           1,                3,                            3,                            2,                            3,                            9,                            40,                           99,                           20,                           99,                           20,                           99,                           25,                           30,                           30,                           30,                           10,                           40,                           99 };
+                                          /* Tiny Woods,           Tiny Woods,           Tiny Woods,           Tiny Woods, Mt. Steel,                    Sinister Woods,               Mt. Thunder Peak, Mt. Thunder Peak,             Mt. Blaze Peak,               Magma Cavern Pit,             Magma Cavern Pit,             Sky Tower Summit,             Stormy Sea,                   Silver Trench,                Meteor Cave,                  Western Cave,                 Wish Cave,                    Wish Cave,                    Northern Range,               Fiery Field,                  Northwind Field,              Lightning Field,              Uproar Forest,                Mt. Faraway,                  Purity Forest */
+    const int input2[ARRAY_SIZE]         = { 0,                    0,                    0,                    0,          2,                            3,                            6,                6,                            10,                           16,                           16,                           18,                           19,                           20,                           21,                           23,                           26,                           26,                           29,                           34,                           35,                           37,                           42,                           60,                           62 };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { FloorOutOfRangeError, FloorOutOfRangeError, FloorOutOfRangeError, NoError,    FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   NoError,          FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError,   FloorInvalidInDungeonError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkFloor(input1[i], input2[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkItem_test(CuTest *tc)
+{
+#define ARRAY_SIZE 10
+    const int input[ARRAY_SIZE]          = { -1,                  0,           1,       150,     235,     236,                       237,                       238,                       239,                       240 };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { ItemOutOfRangeError, NoItemError, NoError, NoError, NoError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemOutOfRangeError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkItem(input[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkItemExistenceInDungeon_test(CuTest *tc)
+{
+#define ARRAY_SIZE 4
+    int input1[ARRAY_SIZE] = { 55, 56, 232, 105 };
+    int input2[ARRAY_SIZE] = {  0,  0,  62,  40 };
+
+    int testResult[ARRAY_SIZE];
+    int expectedResult[ARRAY_SIZE] = { NoError, ItemNotExistsInDungeonError, NoError, NoError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkItemExistenceInDungeon(input1[i], input2[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkMailID_test(CuTest *tc)
+{
+#define ARRAY_SIZE 5
+    const int input[ARRAY_SIZE]          = { -1,                    0,       1,       9999,    10000 };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { MailIDOutOfRangeError, NoError, NoError, NoError, MailIDOutOfRangeError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkMailID(input[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
     }
 #undef ARRAY_SIZE
 }

@@ -3,71 +3,61 @@
 #include "../../UtilCore/UtilCore.h"
 #include "../../../data/md1database/md1database.h"
 #include "../../../data/md1global/md1global.h"
+#include "../../../util/messages.h"
 
 #include <stdio.h>
 #include <string.h>
 
-extern int printMessages;
-
 int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
 {
     size_t pswLenght = strlen(password);
-    if (pswLenght != 24) {
-        if (printMessages) {
-            fprintf(stderr, "ERROR: You password lenght is %u characters, and it must have exactly 24 characters.\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n", (unsigned int)pswLenght);
-            fflush(stderr);
-        }
-        return InputError;
-    }
-
     char allocatedPassword[24] = {0};
     const unsigned char newPositions[24] = { 12, 6, 19, 8, 4, 13, 15, 9, 16, 2, 20, 18, 0, 21, 11, 5, 23, 3, 17, 10, 1, 14, 22, 7 };
-    reallocateBytes(password, newPositions, 24, allocatedPassword);
-
-    /* This password will be 'integerized' using the lookup table bellow */
     char password24Integers[24] = {0};
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    int errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 24, password24Integers);
+    int errorCode = NoError;
+    char packed15BytesPassword[15] = {0};
+    int checksum = 0;
+    char* packed14BytesPassword = NULL;
+    struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* to store the decoded Wonder Mail */
+
+    if (pswLenght != 24) {
+        printMessage(stderr, ErrorMessage, "The password must have " LGREEN "24" RESET " characters. Current length: " LRED "%d" RESET ".\n", pswLenght);
+        return IncorrectPasswordLengthError;
+    }
+
+    reallocateBytes(password, newPositions, 24, allocatedPassword);
+
+    /* this password will be 'integerized' using the lookup table */
+    errorCode = mapPasswordByPositionInLookupTable(allocatedPassword, lookupTable, 24, password24Integers);
     if (errorCode != NoError) {
         return errorCode;
     }
 
-    char packed15BytesPassword[15] = {0};
     /* Bit packing */
-    bitPackingDecoding(packed15BytesPassword, password24Integers, 24); /* Pack the password */
+    bitPackingDecoding(packed15BytesPassword, password24Integers, 24); /* pack the password */
 
-    /* Checksum */
-    int checksum = computeChecksum(packed15BytesPassword + 1, 14);
+    /* checksum */
+    checksum = computeChecksum(packed15BytesPassword + 1, 14);
     if (checksum != (packed15BytesPassword[0] & 0xFF)) {
-        if (printMessages) {
-            fprintf(stderr, "ERROR: Checksum failed, so the password is INVALID.\n\n"
-                            "THE PASSWORD CAN'T BE DECODED.\n\n");
-            fflush(stderr);
-        }
+        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ".\n", packed15BytesPassword[0] & 0xFF, checksum);
         return ChecksumError;
     }
 
-    /* The first byte in the 15 byte packed password was merely a checksum, so it's useless and I'll remove it */
-    char* packed14BytesPassword = packed15BytesPassword + 1; /* You must be firm in pointer's arithmetic to handle this effectively, so take care doing this things */
+    /* the first byte in the 15 byte packed password was merely a checksum, so it's useless and I'll remove it */
+    packed14BytesPassword = packed15BytesPassword + 1;
 
-    /* Bit unpacking */
-    struct WonderMail wm = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; /* To store the decoded Wonder Mail */
+    /* bit unpacking */
     bitUnpackingDecodingWonderMail(packed14BytesPassword, &wm);
     
-    /* Checking errors */
-    int errors = entryErrorsWonderMail(&wm);
-    if (errors) {
-        if (printMessages) {
-            fprintf(stderr, " :: %d ERRORS FOUND. DECODING IS NOT POSSIBLE.\a\n\n", errors);
-            fflush(stderr);
-        }
-        return InputError;
+    /* checking errors */
+    if (entryErrorsWonderMail(&wm) > 0) {
+        return MultipleError;
     }
 
     *wonderMailResult = wm;
 
-    return NoError; /* means ok */
+    return NoError;
 }
 
 
@@ -349,6 +339,7 @@ void setFlavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairs
 
 void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo)
 {
+    int diffValue = 0, money = 0;
     setFlavorText(mail, mailInfo);
 
     strcpy(mailInfo->client, mail->pkmnClient >= pkmnSpeciesCount ? "[INVALID]" : pkmnSpeciesStr[mail->pkmnClient]);
@@ -373,10 +364,10 @@ void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mai
     sprintf(mailInfo->place, "%s%s%s", mail->missionType == FindItem ? nearPlaceText : "", mail->missionType == FindItem ? " " : "", mail->dungeon >= dungeonsCount ? "[INVALID]" : dungeonsStr[mail->dungeon]);
     sprintf(mailInfo->floor, "%c%dF", mail->dungeon >= dungeonsCount ? '?' : dungeonUpOrDown[mail->dungeon], mail->floor);
 
-    int diffValue = computeDifficulty(mail->dungeon, mail->floor, mail->missionType);
+    diffValue = computeDifficulty(mail->dungeon, mail->floor, mail->missionType);
     mailInfo->difficulty = diffValue >= difficultiesCharsCount ? '?' : difficultiesChars[diffValue];
 
-    int money = computeMoneyReward(diffValue, mail->rewardType);
+    money = computeMoneyReward(diffValue, mail->rewardType);
     if (mail->rewardType == 9) {   /* Friend Area reward */
         sprintf(mailInfo->reward, "%s [%s]", friendZoneText, mail->friendAreaReward >= friendAreasCount ? "INVALID" : friendAreasStr[mail->friendAreaReward]);
     } else if (money != 0) {
