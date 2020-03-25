@@ -330,7 +330,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             break;
         case NoItemError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Item " LRED "0" RESET " [" LRED "%s" RESET "] is not allowed as item to find or deliver.\n\n", pkmnSpeciesStr[0]);
+            printMessage(stderr, ErrorMessage, "Item " LRED "0" RESET " [" LRED "%s" RESET "] is not allowed as item to find or deliver.\n\n", itemsStr[0]);
             break;
         case ItemCannotBeObtainedError:
             ++errorsFound;
@@ -349,7 +349,7 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
                 printMessage(stderr, ErrorMessage, "The item " LRED "%u" RESET " [" LRED "%s" RESET "] can't be found in the dungeon " LIGHT "%u" RESET " [" LIGHT "%s" RESET "] To accept a job about finding an item inside a dungeon, the item must exist on that dungeon. The items that can be found in that dungeon are listed bellow:\n",
                         wm->itemDeliverFind, itemsStr[wm->itemDeliverFind], wm->dungeon, dungeonsStr[wm->dungeon]);
                 if (printMessages) {
-                    for (i = 1; i < itemsInDungeons[wm->dungeon][0]; ++i) {
+                    for (i = 1; i <= itemsInDungeons[wm->dungeon][0]; ++i) {
                         fprintf(stderr, RESET "(" LGREEN "%u" RESET ") %s\n", itemsInDungeons[wm->dungeon][i], itemsStr[itemsInDungeons[wm->dungeon][i]]);
                     }
                     fprintf(stderr, "\n\n");
