@@ -129,7 +129,7 @@ void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPasswo
     packed33BytesPassword[31]  = ((mail->teamGivingHelpID >> 29) & 0x07); /* get 3 bits */
     packed33BytesPassword[31] |= ((mail->chancesLeft & 0x1F) << 3); /* get 5 bits, 3 remaining */
 
-    packed33BytesPassword[32]  = ((mail->chancesLeft >> 29) & 0x07); /* get 3 bits */
+    packed33BytesPassword[32]  = ((mail->chancesLeft >> 5) & 0x07); /* get 3 bits */
     packed33BytesPassword[32] |= ((mail->idk_last3Bits & 0x07) << 3); /* get 2 bits. NOTE: Always 0 */
 
     /* The remaining bits beyond index 32 were filled with 0 during array initialization, so there is no need to do it now */
