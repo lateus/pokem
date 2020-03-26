@@ -38,8 +38,8 @@ void convertSosMail_test(CuTest *tc)
         ".-N67N70YX*H?F3J?HH9???6H5-6?M?K59P5??TN97/PX1R?48JRW*", /* (ThankYou - VALID) */
         "?Y??5S?.694??3W9/M2M??4R33WW?T?85QH5??TN74./X/0??85QJ2", /* (SOS - INVALID INPUT) */
         "..N69PRP!P*-?M17?12T????.QN6?1?859R6??T?S?0+?43?4CHR5C", /* (AOK - INVALID CHECKSUM) */
-        "X.N69PRP!P*-?M17?12T????.QN6?1?859R6??T?S?0+?43?4CHR5C", /* (AOK - INVALID INPUT) */
-        "S*??7MRS5R2H?78R?MK1????*5H7?H?8FKH6??S?K1N/?3!?4.STM.", /* (ThankYou - INVALID INPUT) */
+        "X.N69PRP!P*-?M17?12T????.QN6?1?859R6??T?S?0+?43?4CHR5C", /* (AOK - VALID) */
+        "S*??7MRS5R2H?78R?MK1????*5H7?H?8FKH6??S?K1N/?3!?4.STM.", /* (ThankYou - VALID) */
         "S.N?6TP0X729?7W6?MKN??4?.276?7?8T-H6??S??6M/?3H?406T-"   /* (ThankYou - INVALID INPUT) */
     };
     const int input2[ARRAY_SIZE] = { 0, 646854, 100, 113150, 9423, 1000000, 3054354, 31385, 321654, 68798, 1, 30542, 5000, 87865, 315 };
@@ -49,7 +49,7 @@ void convertSosMail_test(CuTest *tc)
 
     int actualReturnResults[ARRAY_SIZE];
 
-    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, ItemOutOfRangeError, NoError, NoError, NoError, NoError, NoError, NoError, MultipleError, ChecksumError, MultipleError, MultipleError, IncorrectPasswordLengthError };
+    const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, ItemOutOfRangeError, NoError, NoError, NoError, NoError, NoError, NoError, MultipleError, ChecksumError, NoError, NoError, IncorrectPasswordLengthError };
     const char expected2[ARRAY_SIZE][54 + 1] = {
         "S3?47CP9SS1+Y+/6?!4XK?M?PTP??+TK*7J6?-T?Q52S?3584Q*RJ.",
         "?F?1?CP7TPC./MH5?KKX7?4?F2M7?!1-H!H6?XT?7R+/?+!??WQQN0",
@@ -80,8 +80,8 @@ void convertSosMail_test(CuTest *tc)
         ".-N67N70YX*H?F3J?HH9???6H5-6?M?K59P5??TN97/PX1R?48JRW*",
         "",
         "",
-        "",
-        "",
+        "X.K69PRT!P*-?*17?12T????.QN6?1?859R6??T?S?0+?43?4CHR5C",
+        "S*1?7MR.5R2H?M8R?MK1????*5H7?H?8FKH6N?S?K1N/?3!?4.STM.",
         ""
     };
 

@@ -447,8 +447,8 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 int entryErrorsSosMail(const struct SosMail *sos)
 {
     int errorsFound = 0;
-    int minChancesLeft = sos->mailType == SosMailType ? 1  : 0;
-    int maxChancesLeft = sos->mailType == SosMailType ? 10 : 9;
+    int minChancesLeft = sos->mailType == SosMailType ?   1 :  0;
+    int maxChancesLeft = sos->mailType == SosMailType ? 100 : 99;
 
     /* mail type check */
     if (sos->mailType != SosMailType && sos->mailType != AOkMailType && sos->mailType != ThankYouMailType) {

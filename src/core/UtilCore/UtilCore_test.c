@@ -329,14 +329,14 @@ void entryErrorsSosMail_test(CuTest *tc)
         {     ThankYouMailType,      62,    98, 0xFFFFFF,            414,    9999,   0xFFFF, "Niiickname",   1,         239, 0,              9999,             9999,            9,           0 },
         {      SosMailType + 1,      63,     0,        0,              0,   10000,        0,           "",   0,         240, 0,             10000,            10000,          255,           0 }, /* Mail type, Dungeon, Pkmn to rescue, Mail ID, Nickname and Reward item */
         {          SosMailType,       0,     0,        0,            150,    5555,        0,          ".",   0,           1, 0,                 1,                2,            0,           0 }, /* Floor and chances left */
-        {          SosMailType,       0,     4,        0,            150,    1234,        0,          ".",   0,           1, 0,              1000,             1000,           11,           0 }, /* Floor and chances left */
-        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* Chances left. Note: Floor-specific prohibitions do not apply in non Wonder Mail requests */
+        {          SosMailType,       0,     4,        0,            150,    1234,        0,          ".",   0,           1, 0,              1000,             1000,           11,           0 }, /* Floor */
+        {          AOkMailType,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,           10,           0 }, /* All Ok. Note: Floor-specific prohibitions do not apply in non Wonder Mail requests */
         { ThankYouMailType + 1,      23,    99,        0,            150,    4321,        0,          ".",   0,           1, 0,               101,              111,          100,           0 }  /* Mail type */
     };
 
     int actualResults[ARRAY_SIZE];
 
-    const int expectedResults[ARRAY_SIZE] = { 0, 0, 6, 2, 2, 1, 1 };
+    const int expectedResults[ARRAY_SIZE] = { 0, 0, 6, 2, 1, 0, 1 };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
