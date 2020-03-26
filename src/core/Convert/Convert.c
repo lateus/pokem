@@ -43,6 +43,15 @@ int convertSosMail(const char *SOSPassword, int idTeamGivingHelp, int item, char
 
     /* FIRST: A-OK MAIL */
     if (mailType == SosMailType) {
+    	if (idTeamGivingHelp == 0) { /* then make it equal to the ID of the team seeking help */
+    		idTeamGivingHelp  =  password54Integers[39] & 0x1F;
+		    idTeamGivingHelp |= (password54Integers[40] & 0x1F) <<  5;
+		    idTeamGivingHelp |= (password54Integers[41] & 0x1F) << 10;
+		    idTeamGivingHelp |= (password54Integers[42] & 0x1F) << 15;
+		    idTeamGivingHelp |= (password54Integers[43] & 0x1F) << 20;
+		    idTeamGivingHelp |= (password54Integers[44] & 0x1F) << 25;
+		    idTeamGivingHelp |= (password54Integers[45] & 0x03) << 30;
+    	}
         convertSosToAOkMail(password54Integers, idTeamGivingHelp);
 
         /* Bit packing */

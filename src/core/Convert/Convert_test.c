@@ -51,7 +51,7 @@ void convertSosMail_test(CuTest *tc)
 
     const int expected1[ARRAY_SIZE] = { NoError, NoError, NoError, ItemOutOfRangeError, NoError, NoError, NoError, NoError, NoError, NoError, MultipleError, ChecksumError, MultipleError, MultipleError, IncorrectPasswordLengthError };
     const char expected2[ARRAY_SIZE][54 + 1] = {
-        "S3??7CP9SS1+?//6?!4X??4?PTP??+?K*7J6??T?Q52S?35?4Q*RJ.",
+        "S3?47CP9SS1+Y+/6?!4XK?M?PTP??+TK*7J6?-T?Q52S?3584Q*RJ.",
         "?F?1?CP7TPC./MH5?KKX7?4?F2M7?!1-H!H6?XT?7R+/?+!??WQQN0",
         "HM74PJW62M!C?FSN2!MM??4RHQ87?SSHH!H2??T.7+M+XR2?4X251.",
         "",
@@ -68,7 +68,7 @@ void convertSosMail_test(CuTest *tc)
         ""
     };
     const char expected3[ARRAY_SIZE][54 + 1] = {
-        "S33?7CP0SS1+?Q/6?!4X??4?PTP??+?K*7J61?T?Q52S?35?4Q*RJ.",
+        "S3347CP0SS1+Y0/6?!4XK?M?PTP??+TK*7J61-T?Q52S?3584Q*RJ.",
         "?F?1?CP+TPC./*H5?KKX7?4?F2M7?!1-H!H6?XT?7R+/?+!?4WQQN0",
         "HM84PJW02M!C?5SN2!MM??4RHQ87?SSHH!H2??T.7+M+XR2?4X251.",
         "",
