@@ -108,7 +108,7 @@ struct SosMailInfo {
     char difficulty;
     char reward[19];
     char id[6];
-    char chancesLeft[3];
+    char chancesLeft[4];
     char password[100];
 };
 
