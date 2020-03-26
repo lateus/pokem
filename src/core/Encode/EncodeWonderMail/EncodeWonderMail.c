@@ -16,6 +16,7 @@ int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialW
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
     const unsigned char newPositions[24] = { 12, 20, 9, 17, 4, 15, 1, 23, 3, 7, 19, 14, 0, 5, 21, 6, 8, 18, 11, 2, 10, 13, 22, 16 };
 
+    wm->mailType = WonderMailType;
     if (entryErrorsWonderMail(wm) > 0) {
         return MultipleError;
     }
