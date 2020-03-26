@@ -41,7 +41,7 @@ int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
     /* checksum */
     checksum = computeChecksum(packed15BytesPassword + 1, 14);
     if (checksum != (packed15BytesPassword[0] & 0xFF)) {
-        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ".\n", packed15BytesPassword[0] & 0xFF, checksum);
+        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ". The password is invalid.\n", packed15BytesPassword[0] & 0xFF, checksum);
         return ChecksumError;
     }
 

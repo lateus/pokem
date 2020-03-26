@@ -40,7 +40,7 @@ int decodeSosMail(const char *password, struct SosMail *sosMailResult)
     /* checksum */
     checksum = computeChecksum(packed34BytesPassword + 1, 33); /* the first byte is ignored in the calculation, cuz is merely for a checksum */
     if (checksum != (packed34BytesPassword[0] & 0xFF)) {
-        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ".\n", packed34BytesPassword[0] & 0xFF, checksum);
+        printMessage(stderr, ErrorMessage, "Checksum failed. Expected " LGREEN "%d" RESET ", but was " LRED "%d" RESET ". The password is invalid.\n", packed34BytesPassword[0] & 0xFF, checksum);
         return ChecksumError;
     }
 
