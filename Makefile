@@ -1,7 +1,7 @@
 # Compiler
 CC			:=	gcc
 # Compiler flags
-DEFINES		:=	$(if $(filter all-no-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
+DEFINES		:=	$(if $(filter all-without-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic -std=c89
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=
@@ -86,7 +86,7 @@ WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 .PHONY: all all-without-colors staticlib clean help
 
 all: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library (default)
-all-no-colors: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library without color support
+all-without-colors: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library without color support
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
