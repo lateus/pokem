@@ -8,6 +8,9 @@
 
 Currently, only *Red & Blue Rescue Teams* are supported.  
 
+## Latest dev version: v0.2-alpha  
+## Latest stable version: \[None\]  
+
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Usage
