@@ -24,6 +24,7 @@ int checkDungeon(int dungeon, enum MailType mailType);
 int checkFloor(int floor, int dungeon);
 int checkItem(int item);
 int checkItemExistenceInDungeon(int item, int dungeon);
+int checkFriendArea(int friendArea);
 int checkMailID(int mailID);
 
 #endif /* UTILCORE_H */

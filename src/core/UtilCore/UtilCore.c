@@ -212,8 +212,8 @@ int getMailType(const char* password)
 {
     const size_t passwordLength = strlen(password);
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    const char firstChar  = password[passwordLength == 24 ? 1 :  7];
-    const char secondChar = password[passwordLength == 24 ? 2 : 25];
+    const char firstChar  = password[passwordLength < 54 ? 1 :  7];
+    const char secondChar = password[passwordLength < 54 ? 2 : 25];
     const char* firstCharPtr = strchr(lookupTable, firstChar);
     const char* secondCharPtr = strchr(lookupTable, secondChar);
     if (passwordLength != 24 && passwordLength != 54) {
@@ -425,14 +425,23 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
 
     /* friend area reward check */
     if (wm->rewardType == FriendArea) {
-        if (wm->friendAreaReward != 9 && wm->friendAreaReward != 10 && wm->friendAreaReward != 15 && wm->friendAreaReward != 37) {
+        switch (checkFriendArea(wm->friendAreaReward))
+        {
+        case NoError:
+            break;
+        case FriendAreaIsInvalidAsRewardError:
             ++errorsFound;
-            printMessage(stderr, ErrorMessage, "Valid friend area values are:\n" \
-                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
-                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
-                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
-                                 RESET "(" LGREEN "%u" RESET ") %s\n" \
-                                 "Current value: %s%u" RESET " [%s%s" RESET "]\n\n", 9, friendAreasStr[9], 10, friendAreasStr[10], 15, friendAreasStr[15], 37, friendAreasStr[37], wm->friendAreaReward < friendAreasCount ? LGREEN : LRED, wm->friendAreaReward, wm->friendAreaReward < friendAreasCount ? LGREEN : LRED, wm->friendAreaReward < friendAreasCount ? friendAreasStr[wm->friendAreaReward] : "INVALID");
+            printMessage(stderr, ErrorMessage, "The friend area " LRED "%d" RESET " [" LRED "%s" RESET "] cannot be set as reward.\n" \
+                                               "Must be one of:\n" \
+                                               RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                               RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                               RESET "(" LGREEN "%u" RESET ") %s\n" \
+                                               RESET "(" LGREEN "%u" RESET ") %s\n", wm->friendAreaReward, wm->friendAreaReward < friendAreasCount ? friendAreasStr[wm->friendAreaReward] : "INVALID", 9, friendAreasStr[9], 10, friendAreasStr[10], 15, friendAreasStr[15], 37, friendAreasStr[37]);
+            break;
+        case FriendAreaOutOfRangeError:
+            ++errorsFound;
+            printMessage(stderr, ErrorMessage, "Friend area must be between " LGREEN "%d" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "INVALID" RESET "]\n\n", friendAreasStr[1], friendAreasCount - 1, friendAreasStr[friendAreasCount - 1], wm->friendAreaReward);
+            break;
         }
     }
 
@@ -639,6 +648,20 @@ int checkItemExistenceInDungeon(int item, int dungeon)
         }
     }
     return ItemNotExistsInDungeonError;
+}
+
+
+
+int checkFriendArea(int friendArea)
+{
+    /* pkmn check (limits) */
+    if (friendArea <= 0 || (unsigned int)friendArea >= friendAreasCount) {
+        return FriendAreaOutOfRangeError;
+    } else if (friendArea != 9 && friendArea != 10 && friendArea != 15 && friendArea != 37) {
+        return FriendAreaIsInvalidAsRewardError;
+    }
+
+    return NoError;
 }
 
 

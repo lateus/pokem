@@ -188,7 +188,7 @@ Name                                    | Value   | Description
 `ItemNotExistsInDungeonError`           | `14`    | The item do not exists in the dungeon
 `RewardTypeError`                       | `15`    | The reward type is invalid
 `FriendAreaOutOfRangeError`             | `16`    | The friend area is out of range
-`FriendAreaAsRewardError`               | `17`    | The friend area cannot be set as reward
+`FriendAreaIsInvalidAsRewardError`      | `17`    | The friend area cannot be set as reward
 `DungeonOutOfRangeError`                | `18`    | The dungeon is out of range
 `DungeonIsInvalidError`                 | `19`    | The dungeon exists, but it is invalid
 `MissionCannotBeAcceptedInDungeonError` | `20`    | The mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo)
@@ -303,6 +303,13 @@ int checkItemExistenceInDungeon(int item, int dungeon)
 ```  
 Check if the `item` can be found in the `dungeon`. Returns `ItemNotExistsInDungeonError` if it cannot be found, `NoError` otherwise. The result of this function must only be considered relevant if the `item` is the one to find in missions of type `FindItem`.  
 **NOTE:** This function assumes that the `dungeon` is valid.  
+
+----------  
+
+```c
+int checkFriendArea(int friendArea)
+```  
+Check if the `friendArea` is valid. Returns `FriendAreaOutOfRangeError` if it is out of range, or `FriendAreaIsInvalidAsRewardError` if it cannot be set as reward, `NoError` otherwise.  
 
 ----------  
 

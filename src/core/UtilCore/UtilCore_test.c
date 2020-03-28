@@ -28,6 +28,7 @@ void checkDungeon_test(CuTest *tc);
 void checkFloor_test(CuTest *tc);
 void checkItem_test(CuTest *tc);
 void checkItemExistenceInDungeon_test(CuTest *tc);
+void checkFriendArea_test(CuTest *tc);
 void checkMailID_test(CuTest *tc);
 
 
@@ -53,6 +54,7 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, checkFloor_test);
     SUITE_ADD_TEST(suite, checkItem_test);
     SUITE_ADD_TEST(suite, checkItemExistenceInDungeon_test);
+    SUITE_ADD_TEST(suite, checkFriendArea_test);
     SUITE_ADD_TEST(suite, checkMailID_test);
     return suite;
 }
@@ -533,6 +535,22 @@ void checkItemExistenceInDungeon_test(CuTest *tc)
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         testResult[i] = checkItemExistenceInDungeon(input1[i], input2[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkFriendArea_test(CuTest *tc)
+{
+#define ARRAY_SIZE 16
+    const int input[ARRAY_SIZE]          = { -1,                        0,                         1,                                8,                                9,       10,      11,                               14,                               15,      16,                               36,                               37,      38,                               57,                               58,                        100 };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { FriendAreaOutOfRangeError, FriendAreaOutOfRangeError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, NoError, NoError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, NoError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, NoError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, FriendAreaOutOfRangeError, FriendAreaOutOfRangeError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkFriendArea(input[i]);
         CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
     }
 #undef ARRAY_SIZE
