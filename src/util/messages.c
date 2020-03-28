@@ -23,11 +23,7 @@ int printMessage(FILE *stream, enum MessageType messageType, const char* message
     va_list argList;
     int charactersReturned = 0;
     const char* messageTypesStr[] = { "DEBUG", "INFO", "WARNING", "ERROR", "FATAL ERROR" };
-#ifndef NO_USE_COLORS
     const char* messageColorsByTypes[] = { DARKGREEN, LIGHTGREEN, LIGHTYELLOW, LIGHTRED, LIGHTRED };
-#else
-    const char* messageColorsByTypes[] = { {0}, {0}, {0}, {0}, {0} };
-#endif
 
     if (!printMessages || !stream || messageType > FatalMessage) {
         return 0;
