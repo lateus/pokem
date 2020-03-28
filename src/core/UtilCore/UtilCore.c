@@ -208,17 +208,15 @@ unsigned int getSpecialJobIndicator(int pkmnClient, int pkmnTarget, int missionT
 }
 
 
-/* TODO: This does not works in Wonder Mails */
 int getMailType(const char* password)
 {
     const size_t passwordLength = strlen(password);
-    /* int mailType = ((password54Integers[1] >> 3) & 0x03) | (password54Integers[2] & 0x03) << 2; */
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    const char firstChar  = password[passwordLength == 24 ? 20 :  7];
-    const char secondChar = password[passwordLength == 24 ?  9 : 25];
+    const char firstChar  = password[passwordLength == 24 ? 1 :  7];
+    const char secondChar = password[passwordLength == 24 ? 2 : 25];
     const char* firstCharPtr = strchr(lookupTable, firstChar);
     const char* secondCharPtr = strchr(lookupTable, secondChar);
-    if (/*passwordLength != 24 && */passwordLength != 54) {
+    if (passwordLength != 24 && passwordLength != 54) {
         return InvalidMailType;
     }
     return (!firstCharPtr || !secondCharPtr) ? InvalidMailType : (((firstCharPtr - lookupTable) >> 3) & 0x03) | ((secondCharPtr - lookupTable) & 0x03) << 2;
