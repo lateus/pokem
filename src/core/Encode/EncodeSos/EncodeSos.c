@@ -14,7 +14,7 @@ int encodeSosMail(struct SosMail *sos, char *finalPassword)
     char password54Integers[54] = {0};
     char password54Chars[54] = {0};
     const char* lookupTable = "?67NPR89F0+.STXY45MCHJ-K12!*3Q/W";
-    const unsigned char newPositions[] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
+    const unsigned char newPositions[54] = { 23, 16, 37, 45, 4, 41, 52, 1, 8, 39, 25, 36, 47, 0, 12, 3, 33, 20, 28, 9, 49, 53, 51, 31, 11, 2, 13, 14, 34, 5, 46, 27, 17, 18, 19, 29, 38, 48, 22, 32, 42, 15, 6, 26, 30, 10, 44, 50, 35, 7, 40, 21, 43, 24 };
 
     if (entryErrorsSosMail(sos) > 0) {
         return MultipleError; /* to use the NOT operator */
