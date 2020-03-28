@@ -1,9 +1,8 @@
-<p align="center"><img src=resources/logo/pokem.png></p>  
+<p align="center"><img width=256 height=256 src=resources/logo/pokem.png></p>  
 
 # PokéM - Pokémon Mystery Dungeon Mail Generator  
 
-*Copyright 2018-2019 Carlos Enrique Pérez Sánchez.*  
-*Based on the tools written by Peter O.*  
+*Copyright 2018-2020 Carlos Enrique Pérez Sánchez.*  
 
 **Pokémon Mystery Dungeon Mail Generator, *PokéM* for short is a tool to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**  
 
@@ -16,6 +15,194 @@ Currently, only *Red & Blue Rescue Teams* are supported.
 Official documentation of the library ***PokéM***. Here you will find an API containing a detailed description of each routine you can access, as well the database used (items, pokémon, dungeons, ...).
 
 -----------------------------------------------------------------------------------------------------------------------------------
+
+
+# Data types
+
+## Structures
+
+This structures are handled internally and you will not need to modify them. But, since you must instantiate them in one place or another, it is better that you know about them.
+
+### `struct WonderMail`
+
+This structure contains the information of a **Wonder Mail**. It uses bit fields, so take care of not overflow them. It's defined as follows:
+
+Field                              | Size   | Description
+---------------------------------- | ------ | -----------
+`unsigned int mailType`            | 4 bits | The type of mail. Must equal `5` for **Wonder Mail**. See `MailType` enumeration.
+`unsigned int missionType`         | 3 bits | The type of mission. See `MissionType` enumeration.
+`unsigned int specialJobIndicator` | 4 bits | Indicates if the mission is a special job. Usually `0`. This value is handled internally and shouldn't be modified.
+`unsigned int pkmnClient`          | 9 bits | Client pokémon.
+`unsigned int pkmnTarget`          | 9 bits | Target pokémon.
+`unsigned int itemDeliverFind`     | 8 bits | Item to find/deliver. Safe to set to `0x9` if the mission is not of type `FindItem` or `DeliverItem`. See `MissionType` enumeration.
+`unsigned int rewardType`          | 4 bits | The type of reward. See `RewardType` enumeration.
+`unsigned int itemReward`          | 8 bits | The reward item.
+`unsigned int friendAreaReward`    | 6 bits | The friend zone reward if the `rewardType` field is set to `FriendArea`.
+`unsigned int flavorText`          | 8 bits | A byte that holds information about the head and body of the mail message.
+`unsigned int random`              | 8 bits | A random byte.
+`unsigned int idk_always0xFF`      | 8 bits | A byte for unknown purpose, but almost always with the value `0xFF`.
+`unsigned int dungeon`             | 7 bits | The dungeon.
+`unsigned int floor`               | 7 bits | The floor in absolute value. The game will turn it negative if neccessary.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+### `struct SosMail`
+
+This structure contains the information of a **SOS Mail**. It uses bit fields, so take care of not overflow them. It's defined as follows:
+
+Field                              | Size    | Description
+---------------------------------- | ------- | -----------
+`unsigned int mailType`            |  4 bits | The type of mail. Must equal `1` for **SOS Mail**, `4` for **A-OK Mail**, and `5` for **Thank-You Mail**. See `MailType` enumeration.
+`unsigned int dungeon`             |  7 bits | The dungeon.
+`unsigned int floor`               |  7 bits | The floor in absolute value. The game will turn it negative if neccessary.
+`unsigned int idk_random`          | 24 bits | Three random bytes. It allows that different mails can have the same info.
+`unsigned int pkmnToRescue`        |  9 bits | Pokémon to rescue.
+`unsigned int mailID`              | 16 bits | Mail ID.
+`unsigned int idk_random2`         | 16 bits | Two random bytes. 
+`char pkmnNick[10]`                | 80 bits | The nickname of the pokémon to rescue. `0` marks the end of the string if shorter than `10` characters.
+`unsigned int idk_0Or1`            |  8 bits | A byte for unknown purpose. Safe to set to `1` if the mail is a **Thank-You Mail**, else set to `0`.
+`unsigned int itemReward`          |  8 bits | The reward item. Safe to set to `0` if not **Thank-You Mail**.
+`unsigned int idk_0`               |  8 bits | A byte for unknown purpose. Safe to set to `0`.
+`unsigned int teamSeekingHelpID`   | 32 bits | ID of rescue team seeking help.
+`unsigned int teamGivingHelpID`    | 32 bits | ID of rescue team giving help.
+`unsigned int chancesLeft`         |  8 bits | Rescue chances left; when converting to **A-OK Mail**, subtract `1` from this.
+`unsigned int idk_last3Bits`       |  3 bits | Three bits for unknown purpose. Safe to set to `0`.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+### `struct WonderMailInfo`
+
+This structure contains the human-readable information of a **Wonder Mail**. This is just an simple utility. In the practice, you may want to make your own way to represent the information:
+
+Field                | Description
+-------------------- | -----------
+`char head[26]`      | The head of the mail.
+`char body1[100]`    | The first line of the mail'd description.
+`char body2[100]`    | The second line of the mail'd description.
+`char client[11]`    | The client pokémon's species name.
+`char objective[22]` | The objective of the mission.
+`char place[26]`     | The name of the place.
+`char floor[7]`      | The floor (for example `1F` or `B1F`).
+`char difficulty`    | The level of difficulty. One of `E`, `D`, `C`, `B`, `A`, `S`, `*`
+`char reward[35]`    | The name of the reward item.
+`char password[25]`  | The mail's password, in one line.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+### `struct SosMailInfo`
+
+This structure contains the human-readable information of a **SOS Mail**. This is just an simple utility. In the practice, you may want to make your own way to represent the information:
+
+Field                 | Description
+--------------------- | -----------
+`char head[26]`       | The head of the mail.
+`char body[100]`      | The first line of the mail'd description.
+`char nickname[11]`   | The client pokémon's nickname.
+`char client[11]`     | The client pokémon's species name.
+`char objective[15]`  | The objective of the mission.
+`char place[26]`      | The name of the place.
+`char floor[7]`       | The floor (for example `1F` or `B1F`).
+`char difficulty`     | The level of difficulty. One of `E`, `D`, `C`, `B`, `A`, `S`, `*`
+`char reward[35]`     | The name of the reward item.
+`char id[6]`          | The name of the reward item.
+`char chancesLeft[4]` | The name of the reward item.
+`char password[100]`  | The mail's password, in one line.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+## Enumerations
+
+
+### `enum MailType`
+
+Indicates the type of mail. Note that a value other than `InvalidMailType` can be also make a mail invalid, for example, values `0` or `2` or `3` are also invalid.
+
+Name               | Value              | Description
+------------------ | ------------------ | -----------
+`SosMailType`      | `1`                | SOS Mail
+`AOkMailType`      | `4`                | A-OK Mail
+`ThankYouMailType` | `5`                | Thank-You Mail
+`WonderMailType`   | `ThankYouMailType` | Wonder Mail
+`InvalidMailType`  | `15`               | Invalid Mail
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+### `enum MissionType`
+
+Indicates the type of mission.
+
+Name           | Value  | Description
+-------------- | ------ | -----------
+`HelpMe`       | `0`    | Help the pokémon client.
+`Find`         | `1`    | Find someone.
+`Escort`       | `2`    | Escort someone. You cannot be rescued if you or the client pokémon faint.
+`FindItem`     | `3`    | Find an item and bring it outside.
+`DeliverItem`  | `4`    | Enter the dungeon with an item to deliver it.
+`FriendRescue` | `5`    | A rescue through communication.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+### `enum RewardType`
+
+Indicates the type of reward. Note that a value other than `UnknownRewardType` can be also make a mail invalid, for example, values `10` or `11` or `12` are also invalid.
+
+Name                | Value  | Description
+------------------- | ------ | -----------
+`Money`             | `0`    | Some money.
+`MoneyItem`         | `1`    | Some money and an item.
+`Item`              | `2`    | An item.
+`ItemItem`          | `3`    | Two items.
+`UnknownRewardType` | `4`    | An invalid reward type.
+`MoneyMoney`        | `5`    | Money (`x2` the money given at `Money` and `MoneyItem`).
+`MoneyMoneyItem`    | `6`    | Money (`x2` the money given at `Money` and `MoneyItem`).
+`Item2`             | `7`    | An item.
+`ItemItem2`         | `8`    | Two items.
+`FriendArea`        | `9`    | A friend zone.
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+### `enum ErrorType`
+
+List of errors.
+
+Name                                    | Value   | Description
+--------------------------------------- | ------- | -----------
+`NoError`                               |  `0`    | No error, all OK
+`UnknownError`                          |  `1`    | Unknown error
+`MultipleError`                         |  `2`    | Multiple errors
+`InputError`                            |  `3`    | Generic input error
+`OutputError`                           |  `4`    | Generic output error
+`ChecksumError`                         |  `5`    | Checksum error
+`MailTypeError`                         |  `6`    | The mail type is invalid
+`MissionTypeError`                      |  `7`    | The mission type is invalid
+`SpecialJobIndicatorError`              |  `8`    | The special job indicator is invalid
+`PokemonOutOfRangeError`                |  `9`    | The pokemon is out of range
+`PokemonNotAllowedError`                | `10`    | The pokemon is invalid (for example, a legendary pokémon)
+`ItemOutOfRangeError`                   | `11`    | The item is out of range
+`NoItemError`                           | `12`    | The item is `0` (*Nothing*), which is not necessarily an error
+`ItemCannotBeObtainedError`             | `13`    | The item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine
+`ItemNotExistsInDungeonError`           | `14`    | The item do not exists in the dungeon
+`RewardTypeError`                       | `15`    | The reward type is invalid
+`FriendAreaOutOfRangeError`             | `16`    | The friend area is out of range
+`FriendAreaIsInvalidAsRewardError`      | `17`    | The friend area cannot be set as reward
+`DungeonOutOfRangeError`                | `18`    | The dungeon is out of range
+`DungeonIsInvalidError`                 | `19`    | The dungeon exists, but it is invalid
+`MissionCannotBeAcceptedInDungeonError` | `20`    | The mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo)
+`FloorOutOfRangeError`                  | `21`    | The dungeon do not have the selected floor
+`FloorInvalidInDungeonError`            | `22`    | The floor exists, but a mission cannot be done there (for example, boss and warp floors)
+`MailIDOutOfRangeError`                 | `23`    | The mail ID is invalid
+`NicknameEmptyError`                    | `24`    | The nickname is empty
+`ChancesLeftError`                      | `25`    | The amount of chances left is invalid
+`IncorrectPasswordLengthError`          | `26`    | The length of the password is invalid
+`InvalidCharacterError`                 | `27`    | The password contains an invalid character
+`ConversionError`                       | `28`    | The password couldn't be converted
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
 
 
 # Function documentation  
@@ -48,11 +235,25 @@ Returns the index of the pair only if `pkmnClient` is inloved with `pkmnTarget` 
 ----------  
 
 ```c
-int findItemByDungeon(int item, int dungeon)
+int canEvolveWithItem(int pkmn, int item)
 ```  
-Returns `1` if `item` is found in `dungeon`. `0` otherwise. You cannot deliver an item that doesn't exists in the dungeon you are making a mission.  
+Returns `1` if the pokémon `pkmn` can use `item` to evolve, `0` otherwise.  
 
 ----------  
+
+```c
+int isFood(int item)
+```  
+Returns `1` if `item` is food, `0` otherwise.  
+
+---------- 
+
+```c
+int getMailType(const char* password)
+```  
+Returns the mail type of the mail represented by `password`. If it cannot be determined, `InvalidMailType` is returned.  
+
+---------- 
 
 ```c
 int computeDifficulty(int dungeon, int dungeonFloor, int missionType)
@@ -68,6 +269,71 @@ Returns the amount of money you will receive after success in a mission with rew
 
 ----------  
 
+```c
+int checkPokemon(int pokemon, enum MailType mailType)
+```  
+Check if the `pokemon` is valid for the `mailType`. Returns `PokemonOutOfRangeError` if the `pokemon` is out of range, or `PokemonNotAllowedError` if cannot be choosen (for example, a legendary if the mail is a Wonder Mail). Returns `NoError` if the `pokemon` is valid.  
+
+----------  
+
+```c
+int checkDungeon(int dungeon, enum MailType mailType)
+```  
+Check if the `dungeon` is valid for the `mailType`. Returns `DungeonOutOfRangeError` if the `dungeon` is out of range, or `DungeonIsInvalidError` if it's invalid, or `MissionCannotBeAcceptedInDungeonError` if cannot be choosen (for example, *Mt. Thunder Peak* if the mail is a **Wonder Mail**). Returns `NoError` if the `dungeon` is valid.  
+
+----------  
+
+```c
+int checkFloor(int floor, int dungeon)
+```  
+Check if the `floor` is valid for the `dungeon`. Returns `FloorOutOfRangeError` if the `floor` is out of range, or `FloorInvalidInDungeonError` if a rescue cannot be made in that floor (for example, floor `20` or `99` of *Wish Cave*). This last limitation only applies for **Wonder Mails**. Returns `NoError` if the `floor` is valid.  
+**NOTE:** This function assumes that the `dungeon` is valid.  
+
+----------  
+
+```c
+int checkItem(int item)
+```  
+Check if the `item` is valid. Returns `ItemOutOfRangeError` if it's out of range, or `ItemCannotBeObtainedError` if it's not obtainable. If `item` is `0` (*Nothing*), returns `NoItemError`, but this doesn't mean that the item is invalid; for example `0` is a valid reward for **Thank-You Mails**. In all other cases it seems to be invalid. Returns `NoError` if it's valid.  
+
+----------  
+
+```c
+int checkItemExistenceInDungeon(int item, int dungeon)
+```  
+Check if the `item` can be found in the `dungeon`. Returns `ItemNotExistsInDungeonError` if it cannot be found, `NoError` otherwise. The result of this function must only be considered relevant if the `item` is the one to find in missions of type `FindItem`.  
+**NOTE:** This function assumes that the `dungeon` is valid.  
+
+----------  
+
+```c
+int checkFriendArea(int friendArea)
+```  
+Check if the `friendArea` is valid. Returns `FriendAreaOutOfRangeError` if it is out of range, or `FriendAreaIsInvalidAsRewardError` if it cannot be set as reward, `NoError` otherwise.  
+
+----------  
+
+```c
+int checkMailID(int mailID)
+```  
+Check if the mail ID `mailID` is valid. Returns `MailIDOutOfRangeError` if it is out of range, `NoError` otherwise.  
+
+----------  
+
+```c
+int entryErrorsWonderMail(const struct WonderMail *wm)
+```  
+This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
+
+----------  
+
+```c
+int entryErrorsSosMail(const struct SosMail *sos)
+```  
+This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSosMail`, but you may want to call it to report entry errors at real-time.  
+
+----------  
+
 
 ## Decoding
 
@@ -78,16 +344,9 @@ These functions are used to decode Wonder Mails.
 ----------  
 
 ```c
-int decodeWonderMail(const char *password, struct WonderMailInfo *wonderMailInfoResult)
+int decodeWonderMail(const char *password, struct WonderMail *wonderMailResult)
 ```  
-Decodes the Wonder Mail with password `password` and puts the result in `wonderMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded Wonder Mail info, it's the best approach.  
-
-----------  
-
-```c
-int wonderMailIsInvalid(const char *password, char *packed15BytesPassword)
-```  
-Check whatever `password` belongs to a invalid Wonder Mail. Returns `0` if the Wonder Mail is valid. In such case `packed15BytesPassword` contains the packed password in 15 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
+Decodes the Wonder Mail with password `password` and puts the result in `wonderMailResult`. Returns the error code (check the `ErrorType` enumeration).  
 
 ----------  
 
@@ -98,16 +357,9 @@ These functions are used to decode SOS Mails.
 ----------  
 
 ```c
-int decodeSosMail(const char *sosPassword, struct SosMailInfo *sosMailInfoResult)
+int decodeSosMail(const char *password, struct SosMail *sosMailResult)
 ```  
-Decodes the SOS Mail with password `sosPassword` and puts the result in `sosMailInfoResult`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a decoded SOS Mail info, it's the best approach.  
-
-----------  
-
-```c
-int sosMailIsInvalid(const char *password, char *packed34BytesPassword)
-```  
-Check whatever `password` belongs to a invalid SOS Mail. Returns `0` if the SOS Mail is valid. In such case `packed34BytesPassword` contains the packed password in 34 bytes. Otherwise returns the error code (check the `ErrorType` enum type).  
+Decodes the Wonder Mail with password `password` and puts the result in `sosMailResult`. Returns the error code (check the `ErrorType` enumeration).  
 
 ----------  
 
@@ -121,16 +373,9 @@ These functions are used to encode Wonder Mails.
 ----------  
 
 ```c
-int encodeWonderMail(struct WonderMail *wm, char *finalPassword)
+int encodeWonderMail(struct WonderMail *wm, char* finalPassword, int trySpecialWonderMail)
 ```  
-Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded Wonder Mail password, it's the best approach.  
-
-----------  
-
-```c
-int entryErrorsWonderMail(const struct WonderMail *wm)
-```  
-This function scans the Wonder Mail `wm` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeWonderMail`, but you may want to call it to report entry errors at real-time.  
+Encodes the Wonder Mail `wm` and puts the result in `finalPassword`. If `trySpecialWonderMail` is not `0`, special missions related to food or evolutionary items can be generated. Returns the error code (check the `ErrorType` enumeration).  
 
 ----------  
 
@@ -143,14 +388,7 @@ These functions are used to decode SOS Mails.
 ```c
 int encodeSosMail(struct SosMail *sos, char *finalPassword)
 ```  
-Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to get a encoded SOS Mail password, it's the best approach.  
-
-----------  
-
-```c
-int entryErrorsSosMail(const struct SosMail *sos)
-```  
-This function scans the SOS Mail `sos` and return the number of errors found while reporting them with high verbosity. This function is called internally by `encodeSosMail`, but you may want to call it to report entry errors at real-time.  
+Generates the password `finalPassword` by encoding the SOS Mail `sos`. Returns the error code (check the `ErrorType` enumeration).  
 
 ----------  
 
@@ -160,9 +398,9 @@ This function scans the SOS Mail `sos` and return the number of errors found whi
 ----------  
 
 ```c
-int convertSosMail(const char *SOSPassword, int item, char *resultAOKMail, char *resultThankYouMail)
+int convertSosMail(const char *SOSPassword, int idTeamGivingHelp, int item, char *resultAOKMail, char *resultThankYouMail)
 ```  
-This function takes the SOS Mail password `SOSPassword` and converts it into an A-OK Mail and a Thank-You Mail, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. Returns the error code (check the `ErrorType` enum type). This function must be used in order to convert a SOS Mail into an A-OK Mail and a Thank-You Mail, it's the best approach.  
+This function takes the **SOS Mail** password `SOSPassword` and converts it into an **A-OK Mail** and a **Thank-You Mail**, writting the respective passwords in `resultAOKMail` and `resultThankYouMail`. The `idTeamGivingHelp` is set in the **A-Ok Mail**, unless its value is `0`, in which case it is set to the ID of the team seeking help. The reward item is set to `item`, which can be `0` (*Nothing*), meaning no reward item. If the `SOSPassword` belongs to an **A-OK Mail**, only a **Thank-You Mail** will be generated, and if the `SOSPassword` belongs to an **Thank-You Mail**. Returns the error code (check the `ErrorType` enumeration).  
 
 ----------  
 
@@ -172,12 +410,18 @@ This function takes the SOS Mail password `SOSPassword` and converts it into an 
 
 ## Pokémon  
 
-Bellow is the complete database of pokémon. Observe that these **are not** the dex numbers, but the numbers used by the game to identify each criature. The number `0` corresponds to *Decamark* (i.e., nothing, an empty spot) and cannot be used. Also, some mail types add limitations to the species that can be used (for example, legendaries).  
+Bellow is the complete database of pokémon. Observe that these **are not** the dex numbers, but the numbers used by the game to identify each criature. The number `0` corresponds to *Decamark* (i.e., *Nothing*, an empty spot) and cannot be used. Also, some mail types add limitations to the species that can be used (for example, legendaries).  
 
 These values are defined as:
 
 ```c
 const char* pkmnSpeciesStr[];
+```  
+
+And the size of that array is defined as:
+
+```c
+const unsigned int pkmnSpeciesCount;
 ```  
 
 No. | Pokémon         | No. | Pokémon         | No. | Pokémon         | No. | Pokémon         | No. | Pokémon
@@ -294,9 +538,15 @@ These values are defined as:
 const char* itemsStr[];
 ```  
 
+And the size of that array is defined as:
+
+```c
+const unsigned int itemsCount;
+```  
+
 No. | Item            | No. | Item            | No. | Item
 --- | --------------- | --- | --------------- | --- | ---------------
-  0 | Nothing         | 100 | Royal Gummi     | 200 | Escape Orb
+  0 | \[Nothing\]         | 100 | Royal Gummi     | 200 | Escape Orb
   1 | Stick           | 101 | Black Gummi     | 201 | Scanner Orb
   2 | Iron Thorn      | 102 | Silver Gummi    | 202 | Radar Orb
   3 | Silver Spike    | 103 | Banana          | 203 | Drought Orb
@@ -408,6 +658,12 @@ These values are defined as:
 const char* dungeonsStr[];
 ```  
 
+And the size of that array is defined as:
+
+```c
+const unsigned int dungeonsCount;
+```  
+
 No. | Dungeon        
 --- | ---------------
   0 | Tiny Woods
@@ -434,13 +690,13 @@ No. | Dungeon
  21 | Meteor Cave
  22 | Mt. Freeze Peak*
  23 | Western Cave
- 24 | [INVALID]
- 25 | [INVALID]
+ 24 | \[INVALID\]
+ 25 | \[INVALID\]
  26 | Wish Cave
  27 | Buried Relic
  28 | Pitfall Valley
  29 | Northern Range
- 30 | [INVALID]
+ 30 | \[INVALID\]
  31 | Desert Region
  32 | Southern Cavern
  33 | Wyvern Hill
@@ -449,7 +705,7 @@ No. | Dungeon
  36 | Solar Cave
  37 | Lightning Field
  38 | Darknight Relic
- 39 | [INVALID]
+ 39 | \[INVALID\]
  40 | Murky Cave
  41 | Grand Sea
  42 | Uproar Forest
@@ -459,253 +715,103 @@ No. | Dungeon
  46 | Fantasy Strait
  47 | Rock Path*
  48 | Snow Path*
- 49 | [INVALID]
- 50 | [INVALID]
- 51 | [INVALID]
+ 49 | \[INVALID\]
+ 50 | \[INVALID\]
+ 51 | \[INVALID\]
  52 | Dojo Registration*
  53 | Howling Forest
- 54 | [INVALID]
+ 54 | \[INVALID\]
  55 | Fantasy Strait
  56 | Waterfall Pond
  57 | Unown Relic
  58 | Joyous Tower
  59 | Far-off Sea
  60 | Mt. Faraway
- 61 | [INVALID]
+ 61 | \[INVALID\]
  62 | Purity Forest
 
 **NOTE:** Dungeons marked with a * are valid but cannot be accepted in Wonder Mails.
+
+
+## Friend areas  
+
+Bellow is the complete database of friend areas. There are limitations regarding the areas that can be offered as reward. Only *Dragon Cave*, *Mt. Moonview*, *Sky Blue Plains* and *Boulder Cave*.  
+
+These values are defined as:
+
+```c
+const char* friendAreasStr[];
+```  
+
+And the size of that array is defined as:
+
+```c
+const unsigned int friendAreasCount;
+```  
+
+No. | Friend area
+--- | ---------------
+  0 | \[None\]
+  1 | Bountiful Sea
+  2 | Treasure Sea
+  3 | Serene Sea
+  4 | Deep-Sea Floor
+  5 | Deep-Sea Current
+  6 | Seafloor Cave
+  7 | Shallow Beach
+  8 | Mt. Deepgreen
+  9 | Dragon Cave
+ 10 | Mt. Moonview
+ 11 | Mt. Cleft
+ 12 | Rainbow Peak
+ 13 | Wild Plains
+ 14 | Beau Plains
+ 15 | Sky Blue Plains
+ 16 | Safari
+ 17 | Scorched Plains
+ 18 | Sacred Field
+ 19 | Mist-Rise Forest
+ 20 | Flyaway Forest
+ 21 | Overgrown Forest
+ 22 | Energetic Forest
+ 23 | Mushroom Forest
+ 24 | Healing Forest
+ 25 | Transform Forest
+ 26 | Secretive Forest
+ 27 | Rub-a-Dub River
+ 28 | Tadpole Pond
+ 29 | Turtleshell Pond
+ 30 | Mystic Lake
+ 31 | Waterfall Lake
+ 32 | Peanut Swamp
+ 33 | Poison Swamp
+ 34 | Echo Cave
+ 35 | Cryptic Cave
+ 36 | Jungle
+ 37 | Boulder Cave
+ 38 | Decrepit Lab
+ 39 | Mt. Discipline
+ 40 | Thunder Meadow
+ 41 | Power Plant
+ 42 | Crater
+ 43 | Furnace Desert
+ 44 | Aged Chamber AN
+ 45 | Aged Chamber O?
+ 46 | Ancient Relic
+ 47 | Darkness Ridge
+ 48 | Frigid Cavern
+ 49 | Ice Floe Beach
+ 50 | Volcanic Pit
+ 51 | Stratos Lookout
+ 52 | Ravaged Field
+ 53 | Magnetic Quarry
+ 54 | Legendary Island
+ 55 | Southern Island
+ 56 | Enclosed Island
+ 57 | Final Island
 
 **END OF API DOCUMENTATION**
 
 
 # Internal functions  
-**This thread is mainly for developers and contributors of this project.**  
-These functions are used internally by the official API, and should not be used directly.  
-
-
-## Decoding/Encoding - common internal functions  
-
-----------  
-
-```c
-unsigned int getSpecialJobIndicator(int pairsIndex, int loversIndex, int parentsIndex)
-```  
-**Internal function, should not be used**  
-Returns an indicator representing a number that indicates the type of special job. `pairsIndex`, `loversIndex` and `parentsIndex` are the return values of the functions `arePairs`, `areLovers` and `areParents` respectively. A special job is, for example, any mission that involves pairs of any kind (including lovers and parents). This is an internal function and should not be used.  
-
-----------  
-
-
-```c
-int computeChecksum(const char* packedPassword, int bytes)
-```  
-**Internal function, should not be used**  
-Returns the checksum of the first `bytes` bytes in the array `packedPassword`. The checksum is calculated by initializing a variable to `0`. Then, in each iteration, adds to itself each byte plus its index in the array, while truncating it to 1-byte long. This is an internal function and should not be used.  
-
-----------  
-
-
-## Decoding - internal functions
-
-
-### General decoding - internal functions  
-
-----------  
-
-```c
-void bitPackingDecoding(char* packedPassword, const char* unpackedPassword, int bytesToPack)
-```  
-**Internal function, should not be used**  
-In a process called *bit packing*, `bytesToPack` bytes are read from `unpackedPassword` and packed in `packedPassword`. This optimization is done because only the first 5 bits of each octet are used. This is an internal function and should not be used.  
-
-----------  
-
-
-### Wonder Mail decoding - internal functions  
-
-----------  
-
-```c
-void reallocateBytesDecodingWonderMail(const char *unallocatedPassword, char *allocatedPassword)
-```  
-**Internal function, should not be used**  
-Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-int lookupTableDecodingWonderMail(const char *allocatedPassword, char *passwordIntegers)
-```  
-**Internal function, should not be used**  
-Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingWonderMail` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void bitUnpackingDecodingWonderMail(const char *packed14BytesPassword, struct WonderMail* mail)
-```  
-**Internal function, should not be used**  
-This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-int* flavorText(const struct WonderMail *wm, int pairsIndex, int loversIndex, int parentsIndex)
-```  
-**Internal function, should not be used**  
-This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWonderMail`, and also the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively. Only one of the last 3 arguments are relevant. The function returns a two-byte. The first one contains an integer code relative to the HEAD of the flavor text, and the second contains an integer code relative to the BODY of the flavor text. Then you can call `flavorTextHead` and `flavorTextBody` to get the flavor text. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void flavorTextHead(const struct WonderMail *wm, int headIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo)
-```  
-**Internal function, should not be used**  
-This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWonderMail`, the HEAD code returned by `flavorText` and stored in `headIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WonderMailInfo` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the head of the flavor text. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void flavorTextBody(const struct WonderMail *wm, int bodyIndicator, int pairsIndex, int loversIndex, int parentsIndex, struct WonderMailInfo *mailInfo)
-```  
-**Internal function, should not be used**  
-This function takes the decoded Wonder Mail `wm` as returned the function `bitUnpackingDecodingWonderMail`, the BODY code returned by `flavorText` and stored in `bodyIndicator`, the index of pairs, lovers and parents stored in `pairsIndex`, `loversIndex` and `parentsIndex` respectively, and a structure `WonderMailInfo` named `mailInfo` in order to save the flavor text. Only one of the last 3 index arguments are relevant. Once this function returns, `mailInfo` contains the body of the flavor text. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void setWonderMailInfo(const struct WonderMail *mail, struct WonderMailInfo *mailInfo)
-```  
-**Internal function, should not be used** 
-This function extract the information contained in `mail` and write it to `mailInfo` in a mail-style layout. The flavor text is not filled here, you must call `flavorText` and related functions to do so. This is an internal function and should not be used.  
-
-----------  
-
-
-### SOS Mail decoding - internal functions  
-
-----------
-
-```c
-void reallocateBytesDecodingSos(const char *unallocatedPassword, char *allocatedPassword)
-```  
-**Internal function, should not be used**  
-Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-int lookupTableDecodingSos(const char *allocatedPassword, char *passwordIntegers)
-```  
-**Internal function, should not be used**  
-Since mails only works with alphanumeric characters plus some others, and not with the whole ASCCI collection, the value of each character can be reasigned in order to save storage space. New values are 5 bit long, instead of 8. The reassignment is done by using a lookup table. This function takes `allocatedPassword` which must be previously allocated with `reallocateBytesDecodingSos` and returns the reassigned values in `passwordIntegers`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void bitUnpackingDecodingSos(const char *packed14BytesPassword, struct SosMail* mail)
-```  
-**Internal function, should not be used**  
-This function takes the packed 14 bytes stored in `packed14BytesPassword`, decodes them and writes the obtained information into `mail`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void setSosInfo(const struct SosMail *mail, struct SosMailInfo *sosInfo)
-```  
-**Internal function, should not be used** 
-This function extract the information contained in `mail` and write it to `sosInfo` in a mail-style layout. This is an internal function and should not be used.  
-
-----------  
-
-
-## Encoding - internal functions
-
-
-### Wonder Mail encoding - internal functions  
-
-----------  
-
-```c
-void bitPackingEncodingWonderMail(const struct WonderMail* mail, char* packed14BytesPassword)
-```  
-**Internal function, should not be used**  
-This function takes the content of the Wonder Mail `wm`, encodes it and writes the result to `packed14BytesPassword` in the form of packed 14 bytes. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void lookupTableEncodingWonderMail(const char* password24Integers, char* password24Chars)
-```  
-**Internal function, should not be used**  
-This is the inverse process of decoding. This function takes `password24Integers` and writes the resulting ASCCI buffer in `password24Chars` using a lookup table. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void reallocateBytesEncodingWonderMail(const char* unallocatedPassword, char* allocatedPassword)
-```  
-**Internal function, should not be used**  
-Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
-
-----------  
-
-
-### Wonder Mail encoding - internal functions  
-
-----------  
-
-```c
-void bitPackingEncodingSos(const struct SosMail* mail, char* packed33BytesPassword)
-```  
-**Internal function, should not be used**  
-This function takes the content of the SOS Mail `sos`, encodes it and writes the result to `packed33BytesPassword` in the form of packed 33 bytes. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void lookupTableEncodingSos(const char* password54Integers, char* password54Chars)
-```  
-**Internal function, should not be used**  
-This is the inverse process of decoding. This function takes `password54Integers` and writes the resulting ASCCI buffer in `password54Chars` using a lookup table. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void reallocateBytesEncodingSos(const char* unallocatedPassword, char* allocatedPassword)
-```  
-**Internal function, should not be used**  
-Returns in `allocatedPassword` a reallocated version of `unallocatedPassword`. This is an internal function and should not be used.  
-
-----------  
-
-
-## Converting - internal functions
-
-
-----------  
-
-```c
-int sosMailIsInvalidForConverting(const char *SOSPassword, char *password54Integers)
-```  
-**Internal function, should not be used**  
-Tries to convert the SOS Mail. Returns the error code (check the `ErrorType` enum type). If success (the mail is valid), the password is already converted to integers and reallocated in `password54Integers`. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void convertSosToAOkMail(char *password54Integers)
-```  
-**Internal function, should not be used**  
-Converts the SOS intermediate integers password into a A-OK one. The password `password54Integers` is modified directly, so the SOS password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  
-
-----------  
-
-```c
-void convertAOkToThankYouMail(char *password54Integers, int item)
-```  
-**Internal function, should not be used**  
-Converts the A-OK intermediate integers password into a Thank-You one with the reward item `item`. The password `password54Integers` is modified directly, so the A-OK password is lost, keep that in mind. No error checking is done, i.e., the received buffer is always assumed as valid. This is an internal function and should not be used.  
-
-----------  
+The rest of functions are not part of the official API, and should not be used directly, because they can change or even being removed without advice.  

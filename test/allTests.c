@@ -13,6 +13,8 @@ extern CuSuite* EncodeWonderMailGetTestSuite(void);
 extern CuSuite* EncodeSosMailGetTestSuite(void);
 extern CuSuite* ConvertGetTestSuite(void);
 
+extern int printMessages;
+
 int RunAllTests(void);
 
 int main(void)
@@ -25,6 +27,7 @@ int main(void)
 
 int RunAllTests()
 {
+    int failedTests = 0;
     CuString *output = CuStringNew();
     CuSuite* suite = CuSuiteNew();
 
@@ -37,7 +40,8 @@ int RunAllTests()
     CuSuiteAddSuite(suite, EncodeSosMailGetTestSuite());
     CuSuiteAddSuite(suite, ConvertGetTestSuite());
 
-    int failedTests = CuSuiteRun(suite);
+    printMessages = 0;
+    failedTests = CuSuiteRun(suite);
     CuSuiteSummary(suite, output);
     CuSuiteDetails(suite, output);
     printf("%s\n", output->buffer);

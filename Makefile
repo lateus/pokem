@@ -1,8 +1,8 @@
 # Compiler
 CC			:=	gcc
 # Compiler flags
-DEFINES		:=	$(if $(filter all-no-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
-CC_WFLAGS	:=	-W -Wall -Wextra -pedantic
+DEFINES		:=	$(if $(filter all-without-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
+CC_WFLAGS	:=	-W -Wall -Wextra -pedantic -std=c89
 CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=
 CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES)
@@ -29,13 +29,15 @@ SOURCES		:=	src/core/Decode/DecodeSos/DecodeSos.c \
 				src/core/Encode/UtilEncode/UtilEncode.c \
 				src/core/Convert/Convert.c \
 				src/core/UtilCore/UtilCore.c \
-				src/data/md1database/md1database.c
+				src/data/md1database/md1database.c \
+				src/util/messages.c
 
 OBJECTS		:=	$(BUILDDIR)/DecodeSos.o $(BUILDDIR)/DecodeWonderMail.o $(BUILDDIR)/UtilDecode.o \
 				$(BUILDDIR)/EncodeSos.o $(BUILDDIR)/EncodeWonderMail.o $(BUILDDIR)/UtilEncode.o \
 				$(BUILDDIR)/Convert.o \
 				$(BUILDDIR)/UtilCore.o \
-				$(BUILDDIR)/md1database.o
+				$(BUILDDIR)/md1database.o \
+				$(BUILDDIR)/messages.o
 
 TEST_SUITE	:=	test/CuTest.c test/allTests.c
 TEST_FILES	:=	src/core/UtilCore/UtilCore_test.c \
@@ -84,7 +86,7 @@ WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 .PHONY: all all-without-colors staticlib clean help
 
 all: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library (default)
-all-no-colors: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library without color support
+all-without-colors: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library without color support
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
 
@@ -112,10 +114,13 @@ $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
 	@$(MSG) "#ifndef POKEM_H\n" > $@
 	@$(MSG) "#define POKEM_H\n" >> $@
+	@$(MSG) "\n#include <stdio.h>\n" >> $@
 	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $@
-	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(FIND) src/data -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
 	@$(MSG) "\n/** CORE FUNCTIONALITIES: */\n" >> $@
-	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' >> $@
+	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
+	@$(MSG) "\n/** UTILITIES: */\n" >> $@
+	@tools/printSingleHeaderContent.sh ./src/util/messages.h | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
 	@$(MSG) "\n#endif /* POKEM_H */" >> $@
 
 # Static library
@@ -152,3 +157,4 @@ $(BUILDDIR)/UtilEncode.o:       src/core/Encode/UtilEncode/UtilEncode.c
 $(BUILDDIR)/Convert.o:          src/core/Convert/Convert.c
 $(BUILDDIR)/UtilCore.o:         src/core/UtilCore/UtilCore.c
 $(BUILDDIR)/md1database.o:      src/data/md1database/md1database.c
+$(BUILDDIR)/messages.o:      	src/util/messages.c
