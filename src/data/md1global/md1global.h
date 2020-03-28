@@ -22,7 +22,7 @@ enum ErrorType {
     ItemNotExistsInDungeonError,            /* the item do not exists in the dungeon */
     RewardTypeError,                        /* the reward type is invalid */
     FriendAreaOutOfRangeError,              /* the friend area is out of range */
-    FriendAreaAsRewardError,                /* the friend area cannot be set as reward */
+    FriendAreaIsInvalidAsRewardError,       /* the friend area cannot be set as reward */
     DungeonOutOfRangeError,                 /* the dungeon is out of range */
     DungeonIsInvalidError,                  /* the dungeon exists, but it is invalid */
     MissionCannotBeAcceptedInDungeonError,  /* the mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo) */

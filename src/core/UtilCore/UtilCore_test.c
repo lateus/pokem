@@ -28,6 +28,7 @@ void checkDungeon_test(CuTest *tc);
 void checkFloor_test(CuTest *tc);
 void checkItem_test(CuTest *tc);
 void checkItemExistenceInDungeon_test(CuTest *tc);
+void checkFriendArea_test(CuTest *tc);
 void checkMailID_test(CuTest *tc);
 
 
@@ -53,6 +54,7 @@ CuSuite* UtilCoreGetTestSuite()
     SUITE_ADD_TEST(suite, checkFloor_test);
     SUITE_ADD_TEST(suite, checkItem_test);
     SUITE_ADD_TEST(suite, checkItemExistenceInDungeon_test);
+    SUITE_ADD_TEST(suite, checkFriendArea_test);
     SUITE_ADD_TEST(suite, checkMailID_test);
     return suite;
 }
@@ -199,18 +201,18 @@ void getSpecialJobIndicator_test(CuTest *tc)
 
 void getMailType_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10 /*20*/
+#define ARRAY_SIZE 20
     char input[ARRAY_SIZE][55 + 1] = {
-        /* "4X04N?7P6JP?1?3/W94?????",  (WM - VALID) */
-        /* "4X04N?7P6JP?1?3/W94????",   (WM - INVALID) */
-        /* "4X04N?7P6JP?1?3/W94??????", (WM - INVALID) */
-        /* "4X04N?7P6JP?1?3/W94????A",  (WM - INVALID) */
-        /* "J+047*?JK6+?49RM?F?N????",  (WM - VALID) */
-        /* "8004SS8P62!HSNH4W*956???",  (WM - VALID) */
-        /* "*S54++R6X?????SCWN46????",  (WM - VALID) */
-        /* "*0T4R37/T???F7!/WCP+????",  (WM - VALID) */
-        /* ".Y5JMF0PXC!?123WW.PS????",  (WM - VALID - SPECIAL EVOLVE) */
-        /* "YY58?N4R.NN7F+YQW.JN????",  (WM - VALID - SPECIAL FOOD) */
+        "4X04N?7P6JP?1?3/W94?????",  /* (WM - VALID) */
+        "4X04N?7P6JP?1?3/W94????",   /* (WM - INVALID) */
+        "4X04N?7P6JP?1?3/W94??????", /* (WM - INVALID) */
+        "4X04N?7P6JP?1?3/W94????A",  /* (WM - INVALID, but will pass since only the second and third characters are used to get the type in 24 chars passwords) */
+        "J+047*?JK6+?49RM?F?N????",  /* (WM - VALID) */
+        "8004SS8P62!HSNH4W*956???",  /* (WM - VALID) */
+        "*S54++R6X?????SCWN46????",  /* (WM - VALID) */
+        "*0T4R37/T???F7!/WCP+????",  /* (WM - VALID) */
+        ".Y5JMF0PXC!?123WW.PS????",  /* (WM - VALID - SPECIAL EVOLVE) */
+        "YY58?N4R.NN7F+YQW.JN????",  /* (WM - VALID - SPECIAL FOOD) */
         "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T.",  /* (SOS - VALID) */
         "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T",   /* (SOS - INVALID) */
         "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T..", /* (SOS - INVALID) */
@@ -225,7 +227,7 @@ void getMailType_test(CuTest *tc)
 
     int actual[ARRAY_SIZE];
 
-    int expected[ARRAY_SIZE] = { /* WonderMailType, -1, -1, -1, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType */ SosMailType, InvalidMailType, InvalidMailType, SosMailType, SosMailType, AOkMailType, AOkMailType, ThankYouMailType, ThankYouMailType, InvalidMailType };
+    int expected[ARRAY_SIZE] = { WonderMailType, InvalidMailType, InvalidMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, WonderMailType, SosMailType, InvalidMailType, InvalidMailType, SosMailType, SosMailType, AOkMailType, AOkMailType, ThankYouMailType, ThankYouMailType, InvalidMailType };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -533,6 +535,22 @@ void checkItemExistenceInDungeon_test(CuTest *tc)
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
         testResult[i] = checkItemExistenceInDungeon(input1[i], input2[i]);
+        CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
+    }
+#undef ARRAY_SIZE
+}
+
+void checkFriendArea_test(CuTest *tc)
+{
+#define ARRAY_SIZE 16
+    const int input[ARRAY_SIZE]          = { -1,                        0,                         1,                                8,                                9,       10,      11,                               14,                               15,      16,                               36,                               37,      38,                               57,                               58,                        100 };
+
+    int testResult[ARRAY_SIZE];
+    const int expectedResult[ARRAY_SIZE] = { FriendAreaOutOfRangeError, FriendAreaOutOfRangeError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, NoError, NoError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, NoError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, NoError, FriendAreaIsInvalidAsRewardError, FriendAreaIsInvalidAsRewardError, FriendAreaOutOfRangeError, FriendAreaOutOfRangeError };
+
+    int i;
+    for (i = 0; i < ARRAY_SIZE; ++i) {
+        testResult[i] = checkFriendArea(input[i]);
         CuAssertIntEquals(tc, expectedResult[i], testResult[i]);
     }
 #undef ARRAY_SIZE

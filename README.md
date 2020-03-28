@@ -3,16 +3,18 @@
 # PokéM - Pokémon Mystery Dungeon Mail Generator
 
 *Copyright 2018-2020 Carlos Enrique Pérez Sánchez.*  
-*Based on the tools written by Peter O.*
 
 **Pokémon Mystery Dungeon Mail Generator, *PokéM* for short is a library to make your own Wonder Mail and SOS Mail, also allowing you to convert a SOS Mail into a A-OK Mail and a Thank-You Mail.**  
 
-Currently, only *Red & Blue Rescue Teams* are supported.
+Currently, only *Red & Blue Rescue Teams* are supported.  
+
+## Latest dev version: v0.2-alpha  
+## Latest stable version: \[None\]  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Usage
-This is a library. To use it just link it with your application and then you can call its routines and access its data.
+This is a library. To use it just link it with your application and then you can call its routines and access its data.  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,6 +22,7 @@ This is a library. To use it just link it with your application and then you can
 
 ### Requirements
 The only build requirement is a C Compiler. You can use the [Makefile](Makefile) that comes along with this project.  
+
 Most **Linux** distros already comes with a basic equipment for developers that includes GCC, or at least a C and a C++ compiler set, and also a `make` tool. If not, to install `make` and a C compiler, use the package manager of your distribution.  
 
 * **Debian** (*apt*):  
@@ -37,7 +40,7 @@ $ sudo yum groupinstall "C Development Tools and Libraries"
 $ sudo zypper install -t pattern devel_basis
 ```
 
-These are just examples. If you use a different package manager, you must search for the corresponding package in your distribution.
+These are just examples. If you use a different package manager, you must search for the corresponding package in your distribution.  
 
 That will install a C and a C++ compiler, and also the tool `make`.  
 
@@ -45,19 +48,34 @@ That will install a C and a C++ compiler, and also the tool `make`.
 Then you can run `make` by opening the terminal on the project's directory to build the application:  
 `$ make`  
 
-This will execute `make all` that builds the library as well as the examples.
+This will execute `make all` that builds the library as well as the examples.  
 
 Type `help` to see the available targets:
 `$ make help`
 
-On **MacOS**, if you don't have GCC installed, you can install it through X-Code, it's free on the Apple Store.
+On **MacOS**, if you don't have GCC installed, you can install it through X-Code, it's free on the Apple Store.  
 
-On **Windows**, you can install GCC and use `mingw32-make` to build the project.
+On **Windows**, you can install GCC and use `mingw32-make` to build the project. Also, a minimal/basic **UNIX** environment (for example, the one that comes with ***Git***) is required because we use Unix tools like `cp`, `rm` and `find`.  
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+## Using the library
+Suppose that you have an `example.c` source file that compiles into an `example` executable. Just link with the library:
+```sh
+$ make -lpokem example.c -o example
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+## Examples
+There is a CLI that you can use as example: [github.com/lateo96/pokem-cli](github.com/lateo96/pokem-cli).  
+I might add simpler examples to this repository.  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Known bugs
-* Currently, the `Makefile` is only fully supported on **UNIX**. On **Windows**, you will be able to build the static library and examples, but you must manually erase all leftovers prior to rebuild, since `clean` is not available, as it fails due to **Windows** paths conventions. Also, some text outputs are buggy.
+None for now.  
+Report bugs or request features at [github.com/lateo96/pokem/issues](github.com/lateo96/pokem/issues).  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -69,7 +87,7 @@ This program is under the *General Public License* (version 2).
 ## For developers and contributors
 The author uses **Linux** for development. You should do as well.  
 
-This is a library. I'm currently developing a GUI for it. The purpose of maintain this library is to have the main algorithm separated from any other module. GUI applications are, from their very nature, big and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here. GUI applications should use a library of ***PokéM*** (available through `$ make staticlib`), instead of using the source code directly because then will be easier to update the related algorithms when a new version of ***PokéM*** is released.
+This is a library. A CLI already exists ([github.com/lateo96/pokem-cli](github.com/lateo96/pokem-cli)) and I'm currently developing a GUI for it. The purpose of maintain this library is to have the main algorithm separated from any other module. GUI applications are, from their very nature, big and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here. Applications should use a binary prebuilt of ***PokéM*** (available through `$ make staticlib`), instead of using the source code directly because then will be easier to update the related algorithms when a new version of ***PokéM*** is released.
 
 ### Portability tips
 * Avoid using fast assembler instructions, compiler's built-in functions and others things that can reduce portability.

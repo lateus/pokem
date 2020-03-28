@@ -1518,7 +1518,7 @@ const char* dungeonsStr[] = {
 /* Friend areas */
 const unsigned int friendAreasCount = 58; /* The size of the array */
 const char* friendAreasStr[] = {
-    "[Nothing]", /* 0 */
+    "[None]", /* 0 */
     "Bountiful Sea",
     "Treasure Sea",
     "Serene Sea",
