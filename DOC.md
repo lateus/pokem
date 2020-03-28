@@ -744,7 +744,7 @@ const unsigned int friendAreasCount;
 
 No. | Friend area
 --- | ---------------
-  1 | \[None\]
+  0 | \[None\]
   1 | Bountiful Sea
   2 | Treasure Sea
   3 | Serene Sea
