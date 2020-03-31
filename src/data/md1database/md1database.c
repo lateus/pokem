@@ -780,7 +780,7 @@ const char* SOS_Thanks1  = "This is a rescue through communication.";
 const char* SOS_Thanks2  = "Send your thanks to your friend!";
 
 /* Pokémon species */
-const unsigned int pkmnSpeciesCount = 415; /* The size of the array */
+const unsigned int pkmnSpeciesCount = 424; /* The size of the array */
 const char* pkmnSpeciesStr[] = {
     "??????????", /* Decamark == Nothing */
     "Bulbasaur",
@@ -983,32 +983,32 @@ const char* pkmnSpeciesStr[] = {
     "Murkrow",
     "Slowking",
     "Misdreavus", /* 200 */
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown", /* 210 */
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown", /* 220 */
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
-    "Unown",
+    "UnownA",
+    "UnownB",
+    "UnownC",
+    "UnownD",
+    "UnownE",
+    "UnownF",
+    "UnownG",
+    "UnownH",
+    "UnownI",
+    "UnownJ", /* 210 */
+    "UnownK",
+    "UnownL",
+    "UnownM",
+    "UnownN",
+    "UnownO",
+    "UnownP",
+    "UnownQ",
+    "UnownR",
+    "UnownS",
+    "UnownT", /* 220 */
+    "UnownU",
+    "UnownV",
+    "UnownW",
+    "UnownX",
+    "UnownY",
+    "UnownZ",
     "Wobbuffet",
     "Girafarig",
     "Pineco",
@@ -1197,6 +1197,15 @@ const char* pkmnSpeciesStr[] = {
     "Rayquaza",
     "Jirachi",
     "Deoxys",
+    "Unown!",
+    "Unown?",
+    "Deoxys Atk",
+    "Deoxys Def",
+    "Deoxys Spd",
+    "Munchlax", /* 420 */
+    "Decoy",
+    "Statue",
+    "Rayquaza"
 };
 
 
