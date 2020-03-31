@@ -158,7 +158,7 @@ Name                | Value  | Description
 `ItemItem`          | `3`    | Two items.
 `UnknownRewardType` | `4`    | An invalid reward type.
 `MoneyMoney`        | `5`    | Money (`x2` the money given at `Money` and `MoneyItem`).
-`MoneyMoneyItem`    | `6`    | Money (`x2` the money given at `Money` and `MoneyItem`).
+`MoneyMoneyItem`    | `6`    | Money (`x2` the money given at `Money` and `MoneyItem`) plus two items.
 `Item2`             | `7`    | An item.
 `ItemItem2`         | `8`    | Two items.
 `FriendArea`        | `9`    | A friend zone.
