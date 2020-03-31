@@ -410,7 +410,7 @@ This function takes the **SOS Mail** password `SOSPassword` and converts it into
 
 ## Pokémon  
 
-Bellow is the complete database of pokémon. Observe that these **are not** the dex numbers, but the numbers used by the game to identify each criature. The number `0` corresponds to *Decamark* (i.e., *Nothing*, an empty spot) and cannot be used. Also, some mail types add limitations to the species that can be used (for example, legendaries).  
+Bellow is the complete database of pokémon. Observe that these **are not** the dex numbers, but the numbers used by the game to identify each criature. The number `0` corresponds to *Decamark* (i.e., *??????????*, *Nothing*, an empty spot) and cannot be used. Also, some mail types add limitations to the species that can be used (for example, legendaries).  
 
 These values are defined as:
 
@@ -442,13 +442,13 @@ No. | Pokémon         | No. | Pokémon         | No. | Pokémon         | No. |
  14 | Kakuna          | 114 | Tangela         | 214 | UnownN          | 314 | Slaking         | 414 | Deoxys
  15 | Beedrill        | 115 | Kangaskhan      | 215 | UnownO          | 315 | Nincada         | 415 | Unown!
  16 | Pidgey          | 116 | Horsea          | 216 | UnownP          | 316 | Ninjask         | 416 | Unown?
- 17 | Pidgeotto       | 117 | Seadra          | 217 | UnownQ          | 317 | Shedinja
- 18 | Pidgeot         | 118 | Goldeen         | 218 | UnownR          | 318 | Whismur
- 19 | Rattata         | 119 | Seaking         | 219 | UnownS          | 319 | Loudred
- 20 | Raticate        | 120 | Staryu          | 220 | UnownT          | 320 | Exploud
- 21 | Spearow         | 121 | Starmie         | 221 | UnownU          | 321 | Makuhita
- 22 | Fearow          | 122 | Mr. Mime        | 222 | UnownV          | 322 | Hariyama
- 23 | Ekans           | 123 | Scyther         | 223 | UnownW          | 323 | Azurill
+ 17 | Pidgeotto       | 117 | Seadra          | 217 | UnownQ          | 317 | Shedinja        | 417 | Deoxys Atk
+ 18 | Pidgeot         | 118 | Goldeen         | 218 | UnownR          | 318 | Whismur         | 418 | Deoxys Def
+ 19 | Rattata         | 119 | Seaking         | 219 | UnownS          | 319 | Loudred         | 419 | Deoxys Spd
+ 20 | Raticate        | 120 | Staryu          | 220 | UnownT          | 320 | Exploud         | 420 | Munchlax
+ 21 | Spearow         | 121 | Starmie         | 221 | UnownU          | 321 | Makuhita        | 421 | Decoy
+ 22 | Fearow          | 122 | Mr. Mime        | 222 | UnownV          | 322 | Hariyama        | 422 | Statue
+ 23 | Ekans           | 123 | Scyther         | 223 | UnownW          | 323 | Azurill         | 423 | Rayquaza
  24 | Arbok           | 124 | Jynx            | 224 | UnownX          | 324 | Nosepass
  25 | Pikachu         | 125 | Electabuzz      | 225 | UnownY          | 325 | Skitty
  26 | Raichu          | 126 | Magmar          | 226 | UnownZ          | 326 | Delcatty

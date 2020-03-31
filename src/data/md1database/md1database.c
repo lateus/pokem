@@ -780,7 +780,7 @@ const char* SOS_Thanks1  = "This is a rescue through communication.";
 const char* SOS_Thanks2  = "Send your thanks to your friend!";
 
 /* Pokémon species */
-const unsigned int pkmnSpeciesCount = 417; /* The size of the array */
+const unsigned int pkmnSpeciesCount = 424; /* The size of the array */
 const char* pkmnSpeciesStr[] = {
     "??????????", /* Decamark == Nothing */
     "Bulbasaur",
@@ -1198,7 +1198,14 @@ const char* pkmnSpeciesStr[] = {
     "Jirachi",
     "Deoxys",
     "Unown!",
-    "Unown?"
+    "Unown?",
+    "Deoxys Atk",
+    "Deoxys Def",
+    "Deoxys Spd",
+    "Munchlax", /* 420 */
+    "Decoy",
+    "Statue",
+    "Rayquaza"
 };
 
 
