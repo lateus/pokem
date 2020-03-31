@@ -587,7 +587,13 @@ int checkPokemon(int pokemon, enum MailType mailType)
               ((pokemon >= 144 && pokemon <= 146) /* birds */ || (pokemon >= 150 && pokemon <= 151) /* mewtwo and mew */ ||
                (pokemon >= 201 && pokemon <= 226) /* unown */ || (pokemon >= 268 && pokemon <= 270) /* dogs */ ||
                (pokemon >= 274 && pokemon <= 276) /* lugia and ho-oh */ ||
-               (pokemon >= 405 && pokemon <= 414)) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ) {
+               (pokemon >= 405 && pokemon <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ||
+               (pokemon >= 376 && pokemon <= 379) /* castform */ ||
+               (pokemon == 291 || pokemon == 293) /* cascoon and silcoon */ ||
+               (pokemon ==  11 || pokemon ==  14) /* kakuna and metapod */ ||
+               (pokemon ==  81 || pokemon ==  82) /* magnemite and magneton */ ||
+               (pokemon ==  94 || pokemon == 307) /* gengar and gardevoir */ ||
+               (pokemon == 380)) /* kecleon */ ) {
         return PokemonNotAllowedError;
     }
 
