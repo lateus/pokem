@@ -17,6 +17,51 @@ Official documentation of the library ***PokéM***. Here you will find an API co
 -----------------------------------------------------------------------------------------------------------------------------------
 
 
+# Global switches
+
+```c
+int printMessages;
+```
+
+This switch enables the verbosity of message-related functions. This includes all the error checking functions. Its default value is `1`, which means that messages are enabled. You may want to disable messages in GUI applications. To do so, set it to `0`, which is also recommended when you want to make quick checks without bottering the user, or to print error custom messages:  
+
+```c
+int pkmn;
+/* ... (do something with that variable) */
+
+printMessages = 0; /* disable messages */
+if (checkPokemon(pkmn, WonderMailType) != NoError) {
+    /* handle the error */
+}
+printMessages = 1; /* enable messages again if you want */
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+```c
+#define NO_USE_COLORS
+```
+
+If this directive is defined, the library will be built without color support. It is recommended that you define it only in console applications if you are streming to `stdout` or `stderr`. Also remember that *Windows* versions prior to *Windows 10 RS2* has no color support in consoles.  
+
+Since this must be defined in this library prior to compilation, it's recommended that you compile this by passing that definition to the compiler (for example passing `-DNO_USE_COLORS` to `gcc`) which is done automatically by compiling this library without color support (check the `README.md` file to learn how to do it).
+
+Note that for some reason the default *Windows*'s shell in which programs are executed, prints buggy characters instead of colors even on *Windows 10* with color support. A possible workaround is calling C `system()` function (which is defined in `stdlib.h`, or `cstdlib` if C++) with some command (can be an empty string) at the begining of the program:
+
+```c
+int main(int argc, const char* argv[])
+{
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    system("title My program v1.0");
+#endif
+
+    /* ... */
+}
+```
+
+-----------------------------------------------------------------------------------------------------------------------------------  
+
+
 # Data types
 
 ## Structures
@@ -206,6 +251,42 @@ Name                                    | Value   | Description
 
 
 # Function documentation  
+
+
+## Utility functions  
+
+```c
+int printMessage(FILE *stream, enum MessageType messageType, const char* message, ...)
+```
+
+Print to `stream` the formatted `message` of type `messageType`. This functions behaves like C `fprintf()` function. `message` can be one of the following:
+
+`enum MessageType`
+
+Name             | Value  | Description
+---------------- | ------ | -----------
+`DebugMessage`   | `0`    | Debug message. Shouldn't be used on production.
+`InfoMessage`    | `1`    | Information message. Use this to notify the user about something (like default actions).
+`WarningMessage` | `2`    | Warning message. Use this to warn the user about a possible failure.
+`ErrorMessage`   | `3`    | Error message. Use this when you must cancel or discard the current action.
+`FatalMessage`   | `4`    | Fatal error message. Use this for errors that will prevent the application for running.
+
+Depending of the type of message, a word is prepended to the message (`"DEBUG: "` for `DebugMessage`, `"ERROR: "` for `ErrorMessage`, and so).
+
+If `NO_USE_COLORS` is not defined, it prints the string that indicates the type of message with colors (light green for `InfoMessage`, yellow for `WarningMessage`, red for `ErrorMessage` and so).
+
+Example of usage:
+
+```c
+char pokemonName[51];
+int pokemonNameIsValid = 0;
+printMessage(stdout, InfoMessage, "Enter the pokemon species's name:\n");
+/* ... (do something with those variables) */
+
+if (!pokemonNameIsValid) {
+    printMessage(stderr, ErrorMessage, "There is not pokemon named %s.\n", pokemonName);
+}
+```
 
 
 ## Decoding/Encoding common functions  
