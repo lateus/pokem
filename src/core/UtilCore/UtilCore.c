@@ -584,8 +584,11 @@ int checkPokemon(int pokemon, enum MailType mailType)
     if (pokemon <= 0 || (unsigned int)pokemon >= pkmnSpeciesCount) {
         return PokemonOutOfRangeError;
     } else if (mailType == WonderMailType && 
-              ((pokemon >= 144 && pokemon <= 146) /* birds */ || (pokemon >= 150 && pokemon <= 151) /* mewtwo and mew */ ||
-               (pokemon >= 201 && pokemon <= 226) /* unown */ || (pokemon >= 268 && pokemon <= 270) /* dogs */ ||
+              ((pokemon >= 144 && pokemon <= 146) /* birds */ ||
+               (pokemon >= 150 && pokemon <= 151) /* mewtwo and mew */ ||
+               (pokemon >= 201 && pokemon <= 226) /* unown a-z */ ||
+               (pokemon == 415 || pokemon == 416) /* unown !-? */ ||
+               (pokemon >= 268 && pokemon <= 270) /* dogs */ ||
                (pokemon >= 274 && pokemon <= 276) /* lugia and ho-oh */ ||
                (pokemon >= 405 && pokemon <= 414) /* regis, eons, kyogre, groudon, rayquaza, jirachi and deoxys */ ||
                (pokemon >= 376 && pokemon <= 379) /* castform */ ||
