@@ -116,6 +116,9 @@ help:
 $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(MSG) "$(YELLOW)Deploying the library header file...$(NOCOLOR)\n"
 	@$(MSG) "#ifndef POKEM_H\n" > $@
+	@$(MSG) "#ifdef __cplusplus\n" >> $@
+	@$(MSG) "extern \"C\" {\n" >> $@
+	@$(MSG) "#endif\n" >> $@
 	@$(MSG) "#define POKEM_H\n" >> $@
 	@$(MSG) "\n#include <stdio.h>\n" >> $@
 	@$(MSG) "\n/** DEFINITIONS AND DATABASE: */\n" >> $@
@@ -124,6 +127,9 @@ $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
 	@$(FIND) src/core -path "*.h" -type f -exec tools/printSingleHeaderContent.sh {} \; | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
 	@$(MSG) "\n/** UTILITIES: */\n" >> $@
 	@tools/printSingleHeaderContent.sh ./src/util/messages.h | grep -v '#include "' | grep -v '#include"' | grep -v '#include <' | grep -v '#include<' >> $@
+	@$(MSG) "#ifdef __cplusplus\n" >> $@
+	@$(MSG) "}\n" >> $@
+	@$(MSG) "#endif\n" >> $@
 	@$(MSG) "\n#endif /* POKEM_H */" >> $@
 
 # Static library
