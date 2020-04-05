@@ -588,11 +588,11 @@ int checkPokemon(int pokemon, enum MailType mailType)
                (pokemon >= 150 && pokemon <= 151) /* mewtwo and mew */ ||
                (pokemon >= 201 && pokemon <= 226) /* unown a-z */ ||
                (pokemon >= 268 && pokemon <= 270) /* dogs */ ||
-               (pokemon >= 274 && pokemon <= 276) /* lugia and ho-oh */ ||
-               (pokemon >= 405 && pokemon <= 423) /* regis, eons, kyogre, groudon, rayquaza, jirachi, deoxys, unown!, unown?, deoxys A, deoxys D, deoxys S, munchlax, decoy, statue and rayquaza (unused copy) */ ||
+               (pokemon >= 274 && pokemon <= 276) /* lugia, ho-oh and celebi */ ||
+               (pokemon >= 405 && pokemon <= 423) /* regis, eons, kyogre, groudon, rayquaza, jirachi, deoxys, unown!, unown?, deoxys atk, deoxys def, deoxys spd, munchlax, decoy, statue and rayquaza (unused copy) */ ||
                (pokemon >= 376 && pokemon <= 379) /* castform */ ||
                (pokemon == 291 || pokemon == 293) /* cascoon and silcoon */ ||
-               (pokemon ==  11 || pokemon ==  14) /* kakuna and metapod */ ||
+               (pokemon ==  11 || pokemon ==  14) /* metapod and kakuna */ ||
                (pokemon ==  81 || pokemon ==  82) /* magnemite and magneton */ ||
                (pokemon ==  94 || pokemon == 307) /* gengar and gardevoir */ ||
                (pokemon == 380)) /* kecleon */ ) {
@@ -608,7 +608,7 @@ int checkDungeon(int dungeon, enum MailType mailType)
 {
     if (dungeon < 0 || (unsigned int)dungeon >= dungeonsCount) {
         return DungeonOutOfRangeError;
-    } else if (strcmp(dungeonsStr[dungeon], "[INVALID]") == 0) {
+    } else if (dungeon == 24 || dungeon == 25 || dungeon == 30 || dungeon == 39 || dungeon == 49 || dungeon == 50 || dungeon == 51 || dungeon == 54 || dungeon == 55 || dungeon == 61 || dungeon > 62) {
         return DungeonIsInvalidError;
     } else if (mailType == WonderMailType && (dungeon == 6 || dungeon == 10 || dungeon == 12 || dungeon == 14 || dungeon == 16 || dungeon == 18 || dungeon == 22 || dungeon == 47 || dungeon == 48 || dungeon == 52)) {
         return MissionCannotBeAcceptedInDungeonError;

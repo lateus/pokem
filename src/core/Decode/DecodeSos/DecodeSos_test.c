@@ -151,7 +151,7 @@ void setSosInfo_test(CuTest *tc)
         { "This is a rescue through communication.", "Get a friend to help you!", "Nurcy",      "Chansey", "Friend rescue.", "Joyous Tower",     " 50F", 'S', "???", "1234",  "10", "N???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T." },
         { "This is a rescue through communication.", "Get a friend to help you!", "Nurry",      "Chansey", "Friend rescue.", "Joyous Tower",     " 50F", 'S', "???", "1234",  "10", "M???2JR.1W/??R09?!?N????NFC??1??Q3H???X?K-Y??58??WS0T." },
         { "This is a rescue through communication.", "Get a friend to help you!", "Neo Cortex", "Deoxys",  "Friend rescue.", "Purity Forest",    " 98F", '*', "???", "9999",  "1",  "?8?653?0KN4??599/M2.??4R313P?*?8+3H5??TN!T!/X/.??2/Q02" },
-        { "This is a rescue through communication.", "Get a friend to help you!", "Neo Cortex", "Deoxys",  "Friend rescue.", "[INVALID]",        "?98F", 'E', "???", "65535", "1",  "?Y??5S?.694??3W9/M2M??4R33WW?T?85QH5??TN74./X/0??85QJ2" },
+        { "This is a rescue through communication.", "Get a friend to help you!", "Neo Cortex", "Deoxys",  "Friend rescue.", "Out on Rescue",    "?98F", 'E', "???", "65535", "1",  "?Y??5S?.694??3W9/M2M??4R33WW?T?85QH5??TN74./X/0??85QJ2" },
         { "This is a rescue through communication.", "Get a friend to help you!", "V",          "Voltorb", "Friend rescue.", "Thunderwave Cave", "B3F",  'E', "???", "0",     "5",  "????6+7SHX???1?4???H??4?NP???4???TR?????X25??PJ??07?C?" },
         { "This is a rescue through communication.", "Get a friend to help you!", "",           "Voltorb", "Friend rescue.", "Thunderwave Cave", "B3F",  'E', "???", "0",     "5", "PK?6667SS/???1?4???W??4?NP???P??J???????8?R??P+??NN?W?" }
     };
