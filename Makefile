@@ -1,11 +1,10 @@
 # Compiler
 CC			:=	gcc
 # Compiler flags
-DEFINES		:=	$(if $(filter all-without-colors, $(MAKECMDGOALS)), -DNO_USE_COLORS,)
+DEFINES		:=	$(if $(filter all-without-colors, $(MAKECMDGOALS)),-DNO_USE_COLORS,)
 CC_WFLAGS	:=	-W -Wall -Wextra -pedantic -std=c89
-CC_OFLAGS	:=	-O2 -funroll-loops
 CC_LFLAGS	:=
-CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES)
+CFLAGS		:=	$(CC_OFLAGS) $(CC_WFLAGS) $(DEFINES) $(if $(filter sharedlib, $(MAKECMDGOALS)),-fPIC,)
 AR_FLAGS	:=	rcs
 
 # Tools
@@ -56,6 +55,8 @@ LIB_HEADER_NAME	:=	pokem.h
 # Deployment
 STATIC_LIB_NAME				:=	libpokem.a
 STATIC_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(STATIC_LIB_NAME)
+SHARED_LIB_NAME				:=	libpokem.so
+SHARED_LIB_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(SHARED_LIB_NAME)
 
 LIB_HEADER_DEPLOY_FILEPATH	:=	$(BINLIBDIR)/$(LIB_HEADER_NAME)
 
@@ -83,12 +84,14 @@ WHITE		:=	$(if $(filter -DNO_USE_COLORS, $(DEFINES)),,\033[1;37m)
 # ----------------------------------------------------------------------------------------------------
 
 .DEFAULT_GOAL := all
-.PHONY: all all-without-colors staticlib clean help
+.PHONY: all all-without-colors staticlib sharedlib clean help
 
 all: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library (default)
+# Check all-without-colors: $(DEFINED) += -DNO_USE_COLORS
 all-without-colors: $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem library without color support
 
 staticlib: $(BUILDDIR) $(STATIC_LIB_DEPLOY_FILEPATH) ## Build Pokem static library
+sharedlib: $(BUILDDIR) $(SHARED_LIB_DEPLOY_FILEPATH) ## Build Pokem shared library
 
 test: $(TEST_RESULT) ## Build and run tests
 
@@ -111,7 +114,7 @@ help:
 
 # Static library header
 $(LIB_HEADER_DEPLOY_FILEPATH): $(BINLIBDIR)
-	@$(MSG) "$(YELLOW)Deploying the static library header file...$(NOCOLOR)\n"
+	@$(MSG) "$(YELLOW)Deploying the library header file...$(NOCOLOR)\n"
 	@$(MSG) "#ifndef POKEM_H\n" > $@
 	@$(MSG) "#define POKEM_H\n" >> $@
 	@$(MSG) "\n#include <stdio.h>\n" >> $@
@@ -128,6 +131,12 @@ $(STATIC_LIB_DEPLOY_FILEPATH): $(BUILDDIR) $(BINLIBDIR) $(OBJECTS) $(LIB_HEADER_
 	@$(MSG) "$(YELLOW)Building and linking static library file...$(NOCOLOR)\n"
 	$(AR) $(AR_FLAGS) $@ $(OBJECTS)
 	@$(MSG) "\n$(LIGHTGREEN)Done. The static library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
+
+# Shared library
+$(SHARED_LIB_DEPLOY_FILEPATH):  $(BUILDDIR) $(BINLIBDIR) $(OBJECTS) $(LIB_HEADER_DEPLOY_FILEPATH)
+	@$(MSG) "$(YELLOW)Building and linking shared library file...$(NOCOLOR)\n"
+	$(CC) $(OBJECTS) -shared -o $@
+	@$(MSG) "\n$(LIGHTGREEN)Done. The shared library was built in the $(LIGHTBLUE)$(BINLIBDIR)$(LIGHTGREEN) directory.$(NOCOLOR)\n\n"
 
 $(TEST_RESULT): $(BUILDDIR) $(TEST_FILES)
 	@$(MSG) "$(LIGHTGREEN)Building tests...$(NOCOLOR)\n"
