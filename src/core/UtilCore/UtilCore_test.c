@@ -530,7 +530,7 @@ void checkItemExistenceInDungeon_test(CuTest *tc)
     int input2[ARRAY_SIZE] = {  0,  0,  62,  40 };
 
     int testResult[ARRAY_SIZE];
-    int expectedResult[ARRAY_SIZE] = { NoError, ItemNotExistsInDungeonError, NoError, NoError };
+    int expectedResult[ARRAY_SIZE] = { NoError, ItemNotExistsInDungeonError, NoError, CannotDeliverPokeError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {

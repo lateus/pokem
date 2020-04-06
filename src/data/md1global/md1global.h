@@ -20,6 +20,7 @@ enum ErrorType {
     NoItemError,                            /* the item is `0` (Nothing), which is not necessarily an error */
     ItemCannotBeObtainedError,              /* the item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine */
     ItemNotExistsInDungeonError,            /* the item do not exists in the dungeon */
+    CannotDeliverPokeError,                 /* the item do not exists in the dungeon */
     RewardTypeError,                        /* the reward type is invalid */
     FriendAreaOutOfRangeError,              /* the friend area is out of range */
     FriendAreaIsInvalidAsRewardError,       /* the friend area cannot be set as reward */

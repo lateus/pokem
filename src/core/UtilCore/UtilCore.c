@@ -650,6 +650,10 @@ int checkItem(int item)
 int checkItemExistenceInDungeon(int item, int dungeon)
 {
     int i;
+    if (item == 105) { /* poke */
+        fprintf(stderr, "error\n");
+        return CannotDeliverPokeError;
+    }
     for (i = 1; i <= itemsInDungeons[dungeon][0]; ++i) {
         if (item == itemsInDungeons[dungeon][i]) {
             return NoError;
