@@ -281,10 +281,10 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
         ++errorsFound;
         printMessage(stderr, ErrorMessage, "The mail type must be a " LGREEN "Wonder Mail" RESET ". Current value: " LRED "%u" RESET " [" LRED "%s" LRED "]\n\n", wm->mailType,
                         wm->mailType == SosMailType ? "SOS Mail" : wm->mailType == AOkMailType ? "AOK Mail" : "INVALID");
-    } 
+    }
 
     /* mission type check */
-    if (wm->missionType < 0 || wm->missionType > 4) {
+    if (wm->missionType < HelpMe || wm->missionType > DeliverItem) {
         ++errorsFound;
         printMessage(stderr, ErrorMessage, "The mission type must be a number between " LGREEN "0" RESET " [" LGREEN "%s" RESET "] and " LGREEN "%d" RESET " [" LGREEN "%s" RESET "]. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]\n\n", missionTypeObjectiveStr[0], missionTypeObjectiveCount - 1, missionTypeObjectiveStr[missionTypeObjectiveCount - 1], wm->missionType, wm->missionType == FriendRescue ? "Friend rescue" : "INVALID");
     }

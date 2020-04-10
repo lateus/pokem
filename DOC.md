@@ -231,20 +231,22 @@ Name                                    | Value   | Description
 `NoItemError`                           | `12`    | The item is `0` (*Nothing*), which is not necessarily an error
 `ItemCannotBeObtainedError`             | `13`    | The item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine
 `ItemNotExistsInDungeonError`           | `14`    | The item do not exists in the dungeon
-`RewardTypeError`                       | `15`    | The reward type is invalid
-`FriendAreaOutOfRangeError`             | `16`    | The friend area is out of range
-`FriendAreaIsInvalidAsRewardError`      | `17`    | The friend area cannot be set as reward
-`DungeonOutOfRangeError`                | `18`    | The dungeon is out of range
-`DungeonIsInvalidError`                 | `19`    | The dungeon exists, but it is invalid
-`MissionCannotBeAcceptedInDungeonError` | `20`    | The mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo)
-`FloorOutOfRangeError`                  | `21`    | The dungeon do not have the selected floor
-`FloorInvalidInDungeonError`            | `22`    | The floor exists, but a mission cannot be done there (for example, boss and warp floors)
-`MailIDOutOfRangeError`                 | `23`    | The mail ID is invalid
-`NicknameEmptyError`                    | `24`    | The nickname is empty
-`ChancesLeftError`                      | `25`    | The amount of chances left is invalid
-`IncorrectPasswordLengthError`          | `26`    | The length of the password is invalid
-`InvalidCharacterError`                 | `27`    | The password contains an invalid character
-`ConversionError`                       | `28`    | The password couldn't be converted
+`CannotDeliverPokeError`                | `15`
+`RewardTypeError`                       | `16`    | The reward type is invalid
+`FriendAreaOutOfRangeError`             | `17`    | The friend area is out of range
+`FriendAreaIsInvalidAsRewardError`      | `18`    | The friend area cannot be set as reward
+`FriendAreaMissionDifficultyError`      | `19`    | A friend area cannot be set as reward on missions with 'E' difficulty
+`DungeonOutOfRangeError`                | `20`    | The dungeon is out of range
+`DungeonIsInvalidError`                 | `21`    | The dungeon exists, but it is invalid
+`MissionCannotBeAcceptedInDungeonError` | `22`    | The mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo)
+`FloorOutOfRangeError`                  | `23`    | The dungeon do not have the selected floor
+`FloorInvalidInDungeonError`            | `24`    | The floor exists, but a mission cannot be done there (for example, boss and warp floors)
+`MailIDOutOfRangeError`                 | `25`    | The mail ID is invalid
+`NicknameEmptyError`                    | `26`    | The nickname is empty
+`ChancesLeftError`                      | `27`    | The amount of chances left is invalid
+`IncorrectPasswordLengthError`          | `28`    | The length of the password is invalid
+`InvalidCharacterError`                 | `29`    | The password contains an invalid character
+`ConversionError`                       | `30`    | The password couldn't be converted
 
 -----------------------------------------------------------------------------------------------------------------------------------
 

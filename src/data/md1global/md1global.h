@@ -20,10 +20,11 @@ enum ErrorType {
     NoItemError,                            /* the item is `0` (Nothing), which is not necessarily an error */
     ItemCannotBeObtainedError,              /* the item exists but cannot be obtained, usually the item is a Beatup Orb or a G Machine */
     ItemNotExistsInDungeonError,            /* the item do not exists in the dungeon */
-    CannotDeliverPokeError,                 /* the item do not exists in the dungeon */
+    CannotDeliverPokeError,                 /* cannot deliver money */
     RewardTypeError,                        /* the reward type is invalid */
     FriendAreaOutOfRangeError,              /* the friend area is out of range */
     FriendAreaIsInvalidAsRewardError,       /* the friend area cannot be set as reward */
+    FriendAreaMissionDifficultyError,       /* a friend area cannot be set as reward on missions with 'E' difficulty */
     DungeonOutOfRangeError,                 /* the dungeon is out of range */
     DungeonIsInvalidError,                  /* the dungeon exists, but it is invalid */
     MissionCannotBeAcceptedInDungeonError,  /* the mission can be generated, but cannot be accepted (for example, a peak or the Makuhita's Dojo) */
