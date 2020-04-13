@@ -318,6 +318,9 @@ int entryErrorsWonderMail(const struct WonderMail *wm)
             printMessage(stderr, ErrorMessage, LIGHT "Legendaries" RESET " are not allowed in Wonder Mails. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]\n\n", wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
             break;
         }
+    } else if ((wm->missionType == HelpMe || wm->missionType == FindItem || wm->missionType == DeliverItem) && wm->pkmnTarget != wm->pkmnClient) {
+        ++errorsFound;
+        printMessage(stderr, ErrorMessage, "In " LIGHT "Help Me!" RESET ", " LIGHT "Find Item" RESET " and " LIGHT "Deliver Item" RESET " missions, the target pokemon must be the client pokemon. Current value: " LRED "%u" RESET " [" LRED "%s" RESET "]. Expected: " LRED "%u" RESET " [" LRED "%s" RESET "].\n\n", wm->pkmnTarget, wm->pkmnTarget >= pkmnSpeciesCount ? "INVALID" : pkmnSpeciesStr[wm->pkmnClient], wm->pkmnClient, pkmnSpeciesStr[wm->pkmnClient]);
     }
 
     /* item to deliver/find check (limits) */
