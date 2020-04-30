@@ -509,11 +509,11 @@ void checkFloor_test(CuTest *tc)
 
 void checkItem_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10
-    const int input[ARRAY_SIZE]          = { -1,                  0,           1,       150,     235,     236,                       237,                       238,                       239,                       240 };
+#define ARRAY_SIZE 12
+    const int input[ARRAY_SIZE]          = { -1,                  0,           1,       36,                        150,     220,                       235,     236,                       237,                       238,                       239,                       240 };
 
     int testResult[ARRAY_SIZE];
-    const int expectedResult[ARRAY_SIZE] = { ItemOutOfRangeError, NoItemError, NoError, NoError, NoError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemOutOfRangeError };
+    const int expectedResult[ARRAY_SIZE] = { ItemOutOfRangeError, NoItemError, NoError, ItemCannotBeObtainedError, NoError, ItemCannotBeObtainedError, NoError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemOutOfRangeError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {

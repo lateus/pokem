@@ -641,7 +641,7 @@ int checkItem(int item)
         return NoItemError;
     } else if (item < 0 || (unsigned int)item >= itemsCount) {
         return ItemOutOfRangeError;
-    } else if ((unsigned int)item >= (itemsCount - 4)) {
+    } else if (item == 36 || ((unsigned int)item >= 50 && (unsigned int)item <= 52) || item == 176 || item == 177 || item == 194 || item == 210 || item == 216 || item == 220 || (unsigned int)item >= (itemsCount - 4)) {
         return ItemCannotBeObtainedError;
     }
 
