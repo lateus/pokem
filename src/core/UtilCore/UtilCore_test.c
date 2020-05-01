@@ -300,19 +300,19 @@ void entryErrorsWonderMail_test(CuTest *tc)
 #define ARRAY_SIZE 8
     const struct WonderMail input[ARRAY_SIZE] = {
         /*         Mail type,    Mission type,  Special job, Pkmn Client, Pkmn target, Item F/D,    Reward type, Reward item, Friend area, Flavor, Random, 0xFF, Dungeon, Floor */
-        {     WonderMailType,          HelpMe,         0x00,           1,           0,        9,          Money,           0,           0,      0,   0x00, 0x00,       0,     1 },
-        {     WonderMailType,     DeliverItem,         0x01,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,      62,    98 },
-        {     WonderMailType,     DeliverItem,         0x02,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,       0,     1 }, /* Friend area ('E' difficulty) */
-        {        SosMailType,            Find,         0x03,         405,         415,      255, FriendArea + 1,         240,          60,      0,      0, 0xFF,      63,    99 }, /* Mail type, pkmn client, pkmn target, reward type and dungeon */
-        {        AOkMailType,     DeliverItem,         0x04,         415,           0,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, friend area and floor  */
+        {     WonderMailType,          HelpMe,         0x00,           1,           1,        9,          Money,           0,           0,      0,   0x00, 0x00,       0,     1 },
+        {     WonderMailType,     DeliverItem,         0x01,         404,         414,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,      62,    98 }, /* The mission type is not find someone or escort and the pkmn target is not the pokemon client */
+        {     WonderMailType,     DeliverItem,         0x02,         404,         404,      232,     FriendArea,         239,          37,   0xFF,   0xFF, 0xFF,       0,     1 }, /* Friend area ('E' difficulty) */
+        {        SosMailType,            Find,         0x03,         405,         405,      255, FriendArea + 1,         240,          60,      0,      0, 0xFF,      63,    99 }, /* Mail type, pkmn client, pkmn target, reward type and dungeon */
+        {        AOkMailType,     DeliverItem,         0x04,         415,         415,      233,     FriendArea,         255,           0,      0,      0, 0xFF,       0,     0 }, /* Mail type, pkmn client, friend area and floor  */
         {   ThankYouMailType, DeliverItem + 1,         0x05,         210,         511,      240,      MoneyItem,           0,          63,      0,      0, 0xFF,       0,     4 }, /* Mission type, pkmn client, reward item and floor. Note: Not the Mail type cuz ThankYouMail == WonderMail */
         { WonderMailType + 1,          Escort,         0x0E,         150,         151,        0,      MoneyItem,         240,          19,      0,      0, 0xFF,      10,     4 }, /* Mail type, pkmn client, pkmn target, item reward and floor */
-        {    InvalidMailType,        FindItem,         0x0F,         201,           0,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* Mail type, pkmn client, item to find and friend area and floor */
+        {    InvalidMailType,        FindItem,         0x0F,         201,         201,        1,     FriendArea,         250,          19,      0,      0, 0xFF,      23,    99 }  /* Mail type, pkmn client, item to find and friend area and floor */
     };
 
     int actualResults[ARRAY_SIZE];
 
-    const int expectedResults[ARRAY_SIZE] = { 0, 0, 1, 5, 4, 4, 5, 5 };
+    const int expectedResults[ARRAY_SIZE] = { 0, 1, 1, 5, 4, 4, 5, 5 };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -473,13 +473,13 @@ void checkPokemon_test(CuTest *tc)
 
 void checkDungeon_test(CuTest *tc)
 {
-#define ARRAY_SIZE 35
-                                          /* [INVALID],              [INVALID],              Tiny Woods,     Thunderwave Cave, Mt. Thunder,    Mt. Thunder Peak,                      Mt. Thunder Peak, Mt. Blaze,      Mt. Blaze Peak,                        Frosty Grotto,                         Mt. Freeze Peak,                       Magma Cavern,   Magma Cavern Pit,                      Sky Tower Summit,                      Mt. Freeze Peak,                       Western Cave,   [INVALID],             [INVALID],             Wish Cave,      [INVALID],             [INVALID],             Rock Path,                             Snow Path,                             Snow Path,   [INVALID],             [INVALID],             [INVALID],             Dojo Registration,                     Howling Forest, [INVALID],             Mt. Faraway,    [INVALID],             Purity Forest,  [INVALID],              [INVALID] */
-    const int input1[ARRAY_SIZE]         = { -1,                     -1,                     0,              1,                5,              6,                                     6,                9,              10,                                    12,                                    14,                                    15,             16,                                    18,                                    22,                                    23,             24,                    25,                    26,             30,                    39,                    47,                                    48,                                    48,          49,                    50,                    51,                    52,                                    53,             54,                    60,             61,                    62,             63,                     63 };
-    enum MailType input2[ARRAY_SIZE]     = { WonderMailType,         SosMailType,            WonderMailType, SosMailType,      WonderMailType, WonderMailType,                        SosMailType,      WonderMailType, WonderMailType,                        WonderMailType,                        WonderMailType,                        WonderMailType, WonderMailType,                        WonderMailType,                        WonderMailType,                        WonderMailType, WonderMailType,        SosMailType,           WonderMailType, WonderMailType,        WonderMailType,        WonderMailType,                        WonderMailType,                        SosMailType, WonderMailType,        WonderMailType,        WonderMailType,        WonderMailType,                        WonderMailType, WonderMailType,        WonderMailType, WonderMailType,        WonderMailType, WonderMailType,         SosMailType };
+#define ARRAY_SIZE 37
+                                          /* [INVALID],              [INVALID],              Tiny Woods,     Thunderwave Cave, Mt. Thunder,    Mt. Thunder Peak,                      Mt. Thunder Peak, Mt. Blaze,      Mt. Blaze Peak,                        Frosty Grotto,                         Mt. Freeze Peak,                       Magma Cavern,   Magma Cavern Pit,                      Sky Tower Summit,                      Mt. Freeze Peak,                       Western Cave,   [INVALID],             [INVALID],             Wish Cave,      [INVALID],             [INVALID],             Rock Path,                             Snow Path,                             Snow Path,   [INVALID],             [INVALID],             [INVALID],             Dojo Registration,                     Howling Forest, [INVALID],             Mt. Faraway,    [INVALID],             Purity Forest,  [INVALID],             [INVALID] */
+    const int input1[ARRAY_SIZE]         = { -1,                     -1,                     0,              1,                5,              6,                                     6,                9,              10,                                    12,                                    14,                                    15,             16,                                    18,                                    22,                                    23,             24,                    25,                    26,             30,                    39,                    47,                                    48,                                    48,          49,                    50,                    51,                    52,                                    53,             54,                    60,             61,                    62,             63,                    63,                    98,                     98 };
+    enum MailType input2[ARRAY_SIZE]     = { WonderMailType,         SosMailType,            WonderMailType, SosMailType,      WonderMailType, WonderMailType,                        SosMailType,      WonderMailType, WonderMailType,                        WonderMailType,                        WonderMailType,                        WonderMailType, WonderMailType,                        WonderMailType,                        WonderMailType,                        WonderMailType, WonderMailType,        SosMailType,           WonderMailType, WonderMailType,        WonderMailType,        WonderMailType,                        WonderMailType,                        SosMailType, WonderMailType,        WonderMailType,        WonderMailType,        WonderMailType,                        WonderMailType, WonderMailType,        WonderMailType, WonderMailType,        WonderMailType, WonderMailType,        SosMailType,           WonderMailType,         SosMailType };
 
     int testResult[ARRAY_SIZE];
-    const int expectedResult[ARRAY_SIZE] = { DungeonOutOfRangeError, DungeonOutOfRangeError, NoError,        NoError,          NoError,        MissionCannotBeAcceptedInDungeonError, NoError,          NoError,        MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,        MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,     DungeonIsInvalidError, DungeonIsInvalidError, DungeonIsInvalidError, MissionCannotBeAcceptedInDungeonError, NoError,        DungeonIsInvalidError, NoError,        DungeonIsInvalidError, NoError,        DungeonOutOfRangeError, DungeonOutOfRangeError };
+    const int expectedResult[ARRAY_SIZE] = { DungeonOutOfRangeError, DungeonOutOfRangeError, NoError,        NoError,          NoError,        MissionCannotBeAcceptedInDungeonError, NoError,          NoError,        MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,        MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, MissionCannotBeAcceptedInDungeonError, MissionCannotBeAcceptedInDungeonError, NoError,     DungeonIsInvalidError, DungeonIsInvalidError, DungeonIsInvalidError, MissionCannotBeAcceptedInDungeonError, NoError,        DungeonIsInvalidError, NoError,        DungeonIsInvalidError, NoError,        DungeonIsInvalidError, DungeonIsInvalidError, DungeonOutOfRangeError, DungeonOutOfRangeError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -509,11 +509,11 @@ void checkFloor_test(CuTest *tc)
 
 void checkItem_test(CuTest *tc)
 {
-#define ARRAY_SIZE 10
-    const int input[ARRAY_SIZE]          = { -1,                  0,           1,       150,     235,     236,                       237,                       238,                       239,                       240 };
+#define ARRAY_SIZE 12
+    const int input[ARRAY_SIZE]          = { -1,                  0,           1,       36,                        150,     220,                       235,     236,                       237,                       238,                       239,                       240 };
 
     int testResult[ARRAY_SIZE];
-    const int expectedResult[ARRAY_SIZE] = { ItemOutOfRangeError, NoItemError, NoError, NoError, NoError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemOutOfRangeError };
+    const int expectedResult[ARRAY_SIZE] = { ItemOutOfRangeError, NoItemError, NoError, ItemCannotBeObtainedError, NoError, ItemCannotBeObtainedError, NoError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemCannotBeObtainedError, ItemOutOfRangeError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
@@ -530,7 +530,7 @@ void checkItemExistenceInDungeon_test(CuTest *tc)
     int input2[ARRAY_SIZE] = {  0,  0,  62,  40 };
 
     int testResult[ARRAY_SIZE];
-    int expectedResult[ARRAY_SIZE] = { NoError, ItemNotExistsInDungeonError, NoError, NoError };
+    int expectedResult[ARRAY_SIZE] = { NoError, ItemNotExistsInDungeonError, NoError, CannotDeliverPokeError };
 
     int i;
     for (i = 0; i < ARRAY_SIZE; ++i) {
