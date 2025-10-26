@@ -108,4 +108,4 @@ This is a library. A CLI already exists ([github.com/lateus/pokem-cli](github.co
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
-***Contact info:*** [*thecrowporation@gmail.com*](mailto:thecrowporation@gmail.com)
+***Contact info:*** [*lateus.betelgeuse@gmail.com*](mailto:lateus.betelgeuse@gmail.com)
