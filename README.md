@@ -68,14 +68,14 @@ $ make -lpokem example.c -o example
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Examples
-There is a CLI that you can use as example: [github.com/lateo96/pokem-cli](github.com/lateo96/pokem-cli).  
+There is a CLI that you can use as example: [github.com/lateus/pokem-cli](github.com/lateus/pokem-cli).  
 I might add simpler examples to this repository.  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
 ## Known bugs
 None for now.  
-Report bugs or request features at [github.com/lateo96/pokem/issues](github.com/lateo96/pokem/issues).  
+Report bugs or request features at [github.com/lateus/pokem/issues](github.com/lateus/pokem/issues).  
 
 -----------------------------------------------------------------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ This program is under the *General Public License* (version 2).
 ## For developers and contributors
 The author uses **Linux** for development. You should do as well.  
 
-This is a library. A CLI already exists ([github.com/lateo96/pokem-cli](github.com/lateo96/pokem-cli)) and I'm currently developing a GUI for it. The purpose of maintain this library is to have the main algorithm separated from any other module. GUI applications are, from their very nature, big and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here. Applications should use a binary prebuilt of ***PokéM*** (available through `$ make staticlib`), instead of using the source code directly because then will be easier to update the related algorithms when a new version of ***PokéM*** is released.
+This is a library. A CLI already exists ([github.com/lateus/pokem-cli](github.com/lateus/pokem-cli)) and I'm currently developing a GUI for it. The purpose of maintain this library is to have the main algorithm separated from any other module. GUI applications are, from their very nature, big and complicated, and I consider that they are not the appropriate environment for developing new algorithms. So, all the development of Mail Generators will take place here. Applications should use a binary prebuilt of ***PokéM*** (available through `$ make staticlib`), instead of using the source code directly because then will be easier to update the related algorithms when a new version of ***PokéM*** is released.
 
 ### Portability tips
 * Avoid using fast assembler instructions, compiler's built-in functions and others things that can reduce portability.
